@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -26,11 +27,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private Button btTest;
     private RecyclerView rvCars;
-    private VehAdapter adapter;
+    private VehAdapterEx adapter;
     String[] listItems;
     boolean[] checkedItems;
     ArrayList<Integer> muserItems = new ArrayList<>();
-    ArrayList<Vehiculo> vehData;
+    ArrayList<VehiculoExpandable> vehData;
     EditText ets;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,28 +49,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rvCars = findViewById(R.id.rvCars);
         vehData = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        ((SimpleItemAnimator) rvCars.getItemAnimator()).setSupportsChangeAnimations(false);
         rvCars.setLayoutManager(linearLayoutManager);
-        adapter = new VehAdapter(this, vehData);
+        adapter = new VehAdapterEx(this, vehData);
         rvCars.setAdapter(adapter);
-        vehData.add(new Vehiculo(6786434,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
+        vehData.add(new VehiculoExpandable(6786434,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
         "corsa","opel","V6","mutua","rojo","DC3453"));
-        vehData.add(new Vehiculo(4563487,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
+        vehData.add(new VehiculoExpandable(4563487,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 "corsa","opel","V6","mutua","rojo","DC3453"));
-        vehData.add(new Vehiculo(36896453,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
+        vehData.add(new VehiculoExpandable(36896453,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 "corsa","opel","V6","mutua","rojo","DC3453"));
-        vehData.add(new Vehiculo(58645387,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
+        vehData.add(new VehiculoExpandable(58645387,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 "corsa","opel","V6","mutua","rojo","DC3453"));
-        vehData.add(new Vehiculo(88687645,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
+        vehData.add(new VehiculoExpandable(88687645,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 "corsa","opel","V6","mutua","rojo","DC3453"));
-        vehData.add(new Vehiculo(758645374,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
+        vehData.add(new VehiculoExpandable(758645374,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 "corsa","opel","V6","mutua","rojo","DC3453"));
-
+        vehData.get(0).setExpanded(true);
         adapter.notifyDataSetChanged();
 
         /**Dialog de seleccion de filtros**/
