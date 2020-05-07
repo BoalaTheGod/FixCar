@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rvCars.setAdapter(adapter);
         vehData.add(new VehiculoExpandable(6786434,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
-        "corsa","opel","V6","mutua","rojo","DC3453"));
+        "silverado","chevrolet ","V6","mutua","rojo","DC3453"));
         vehData.add(new VehiculoExpandable(4563487,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
                 "corsa","opel","V6","mutua","rojo","DC3453"));
