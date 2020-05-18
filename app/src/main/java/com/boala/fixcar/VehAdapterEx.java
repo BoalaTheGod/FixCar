@@ -1,12 +1,12 @@
 package com.boala.fixcar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -34,12 +34,21 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
     public void onBindViewHolder(@NonNull VehAdapterEx.VehHolder holder, final int position) {
         final VehiculoExpandable data = content.get(position);
         holder.setData(data);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        LinearLayout LLCard = holder.itemView.findViewById(R.id.LLCard);
+        LLCard.setOnClickListener(new View.OnClickListener() {
             boolean expanded = data.isExpanded();
             @Override
             public void onClick(View view) {
                 data.setExpanded(!expanded);
                 notifyItemChanged(position);
+            }
+        });
+        holder.expandable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,EditVehicleActivity.class);
+                intent.putExtra("idVeh",position);
+                context.startActivity(intent);
             }
         });
 

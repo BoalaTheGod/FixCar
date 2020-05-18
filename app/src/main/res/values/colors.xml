@@ -2,4 +2,5 @@
 <resources>
     <color name="textDeffault">#1B1B1B</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="background">#dddddd</color>
 </resources>

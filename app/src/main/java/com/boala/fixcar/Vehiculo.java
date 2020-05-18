@@ -2,18 +2,38 @@ package com.boala.fixcar;
 
 import android.util.Log;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Vehiculo {
-    private int idVehiculo, idUsuario, kmVehiculo;
-    private Date fechaItv, fechaRuedas, fechaAceite, fechaRevision;
-    private String modelo, marca, motor, seguro, color, matricula;
+    @SerializedName("idvehiculo")
+    private int idVehiculo;
+    @SerializedName("idusuario")
+    private int idUsuario;
+    @SerializedName("km_vehiculo")
+    private int kmVehiculo;
+    @SerializedName("itv_fecha")
+    private Date fechaItv;
+    @SerializedName("fecha_ruedas")
+    private Date fechaRuedas;
+    @SerializedName("fecha_aceite")
+    private Date fechaAceite;
+    @SerializedName("fecha_revision")
+    private Date fechaRevision;
+    private String modelo;
+    private String marca;
+    private String motor;
+    private String seguro;
+    private String color;
+    private String matricula;
+    private String imagen;
 
 
-    public Vehiculo(int kmVehiculo, Date fechaItv, Date fechaRuedas, Date fechaAceite, Date fechaRevision, String modelo, String marca, String motor, String seguro, String color, String matricula) {
+    public Vehiculo(int kmVehiculo, Date fechaItv, Date fechaRuedas, Date fechaAceite, Date fechaRevision, String modelo, String marca, String motor, String seguro, String color, String matricula, String imagen) {
         this.kmVehiculo = kmVehiculo;
         this.fechaItv = fechaItv;
         this.fechaRuedas = fechaRuedas;
@@ -25,6 +45,38 @@ public class Vehiculo {
         this.seguro = seguro;
         this.color = color;
         this.matricula = matricula;
+        this.imagen = imagen;
+    }
+
+    public Vehiculo(Vehiculo vehiculo){
+        this.kmVehiculo = vehiculo.kmVehiculo;
+        this.fechaItv = vehiculo.fechaItv;
+        this.fechaRuedas = vehiculo.fechaRuedas;
+        this.fechaAceite = vehiculo.fechaAceite;
+        this.fechaRevision = vehiculo.fechaRevision;
+        this.modelo = vehiculo.modelo;
+        this.marca = vehiculo.marca;
+        this.motor = vehiculo.motor;
+        this.seguro = vehiculo.seguro;
+        this.color = vehiculo.color;
+        this.matricula = vehiculo.matricula;
+        this.imagen = vehiculo.imagen;
+    }
+
+    public Vehiculo(){
+        idVehiculo = 0;
+        this.kmVehiculo = 0;
+        this.fechaItv = new Date();
+        this.fechaRuedas = new Date();
+        this.fechaAceite = new Date();
+        this.fechaRevision = new Date();
+        this.modelo = "";
+        this.marca = "";
+        this.motor = "";
+        this.seguro = "";
+        this.color = "";
+        this.matricula = "";
+        this.imagen = "";
     }
 
     public int getIdVehiculo() {
@@ -131,6 +183,14 @@ public class Vehiculo {
         this.matricula = matricula;
     }
 
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
     public static String dateToString(Date raw){
         String formatted = "";
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -148,4 +208,22 @@ public class Vehiculo {
         return raw;
     }
 
+    @Override
+    public String toString() {
+        return "Vehiculo{" +
+                "idVehiculo=" + idVehiculo +
+                ", idUsuario=" + idUsuario +
+                ", kmVehiculo=" + kmVehiculo +
+                ", fechaItv=" + fechaItv +
+                ", fechaRuedas=" + fechaRuedas +
+                ", fechaAceite=" + fechaAceite +
+                ", fechaRevision=" + fechaRevision +
+                ", modelo='" + modelo + '\'' +
+                ", marca='" + marca + '\'' +
+                ", motor='" + motor + '\'' +
+                ", seguro='" + seguro + '\'' +
+                ", color='" + color + '\'' +
+                ", matricula='" + matricula + '\'' +
+                '}';
+    }
 }
