@@ -310,6 +310,14 @@
             />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/delVehicle"
+        android:drawableLeft="@drawable/delete_empty"
+        android:text="@string/del_vehicle"
+        android:textColor="#CA3535"
+        />
 
 </LinearLayout>
 

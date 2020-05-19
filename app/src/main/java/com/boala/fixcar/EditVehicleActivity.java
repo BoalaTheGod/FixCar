@@ -27,6 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,6 +42,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, color, kilometraje, seguro;
     ImageView header;
     int id = -1;
+
+    Button delButton;
 
     Vehiculo getresult;
 
@@ -71,6 +74,10 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         seguro = findViewById(R.id.seguro);
         header = findViewById(R.id.header);
         header.setOnClickListener(this);
+        delButton = findViewById(R.id.delVehicle);
+        delButton.setOnClickListener(this);
+
+        /**Todo lo del api debajo**/
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -139,12 +146,16 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 }catch (Exception e){
                     Snackbar.make(view, "Campos vacios", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    Log.e("error",e.getMessage());
                 }
                 break;
             case R.id.header:
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
                 startActivityForResult(intent,RESULT_LOAD_IMAGE);
+                break;
+            case R.id.delVehicle:
+                delVehicle(id);
                 break;
         }
 
@@ -226,6 +237,24 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onFailure(Call<VehiculoExpandable> call, Throwable t) {
                 Log.e("error: ",t.getMessage());
+            }
+        });
+    }
+
+    private void delVehicle(int id) {
+        Call<Boolean> call = fixCarApi.delVehicle(id);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error2:", t.getMessage());
             }
         });
     }

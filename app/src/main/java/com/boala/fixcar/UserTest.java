@@ -61,7 +61,7 @@ public class UserTest extends AppCompatActivity {
                 .build();
         fixCarApi = retrofit.create(FixCarApi.class);
 
-       editVehicle2();
+        delVehicle();
 
     }
     private void getUsers(){
@@ -222,7 +222,26 @@ public class UserTest extends AppCompatActivity {
             }
         });
     }
-    private void editVehicle2() {
+
+    private void delVehicle() {
+        Call<Boolean> call = fixCarApi.delVehicle(381);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error2:", t.getMessage());
+            }
+        });
+    }
+
+    /**private void editVehicle2() {
 
         Vehiculo nuevo = new Vehiculo();
 
@@ -241,5 +260,5 @@ public class UserTest extends AppCompatActivity {
                 Log.e("error2:", t.getMessage());
             }
         });
-    }
+    }**/
 }

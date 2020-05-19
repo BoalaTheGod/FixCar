@@ -112,4 +112,5 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_view_vehicle">viewVehicle</string>
+    <string name="del_vehicle">Eliminar vehiculo</string>
 </resources>
