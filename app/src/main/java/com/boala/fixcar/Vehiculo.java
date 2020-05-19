@@ -7,7 +7,10 @@ import com.google.gson.annotations.SerializedName;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
+import androidx.annotation.Nullable;
 
 public class Vehiculo {
     @SerializedName("idvehiculo")
@@ -49,6 +52,8 @@ public class Vehiculo {
     }
 
     public Vehiculo(Vehiculo vehiculo){
+        this.idVehiculo = vehiculo.idVehiculo;
+        this.idUsuario = vehiculo.idUsuario;
         this.kmVehiculo = vehiculo.kmVehiculo;
         this.fechaItv = vehiculo.fechaItv;
         this.fechaRuedas = vehiculo.fechaRuedas;
@@ -197,6 +202,14 @@ public class Vehiculo {
         formatted = formatter.format(raw);
         return formatted;
     }
+
+    public static String dateToString2(Date raw){
+        String formatted = "";
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        formatted = formatter.format(raw);
+        return formatted;
+    }
+
     public static Date stringToDate(String formatted) {
         Date raw = new Date();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -225,5 +238,9 @@ public class Vehiculo {
                 ", color='" + color + '\'' +
                 ", matricula='" + matricula + '\'' +
                 '}';
+    }
+
+    public boolean equals(@Nullable Vehiculo vehiculo) {
+        return idVehiculo==vehiculo.idVehiculo;
     }
 }

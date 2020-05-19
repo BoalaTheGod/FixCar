@@ -2,8 +2,6 @@ package com.boala.fixcar;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,21 +27,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener{
     private static final int RESULT_LOAD_IMAGE = 1;
     EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, color, kilometraje, seguro;
     ImageView header;
-    int pos = -1;
+    int id = -1;
+
+    Vehiculo getresult;
 
     FixCarApi fixCarApi;
 
@@ -97,20 +96,10 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         fixCarApi = retrofit.create(FixCarApi.class);
 
         fab.setOnClickListener(this);
-        pos = getIntent().getIntExtra("idVeh",-1);
-        if (pos >= 0){
-            fechaITV.setText(Vehiculo.dateToString(MainActivity.vehData.get(pos).getFechaItv()));
-            fechaNeumaticos.setText(Vehiculo.dateToString(MainActivity.vehData.get(pos).getFechaRuedas()));
-            fechaAceite.setText(Vehiculo.dateToString(MainActivity.vehData.get(pos).getFechaAceite()));
-            fechaRevision.setText(Vehiculo.dateToString(MainActivity.vehData.get(pos).getFechaRevision()));
-            marca.setText(MainActivity.vehData.get(pos).getMarca());
-            modelo.setText(MainActivity.vehData.get(pos).getModelo());
-            matricula.setText(MainActivity.vehData.get(pos).getMatricula());
-            motor.setText(MainActivity.vehData.get(pos).getMotor());
-            color.setText(MainActivity.vehData.get(pos).getColor());
-            kilometraje.setText(String.valueOf(MainActivity.vehData.get(pos).getKmVehiculo()));
-            seguro.setText(MainActivity.vehData.get(pos).getSeguro());
-        }
+        id = getIntent().getIntExtra("idVeh",-1);
+
+        getVehicle(id);
+
     }
 
     private void showDatePickerDialog(final EditText editText){
@@ -141,9 +130,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.fab:
                 try {
-                    if (pos > -1) {
+                    if (id > -1) {
                         editVehicle();
-                        finish();
                     }else{
                         addVehicle();
                     }
@@ -162,39 +150,98 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
 
     }
     private void editVehicle(){
-        Vehiculo editable = MainActivity.vehData.get(pos);
-        editable.setFechaItv(Vehiculo.stringToDate(fechaITV.getText().toString()));
-        editable.setFechaAceite(Vehiculo.stringToDate(fechaAceite.getText().toString()));
-        editable.setFechaRevision(Vehiculo.stringToDate(fechaRevision.getText().toString()));
-        editable.setFechaRuedas(Vehiculo.stringToDate(fechaNeumaticos.getText().toString()));
-        editable.setColor(color.getText().toString());
-        editable.setKmVehiculo(Integer.parseInt(kilometraje.getText().toString()));
-        editable.setMarca(marca.getText().toString());
-        editable.setModelo(modelo.getText().toString());
-        editable.setSeguro(seguro.getText().toString());
-        editable.setMotor(motor.getText().toString());
-        editable.setMatricula(matricula.getText().toString());
+        Call<Boolean> call = fixCarApi.putVehicle(id,"3",
+                kilometraje.getText().toString(),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString())),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString())),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaAceite.getText().toString())),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaRevision.getText().toString())),
+                modelo.getText().toString(),
+                marca.getText().toString(),
+                motor.getText().toString(),
+                seguro.getText().toString(),
+                color.getText().toString(),
+                matricula.getText().toString(),
+                "imagen.jpg");
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+                if (!response.isSuccessful()){
+                    Log.e("error",String.valueOf(response.code()));
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error2:",t.getMessage());
+            }
+        });
 
     }
     private void addVehicle(){
-        Vehiculo nuevo = new Vehiculo();
-
-        Call<Vehiculo> call = fixCarApi.postVehicle(nuevo);
-        call.enqueue(new Callback<Vehiculo>() {
+        Call<Boolean> call = fixCarApi.postVehicle("3",
+                kilometraje.getText().toString(),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString())),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString())),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaAceite.getText().toString())),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaRevision.getText().toString())),
+                modelo.getText().toString(),
+                marca.getText().toString(),
+                motor.getText().toString(),
+                seguro.getText().toString(),
+                color.getText().toString(),
+                matricula.getText().toString(),
+                "imagen.jpg");
+        call.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Vehiculo> call, retrofit2.Response<Vehiculo> response) {
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
                 if (!response.isSuccessful()){
                     Log.e("error",String.valueOf(response.code()));
-                    return;
                 }
-
+                finish();
             }
 
             @Override
-            public void onFailure(Call<Vehiculo> call, Throwable t) {
-                Log.e("error:",t.getMessage());
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error2:",t.getMessage());
             }
         });
+    }
+
+    private void getVehicle(int vehId){
+        Call<VehiculoExpandable> call = fixCarApi.getVehicle(vehId);
+        call.enqueue(new Callback<VehiculoExpandable>() {
+            @Override
+            public void onResponse(Call<VehiculoExpandable> call, retrofit2.Response<VehiculoExpandable> response) {
+                if (!response.isSuccessful()){
+                    Log.e("Code: ",String.valueOf(response.code()));
+                    return;
+                }
+                Vehiculo respuesta = response.body();
+                getresult = new Vehiculo(respuesta);
+                updateUI();
+            }
+
+            @Override
+            public void onFailure(Call<VehiculoExpandable> call, Throwable t) {
+                Log.e("error: ",t.getMessage());
+            }
+        });
+    }
+
+    private void updateUI(){
+            fechaITV.setText(Vehiculo.dateToString(getresult.getFechaItv()));
+            fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getFechaRuedas()));
+            fechaAceite.setText(Vehiculo.dateToString(getresult.getFechaAceite()));
+            fechaRevision.setText(Vehiculo.dateToString(getresult.getFechaRevision()));
+            marca.setText(getresult.getMarca());
+            modelo.setText(getresult.getModelo());
+            matricula.setText(getresult.getMatricula());
+            motor.setText(getresult.getMotor());
+            color.setText(getresult.getColor());
+            kilometraje.setText(String.valueOf(getresult.getKmVehiculo()));
+            seguro.setText(getresult.getSeguro());
     }
 
     @Override

@@ -64,6 +64,7 @@
             android:text="Busqueda por filtro (provisional)"
             android:id="@+id/testBT"
             />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -88,12 +89,17 @@
                 </LinearLayout>
 
             </com.facebook.shimmer.ShimmerFrameLayout>
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/rvCars"
                 />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabNewCar"
                 android:layout_width="wrap_content"
@@ -102,8 +108,8 @@
                 android:backgroundTint="@color/design_default_color_secondary_variant"
                 app:borderWidth="0dp"
                 android:layout_margin="10dp"
-                android:layout_alignBottom="@id/rvCars"
-                android:layout_alignEnd="@id/rvCars"
+                android:layout_alignBottom="@id/swipeRefreshLayout"
+                android:layout_alignEnd="@id/swipeRefreshLayout"
                 />
         </RelativeLayout>
     </LinearLayout>

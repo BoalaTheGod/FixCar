@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView rvCars;
     private VehAdapterEx adapter;
     private FloatingActionButton fabAddCar;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     String[] listItems;
     boolean[] checkedItems;
     ArrayList<Integer> muserItems = new ArrayList<>();
@@ -73,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.navigation_view);
         ets = findViewById(R.id.etBus);
         rvCars = findViewById(R.id.rvCars);
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
         vehData = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         ((SimpleItemAnimator) rvCars.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -183,6 +190,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     fabAddCar.hide();
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getVehicles();
+            }
+        });
     }
 
     public void getVehicles(){
@@ -196,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 List<VehiculoExpandable> vehiculos = response.body();
 
+                vehData.clear();
+
                 for (Vehiculo vehiculo : vehiculos){
                     vehData.add(new VehiculoExpandable(vehiculo));
                 }
@@ -205,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d("exito","se han cargado los vehiculos");
                 mShimmerViewContainer.stopShimmerAnimation();
                 mShimmerViewContainer.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
 
             }
 
@@ -218,7 +235,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(true);
+        getVehicles();
         mShimmerViewContainer.startShimmerAnimation();
     }
 

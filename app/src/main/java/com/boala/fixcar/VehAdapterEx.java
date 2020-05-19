@@ -47,7 +47,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context,EditVehicleActivity.class);
-                intent.putExtra("idVeh",position);
+                intent.putExtra("idVeh",data.getIdVehiculo());
                 context.startActivity(intent);
             }
         });

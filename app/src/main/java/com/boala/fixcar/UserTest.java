@@ -61,7 +61,7 @@ public class UserTest extends AppCompatActivity {
                 .build();
         fixCarApi = retrofit.create(FixCarApi.class);
 
-        addVehicle();
+       editVehicle2();
 
     }
     private void getUsers(){
@@ -161,13 +161,13 @@ public class UserTest extends AppCompatActivity {
                     return;
                 }
 
-                VehiculoExpandable vehiculo = response.body();
+                /**VehiculoExpandable vehiculo = response.body();
                 String text = "ID: "+vehiculo.getIdVehiculo()+"\n";
                 text += "IdUsuario: "+vehiculo.getIdUsuario()+"\n";
                 text += "Marca: "+vehiculo.getMarca()+"\n";
                 text += "Modelo: "+vehiculo.getModelo()+"\n";
                 text += "ITV: "+Vehiculo.dateToString(vehiculo.getFechaItv())+"\n";
-                tv.append(text);
+                tv.append(text);**/
             }
 
             @Override
@@ -177,16 +177,10 @@ public class UserTest extends AppCompatActivity {
         });
     }
     private void addVehicle(){
-
-        Vehiculo nuevo = new VehiculoExpandable(758645374,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
-                Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
-                "corsa","opel","V6","mutua","rojo","DC3453","");
-        nuevo.setIdUsuario(4);
-
-        Call<Vehiculo> call = fixCarApi.postVehicle(nuevo);
-        call.enqueue(new Callback<Vehiculo>() {
+        Call<Boolean> call = fixCarApi.postVehicle("3","254687","2020-05-15","2020-05-15","2020-05-15","2020-05-15","panda","fiat","1.1","mutua","verde","2837DC","panda.jpg");
+        call.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Vehiculo> call, retrofit2.Response<Vehiculo> response) {
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
                 if (!response.isSuccessful()){
                     Log.e("error",String.valueOf(response.code()));
                 }
@@ -194,8 +188,57 @@ public class UserTest extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Vehiculo> call, Throwable t) {
+            public void onFailure(Call<Boolean> call, Throwable t) {
                 Log.e("error2:",t.getMessage());
+            }
+        });
+    }
+    private void editVehicle() {
+        Call<Boolean> call = fixCarApi.putVehicle(361, "3",
+                "200",
+                "2020-10-10",
+                "2020-10-10",
+                "2020-10-10",
+                "2020-10-10",
+                "test2",
+                "test2",
+                "test2",
+                "test2",
+                "test2",
+                "test2",
+                "imagen.jpg");
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error2:", t.getMessage());
+            }
+        });
+    }
+    private void editVehicle2() {
+
+        Vehiculo nuevo = new Vehiculo();
+
+        Call<Boolean> call = fixCarApi.putVehicle(361, nuevo);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error2:", t.getMessage());
             }
         });
     }
