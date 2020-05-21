@@ -3,7 +3,6 @@ package com.boala.fixcar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.widget.DatePicker;
 
 import java.util.Calendar;
 
@@ -12,10 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 public class DatePickerFragment extends DialogFragment {
-
+    /**
+     * Fragment para seleccionar fecha
+     **/
     private DatePickerDialog.OnDateSetListener listener;
 
-    public static DatePickerFragment newInstance(DatePickerDialog.OnDateSetListener listener){
+    public static DatePickerFragment newInstance(DatePickerDialog.OnDateSetListener listener) {
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.setListener(listener);
         return fragment;
@@ -33,7 +34,7 @@ public class DatePickerFragment extends DialogFragment {
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-        return new DatePickerDialog(getActivity(),listener,year,month,day);
+        return new DatePickerDialog(getActivity(), listener, year, month, day);
     }
 
 }

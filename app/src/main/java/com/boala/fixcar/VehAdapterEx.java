@@ -14,11 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
-
+    /**
+     * Asignacion de datos al recyclerview de vehiculos
+     **/
     private Context context;
     private ArrayList<VehiculoExpandable> content;
 
-    VehAdapterEx(Context context, ArrayList<VehiculoExpandable> content){
+    VehAdapterEx(Context context, ArrayList<VehiculoExpandable> content) {
         this.context = context;
         this.content = content;
     }
@@ -26,7 +28,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
     @NonNull
     @Override
     public VehAdapterEx.VehHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_car_expandable,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_car_expandable, parent, false);
         return new VehAdapterEx.VehHolder(view);
     }
 
@@ -37,6 +39,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
         LinearLayout LLCard = holder.itemView.findViewById(R.id.LLCard);
         LLCard.setOnClickListener(new View.OnClickListener() {
             boolean expanded = data.isExpanded();
+
             @Override
             public void onClick(View view) {
                 data.setExpanded(!expanded);
@@ -46,9 +49,9 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
         holder.expandable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context,EditVehicleActivity.class);
-                intent.putExtra("pos",position);
-                intent.putExtra("idVeh",data.getIdVehiculo());
+                Intent intent = new Intent(context, EditVehicleActivity.class);
+                intent.putExtra("pos", position);
+                intent.putExtra("idVeh", data.getIdVehiculo());
                 context.startActivity(intent);
             }
         });
@@ -60,7 +63,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
         return content.size();
     }
 
-    public class VehHolder extends RecyclerView.ViewHolder{
+    public class VehHolder extends RecyclerView.ViewHolder {
         private TextView marca, modelo, matricula, motor, color, kilometraje, itv, neumaticos, aceite, revision;
         LinearLayout expandable;
 
@@ -87,7 +90,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             matricula.setText(data.getMatricula());
             color.setText(data.getColor());
             motor.setText(data.getMotor());
-            kilometraje.setText(data.getKmVehiculo()+"km");
+            kilometraje.setText(data.getKmVehiculo() + "km");
             itv.setText(Vehiculo.dateToString(data.getFechaItv()));
             neumaticos.setText(Vehiculo.dateToString(data.getFechaRuedas()));
             aceite.setText(Vehiculo.dateToString(data.getFechaAceite()));

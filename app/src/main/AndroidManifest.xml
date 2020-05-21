@@ -21,10 +21,6 @@
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".UserTest" />
         <activity
-            android:name=".ViewVehicle"
-            android:label="@string/title_activity_view_vehicle"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".EditVehicleActivity"
             android:label="@string/title_activity_edit_vehicle"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -33,7 +29,6 @@
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

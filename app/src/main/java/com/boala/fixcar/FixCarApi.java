@@ -1,14 +1,11 @@
 package com.boala.fixcar;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -19,12 +16,16 @@ import retrofit2.http.Query;
 public interface FixCarApi {
     @GET("usuario")
     Call<List<Usuario>> getUsers();
+
     @GET("idusuario{idusuario}")
     Call<Usuario> getUser(@Path("idusuario") int id);
+
     @GET("vehiculo")
     Call<List<VehiculoExpandable>> getVehicles();
+
     @GET("idvehiculo{idvehiculo}")
     Call<VehiculoExpandable> getVehicle(@Path("idvehiculo") int id);
+
     @POST("vehiculopost")
     Call<Vehiculo> postVehicle(@Body Vehiculo vehiculo);
 
@@ -48,6 +49,7 @@ public interface FixCarApi {
             @Field("matricula") String matricula,
             @Field("imagen") String imagen
     );
+
     @PUT("vehiculoput{idvehiculo}")
     Call<Boolean> putVehicle(
             @Path("idvehiculo") int id,
@@ -65,10 +67,12 @@ public interface FixCarApi {
             @Query("matricula") String matricula,
             @Query("imagen") String imagen
     );
+
     @DELETE("vehiculodel{idvehiculo}")
     Call<Boolean> delVehicle(
             @Path("idvehiculo") int id
     );
+
     @FormUrlEncoded
     @POST("usuariopost")
     Call<Boolean> postUser(
@@ -80,6 +84,7 @@ public interface FixCarApi {
             @Field("fecha") String fecha,
             @Field("password") String password
     );
+
     @GET("idmailusuario")
     Call<Integer> getUserByMail(@Query("email") String email);
 

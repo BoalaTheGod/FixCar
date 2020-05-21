@@ -16,12 +16,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class FixCarClient{
+public class FixCarClient {
     private static final String BASE_URL = "https://fixcarcesur.herokuapp.com/model/api/";
     private static FixCarClient mInstance;
     private Retrofit retrofit;
 
-    private FixCarClient(){
+    private FixCarClient() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -31,7 +31,7 @@ public class FixCarClient{
             @Override
             public Response intercept(@NotNull Chain chain) throws IOException {
                 Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder().header("Authorization", Credentials.basic("Cesur","FixCar"));
+                Request.Builder builder = originalRequest.newBuilder().header("Authorization", Credentials.basic("Cesur", "FixCar"));
 
                 Request newRequest = builder.build();
                 return chain.proceed(newRequest);
@@ -44,14 +44,15 @@ public class FixCarClient{
                 .client(okHttpClient)
                 .build();
     }
+
     public static synchronized FixCarClient getInstance() {
-        if (mInstance == null){
+        if (mInstance == null) {
             mInstance = new FixCarClient();
         }
         return mInstance;
     }
 
-    public FixCarApi getApi(){
+    public FixCarApi getApi() {
         return retrofit.create(FixCarApi.class);
     }
 }

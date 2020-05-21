@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import androidx.annotation.Nullable;
@@ -51,7 +50,7 @@ public class Vehiculo {
         this.imagen = imagen;
     }
 
-    public Vehiculo(Vehiculo vehiculo){
+    public Vehiculo(Vehiculo vehiculo) {
         this.idVehiculo = vehiculo.idVehiculo;
         this.idUsuario = vehiculo.idUsuario;
         this.kmVehiculo = vehiculo.kmVehiculo;
@@ -68,7 +67,7 @@ public class Vehiculo {
         this.imagen = vehiculo.imagen;
     }
 
-    public Vehiculo(){
+    public Vehiculo() {
         idVehiculo = 0;
         this.kmVehiculo = 0;
         this.fechaItv = new Date();
@@ -196,14 +195,14 @@ public class Vehiculo {
         this.imagen = imagen;
     }
 
-    public static String dateToString(Date raw){
+    public static String dateToString(Date raw) {
         String formatted = "";
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         formatted = formatter.format(raw);
         return formatted;
     }
 
-    public static String dateToString2(Date raw){
+    public static String dateToString2(Date raw) {
         String formatted = "";
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         formatted = formatter.format(raw);
@@ -215,8 +214,8 @@ public class Vehiculo {
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try {
             raw = formatter.parse(formatted);
-        }catch (ParseException e){
-            Log.e("error","parse error");
+        } catch (ParseException e) {
+            Log.e("error", "parse error");
         }
         return raw;
     }
@@ -241,6 +240,6 @@ public class Vehiculo {
     }
 
     public boolean equals(@Nullable Vehiculo vehiculo) {
-        return idVehiculo==vehiculo.idVehiculo;
+        return idVehiculo == vehiculo.idVehiculo;
     }
 }

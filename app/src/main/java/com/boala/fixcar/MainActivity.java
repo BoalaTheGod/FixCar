@@ -44,29 +44,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-    private DrawerLayout drawerLayout;
-    private Toolbar toolbar;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView navigationView;
-    private Button btTest, signOut;
-    private RecyclerView rvCars;
     private VehAdapterEx adapter;
     private FloatingActionButton fabAddCar;
-
     private SwipeRefreshLayout swipeRefreshLayout;
-
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-
-    String[] listItems;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private String[] listItems;//variables para la busqueda por filtros
     boolean[] checkedItems;
-
-    boolean dialogShown = false;
-
-    ArrayList<Integer> muserItems = new ArrayList<>();
-    static ArrayList<VehiculoExpandable> vehData;
-    EditText ets;
-
+    private ArrayList<Integer> muserItems = new ArrayList<>();
+    boolean dialogShown = false;//variable auxiliar para que solo se muestre el dialogo de vehiculos vacios una vez
+    static ArrayList<VehiculoExpandable> vehData;//arrayList de vehiculos auxiliar
+    private EditText ets;//edittext para la busqueda por calle
     private ShimmerFrameLayout mShimmerViewContainer;
 
     @Override
@@ -75,26 +65,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
-
-        if (!pref.getBoolean("loggedIn",false) && pref.getInt("userId",-1)==-1){
-            startActivity(new Intent(this,SignInActivity.class));
+        /**Se comprueba si la sesion esta iniciada, y si no, se va al login**/
+        if (!pref.getBoolean("loggedIn", false) && pref.getInt("userId", -1) == -1) {
+            startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = findViewById(R.id.navigation_view);
         ets = findViewById(R.id.etBus);
-        rvCars = findViewById(R.id.rvCars);
-
-        signOut = findViewById(R.id.signOut);
-
+        RecyclerView rvCars = findViewById(R.id.rvCars);
+        Button signOut = findViewById(R.id.signOut);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-
+        /**inicializacion del recyclerview**/
         vehData = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         ((SimpleItemAnimator) rvCars.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -104,20 +92,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
 
-
-        if (pref.getBoolean("loggedIn",false)) {
+        /**Se comprueba si la sesion esta iniciada**/
+        if (pref.getBoolean("loggedIn", false) && pref.getInt("userId", -1) != -1) {
             getVehicles();
         }
-
-        /**vehData.get(0).setExpanded(true);
-        adapter.notifyDataSetChanged();
-         **/
-
+        /**Boton para añadir vehiculo**/
         fabAddCar = findViewById(R.id.fabNewCar);
         fabAddCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),EditVehicleActivity.class));
+                startActivity(new Intent(getApplicationContext(), EditVehicleActivity.class));
             }
         });
 
@@ -125,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         listItems = getResources().getStringArray(R.array.filtros);
         checkedItems = new boolean[listItems.length];
-        btTest = findViewById(R.id.testBT);
+        Button btTest = findViewById(R.id.testBT);
         btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,9 +118,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
-                        if (isChecked){
+                        if (isChecked) {
                             muserItems.add(position);
-                        }else {
+                        } else {
                             muserItems.remove(Integer.valueOf(position));
                         }
                     }
@@ -146,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         String item = "";
-                        for (int i = 0; i<muserItems.size(); i++){
+                        for (int i = 0; i < muserItems.size(); i++) {
                             item = item + listItems[muserItems.get(i)];
                         }
                         ets.setText(item);
@@ -155,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mBuilder.setNeutralButton("clear", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
-                        for (int i = 0; i<checkedItems.length; i++){
+                        for (int i = 0; i < checkedItems.length; i++) {
                             checkedItems[i] = false;
                             muserItems.clear();
                             ets.setText("");
@@ -166,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mDialog.show();
             }
         });
-
+        /**Boton de cerrar sesion**/
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,21 +160,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        /**Listeners para ocultar el boton de añadir vehiculo en scroll**/
         rvCars.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView,newState);
+                super.onScrollStateChanged(recyclerView, newState);
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy<0 && !fabAddCar.isShown())
+                if (dy < 0 && !fabAddCar.isShown())
                     fabAddCar.show();
-                else if(dy>0 && fabAddCar.isShown())
+                else if (dy > 0 && fabAddCar.isShown())
                     fabAddCar.hide();
             }
         });
-
+        /**Listener para actualizar la lista de vehiculos**/
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -199,14 +184,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    public void getVehicles(){
+    /**
+     * Se recogen los vehiculos del usuario, y se meten en el recyclerview, si no tiene, le pregunta si quiere añadir uno
+     **/
+    public void getVehicles() {
         swipeRefreshLayout.setRefreshing(true);
-        Call<List<VehiculoExpandable>> call = FixCarClient.getInstance().getApi().getVehiclesUID(pref.getInt("userId",-1));
+        Call<List<VehiculoExpandable>> call = FixCarClient.getInstance().getApi().getVehiclesUID(pref.getInt("userId", -1));
         call.enqueue(new Callback<List<VehiculoExpandable>>() {
             @Override
             public void onResponse(Call<List<VehiculoExpandable>> call, retrofit2.Response<List<VehiculoExpandable>> response) {
-                if (!response.isSuccessful()){
-                    Log.e("Code: ",String.valueOf(response.code()));
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
                     return;
                 }
 
@@ -214,11 +202,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 vehData.clear();
 
-                if (vehiculos==null && vehData.isEmpty()) {
+                if (vehiculos == null && vehData.isEmpty()) {
                     mShimmerViewContainer.stopShimmerAnimation();
                     mShimmerViewContainer.setVisibility(View.GONE);
                     swipeRefreshLayout.setRefreshing(false);
-                    if (!dialogShown){
+                    if (!dialogShown) {
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("Lista de vehiculos vacia")
                                 .setMessage("¿deseas añadir un vehiculo?")
@@ -231,27 +219,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 })
                                 .setNegativeButton("no añadir", null)
                                 .show();
-                    dialogShown = true;
+                        dialogShown = true;
+                    }
                 }
-                }
-                if (vehiculos !=null){
+                if (vehiculos != null) {
                     for (Vehiculo vehiculo : vehiculos) {
                         vehData.add(new VehiculoExpandable(vehiculo));
                     }
                     vehData.get(0).setExpanded(true);
                     Log.d("exito", "se han cargado los vehiculos");
-                    }
+                }
                 adapter.notifyDataSetChanged();
-                    mShimmerViewContainer.stopShimmerAnimation();
-                    mShimmerViewContainer.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
+                mShimmerViewContainer.stopShimmerAnimation();
+                mShimmerViewContainer.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
 
 
             }
 
             @Override
             public void onFailure(Call<List<VehiculoExpandable>> call, Throwable t) {
-                Log.e("error",t.getMessage());
+                Log.e("error", t.getMessage());
                 mShimmerViewContainer.stopShimmerAnimation();
                 mShimmerViewContainer.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
@@ -278,7 +266,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
     }
-   private void setNavigationViewListener(){
+
+    private void setNavigationViewListener() {
         navigationView.setNavigationItemSelectedListener(this);
-   }
+    }
 }

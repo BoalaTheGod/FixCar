@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 public class UserTest extends AppCompatActivity {
-
+/**Clase para probar funciones, su contenido es irrelevante**/
     TextView tv;
 
     FixCarApi fixCarApi;

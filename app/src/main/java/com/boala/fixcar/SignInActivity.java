@@ -1,14 +1,7 @@
 package com.boala.fixcar;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -16,18 +9,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
-import java.util.Calendar;
+import androidx.appcompat.app.AppCompatActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
-    EditText nombre, email, pass, passCon;
-    Button send;
-    TextView alredyReg,nameLabel,passConLabel;
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
+    private EditText nombre, email, pass, passCon;
+    private Button send;
+    private TextView alredyReg, nameLabel, passConLabel;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +30,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
-
 
         nombre = findViewById(R.id.nombre);
         email = findViewById(R.id.email);
@@ -49,8 +42,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         nameLabel = findViewById(R.id.nameLabel);
         passConLabel = findViewById(R.id.passConLabel);
     }
-
-    public String md5(String string){
+    /**Funcion para encriptar la contraseña**/
+    public String md5(String string) {
         try {
             MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
 
@@ -58,7 +51,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             byte messageDigest[] = digest.digest();
 
             StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i<messageDigest.length; i++){
+            for (int i = 0; i < messageDigest.length; i++) {
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
             }
             return hexString.toString();
@@ -68,44 +61,46 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
         return "";
     }
+    /**Variable auxiliar para saber cuando hacer login o registro**/
     Boolean auxSign = false;
+
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.send:
                 //Calendar today = Calendar.getInstance();
                 //String fecha = today.get(Calendar.YEAR)+"-"+(today.get(Calendar.MONTH)+1)+"-"+today.get(Calendar.DAY_OF_MONTH);
-                if (nombre.getText().toString().isEmpty() && nombre.getVisibility()==View.VISIBLE){
+                if (nombre.getText().toString().isEmpty() && nombre.getVisibility() == View.VISIBLE) {
                     nombre.setError("campo requerido");
                     nombre.requestFocus();
                     return;
                 }
-                if (email.getText().toString().isEmpty()){
+                if (email.getText().toString().isEmpty()) {
                     email.setError("campo requerido");
                     email.requestFocus();
                     return;
                 }
-                if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()){
+                if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
                     email.setError("el email no es valido");
                     email.requestFocus();
                     return;
                 }
-                if (pass.getText().toString().isEmpty()){
+                if (pass.getText().toString().isEmpty()) {
                     pass.setError("campo requerido");
                     pass.requestFocus();
                     return;
                 }
-                if (pass.getText().toString().length()<6){
+                if (pass.getText().toString().length() < 6) {
                     pass.setError("minimo 6 caracteres");
                     pass.requestFocus();
                     return;
                 }
-                if (passCon.getText().toString().isEmpty() && passCon.getVisibility()==View.VISIBLE){
+                if (passCon.getText().toString().isEmpty() && passCon.getVisibility() == View.VISIBLE) {
                     passCon.setError("campo requerido");
                     passCon.requestFocus();
                     return;
                 }
-                if (!passCon.getText().toString().equals(pass.getText().toString()) && passCon.getVisibility()==View.VISIBLE){
+                if (!passCon.getText().toString().equals(pass.getText().toString()) && passCon.getVisibility() == View.VISIBLE) {
                     passCon.setError("no coincide");
                     passCon.requestFocus();
                     return;
@@ -115,7 +110,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
                     signIn();
 
-                }else{
+                } else {
                     logIn();
                 }
                 break;
@@ -131,44 +126,45 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
-
+    /**Iniciar sesion con cuenta existente**/
     private void logIn() {
         Call<Integer> call = FixCarClient.getInstance().getApi().getUserByMail(email.getText().toString());
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                     return;
                 }
                 int id = response.body();
-                editor.putInt("userId",id);
+                editor.putInt("userId", id);
                 editor.apply();
-                Log.e("exito","el id del usuario es:"+pref.getInt("userId",-1));
-                    Call<Usuario> call2 = FixCarClient.getInstance().getApi().getUser(pref.getInt("userId", -1));
-                    call2.enqueue(new Callback<Usuario>() {
-                        @Override
-                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                            if (!response.isSuccessful()){
-                                Log.e("error", String.valueOf(response.code()));
-                                return;
-                            }
-                            Usuario usuario = response.body();
-                            if (usuario.getPassword().equals(md5(pass.getText().toString()))){
-                                editor.putBoolean("loggedIn",true);
-                                editor.apply();
-                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                                finish();
-                            }else{
-                                pass.setError("Contraseña incorrecta");
-                                return;
-                            }
+                Log.e("exito", "el id del usuario es:" + pref.getInt("userId", -1));
+                Call<Usuario> call2 = FixCarClient.getInstance().getApi().getUser(pref.getInt("userId", -1));
+                call2.enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("error", String.valueOf(response.code()));
+                            return;
                         }
-                        @Override
-                        public void onFailure(Call<Usuario> call, Throwable t) {
-                            Log.e("error", t.getMessage());
+                        Usuario usuario = response.body();
+                        if (usuario.getPassword().equals(md5(pass.getText().toString()))) {
+                            editor.putBoolean("loggedIn", true);
+                            editor.apply();
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
+                        } else {
+                            pass.setError("Contraseña incorrecta");
+                            return;
                         }
-                    });
+                    }
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+                        Log.e("error", t.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -178,13 +174,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
     }
-
-    private void signIn(){
-        Call<Boolean> call = FixCarClient.getInstance().getApi().postUser(nombre.getText().toString(),"","","",email.getText().toString(),"fecha",md5(pass.getText().toString()));
+    /**Crear una nueva cuenta**/
+    private void signIn() {
+        Call<Boolean> call = FixCarClient.getInstance().getApi().postUser(nombre.getText().toString(), "", "", "", email.getText().toString(), "fecha", md5(pass.getText().toString()));
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                     return;
                 }
@@ -192,17 +188,17 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 call2.enqueue(new Callback<Integer>() {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
-                        if (!response.isSuccessful()){
+                        if (!response.isSuccessful()) {
                             Log.e("error", String.valueOf(response.code()));
                             return;
                         }
                         int id = response.body();
-                        editor.putInt("userId",id);
-                        editor.putBoolean("loggedIn",true);
+                        editor.putInt("userId", id);
+                        editor.putBoolean("loggedIn", true);
                         editor.apply();
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
-                        Log.e("exito","el id del usuario es:"+pref.getInt("userId",-1));
+                        Log.e("exito", "el id del usuario es:" + pref.getInt("userId", -1));
                     }
 
                     @Override
@@ -218,31 +214,32 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
     }
-    private void getId(String email){
-     Call<Integer> call = FixCarClient.getInstance().getApi().getUserByMail(email);
-     call.enqueue(new Callback<Integer>() {
-         @Override
-         public void onResponse(Call<Integer> call, Response<Integer> response) {
-             if (!response.isSuccessful()){
-                 Log.e("error", String.valueOf(response.code()));
-                 return;
-             }
-             int id = response.body();
-              editor.putInt("userId",id);
-              editor.apply();
-              Log.e("exito","el id del usuario es:"+pref.getInt("userId",-1));
-         }
+    /**Funcion que recoge el id del usuario y lo guarda en preferencias**/
+    private void getId(String email) {
+        Call<Integer> call = FixCarClient.getInstance().getApi().getUserByMail(email);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                    return;
+                }
+                int id = response.body();
+                editor.putInt("userId", id);
+                editor.apply();
+                Log.e("exito", "el id del usuario es:" + pref.getInt("userId", -1));
+            }
 
-         @Override
-         public void onFailure(Call<Integer> call, Throwable t) {
-             Log.e("error", t.getMessage());
-         }
-     });
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
-        if (nombre.getVisibility()==View.GONE){
+        if (nombre.getVisibility() == View.GONE) {
             nombre.setVisibility(View.VISIBLE);
             passCon.setVisibility(View.VISIBLE);
             nameLabel.setVisibility(View.VISIBLE);
@@ -250,7 +247,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             send.setText("Regístrate");
             alredyReg.setVisibility(View.VISIBLE);
             auxSign = false;
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
