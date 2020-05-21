@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static ArrayList<VehiculoExpandable> vehData;//arrayList de vehiculos auxiliar
     private EditText ets;//edittext para la busqueda por calle
     private ShimmerFrameLayout mShimmerViewContainer;
+    private CircleImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rvCars.setLayoutManager(linearLayoutManager);
         adapter = new VehAdapterEx(this, vehData);
         rvCars.setAdapter(adapter);
+
+        circleImageView = navigationView.getHeaderView(0).findViewById(R.id.circleImage);
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
+            }
+        });
 
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
 

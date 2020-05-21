@@ -31,7 +31,8 @@ public class FixCarClient {
             @Override
             public Response intercept(@NotNull Chain chain) throws IOException {
                 Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder().header("Authorization", Credentials.basic("Cesur", "FixCar"));
+                Request.Builder builder = originalRequest.newBuilder().header("Authorization"
+                        , Credentials.basic("Cesur", "FixCar"));
 
                 Request newRequest = builder.build();
                 return chain.proceed(newRequest);

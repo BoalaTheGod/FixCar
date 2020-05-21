@@ -45,7 +45,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email" />
+                android:text="Email"
+                android:id="@+id/emailLabel"
+                />
 
             <EditText
                 android:layout_width="match_parent"
@@ -57,7 +59,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contraseña" />
+                android:text="Contraseña"
+                android:id="@+id/passLabel"
+                />
 
             <EditText
                 android:layout_width="match_parent"
@@ -79,6 +83,80 @@
                 android:singleLine="true"
                 android:id="@+id/passwordConfirm"
                 android:inputType="textPassword" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Direccion"
+                android:clickable="true"
+                android:id="@+id/direccionLabel"
+                android:visibility="gone"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/direccion"
+                android:inputType="textPostalAddress"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Localidad"
+                android:clickable="true"
+                android:id="@+id/localidadLabel"
+                android:visibility="gone"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/localidad"
+                android:inputType="textPostalAddress"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Telefono"
+                android:clickable="true"
+                android:id="@+id/telefonoLabel"
+                android:visibility="gone"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/telefono"
+                android:inputType="phone"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha de nacimiento"
+                android:clickable="true"
+                android:id="@+id/fechaNacLabel"
+                android:visibility="gone"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/fechaNac"
+                android:clickable="true"
+                android:focusable="false"
+                android:inputType="date"
+                android:visibility="gone"
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -100,6 +178,27 @@
         android:alpha="0.8"
         android:layout_gravity="bottom"
         android:id="@+id/send" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="#FFFFFF"
+        android:text="¿No quieres seguir rellenando formularios?, Omitir"
+        android:clickable="true"
+        android:id="@+id/dismissForm"
+        android:visibility="gone"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="24dp"
+        android:layout_height="wrap_content"
+        android:text="Completar información"
+        android:textAllCaps="false"
+        android:alpha="0.8"
+        android:layout_gravity="bottom"
+        android:id="@+id/completeForm"
+        android:visibility="gone"
+        />
 
 
 </LinearLayout>

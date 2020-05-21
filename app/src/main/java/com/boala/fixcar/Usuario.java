@@ -19,6 +19,18 @@ public class Usuario {
         this.fecha = fecha;
     }
 
+    public Usuario() {
+        this.idusuario = 0;
+        this.telefono = 0;
+        this.nombre = "";
+        this.password = "";
+        this.direccion = "";
+        this.localidad = "";
+        this.email = "";
+        this.imagen = "";
+        this.fecha = Vehiculo.stringToDate("00/00/0000");
+    }
+
     public int getIdusuario() {
         return idusuario;
     }

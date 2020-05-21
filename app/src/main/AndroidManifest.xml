@@ -14,9 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        >
-        <activity android:name=".SignInActivity"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".UserProfileActivity"></activity>
+        <activity
+            android:name=".SignInActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".UserTest" />
@@ -24,11 +25,12 @@
             android:name=".EditVehicleActivity"
             android:label="@string/title_activity_edit_vehicle"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity"
-            android:launchMode="singleTop"
-            >
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

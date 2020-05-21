@@ -88,4 +88,17 @@ public interface FixCarApi {
     @GET("idmailusuario")
     Call<Integer> getUserByMail(@Query("email") String email);
 
+    @PUT("usuarioput{id}")
+    Call<Boolean> putUser(
+            @Path("id") int id,
+            @Query("idusuario") String idusuario,
+            @Query("nombre") String nombre,
+            @Query("direccion") String direccion,
+            @Query("localidad") String localidad,
+            @Query("telefono") String telefono,
+            @Query("email") String email,
+            @Query("fecha") String fecha
+
+    );
+
 }
