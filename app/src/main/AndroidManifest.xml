@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.boala.fixcar">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +13,13 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".UserTest"></activity>
+        >
+        <activity android:name=".SignInActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".UserTest" />
         <activity
             android:name=".ViewVehicle"
             android:label="@string/title_activity_view_vehicle"
@@ -23,7 +28,9 @@
             android:name=".EditVehicleActivity"
             android:label="@string/title_activity_edit_vehicle"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

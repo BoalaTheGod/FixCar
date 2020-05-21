@@ -1,7 +1,10 @@
 package com.boala.fixcar;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -42,6 +45,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, color, kilometraje, seguro;
     ImageView header;
     int id = -1;
+    int pos = -1;
 
     Button delButton;
 
@@ -49,13 +53,19 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
 
     FixCarApi fixCarApi;
 
+    FloatingActionButton fab;
+
+    SharedPreferences pref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_vehicle);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+         fab = findViewById(R.id.fab);
+
+        pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
         fechaITV = findViewById(R.id.fechaItv);
         fechaITV.setOnClickListener(this);
@@ -77,35 +87,41 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         delButton = findViewById(R.id.delVehicle);
         delButton.setOnClickListener(this);
 
+        id = getIntent().getIntExtra("idVeh",-1);
+        pos = getIntent().getIntExtra("pos",-1);
+
+
         /**Todo lo del api debajo**/
 
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient okHttpClient = new
-                OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
-            @NotNull
-            @Override
-            public Response intercept(@NotNull Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder().header("Authorization", Credentials.basic("Cesur","FixCar"));
 
-                Request newRequest = builder.build();
-                return chain.proceed(newRequest);
-            }
-        }).addInterceptor(loggingInterceptor).build();
-        Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://fixcarcesur.herokuapp.com/model/api/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(okHttpClient)
-                .build();
-        fixCarApi = retrofit.create(FixCarApi.class);
+            /**HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        fab.setOnClickListener(this);
-        id = getIntent().getIntExtra("idVeh",-1);
+            OkHttpClient okHttpClient = new
+                    OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
+                @NotNull
+                @Override
+                public Response intercept(@NotNull Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+                    Request.Builder builder = originalRequest.newBuilder().header("Authorization", Credentials.basic("Cesur", "FixCar"));
 
-        getVehicle(id);
+                    Request newRequest = builder.build();
+                    return chain.proceed(newRequest);
+                }
+            }).addInterceptor(loggingInterceptor).build();
+            Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://fixcarcesur.herokuapp.com/model/api/")
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(okHttpClient)
+                    .build();
+            fixCarApi = retrofit.create(FixCarApi.class);**/
+
+            fab.setOnClickListener(this);
+        if (id >= 0) {
+            getVehicle(id);
+        }
 
     }
 
@@ -155,13 +171,25 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 startActivityForResult(intent,RESULT_LOAD_IMAGE);
                 break;
             case R.id.delVehicle:
-                delVehicle(id);
+
+                new AlertDialog.Builder(this)
+                        .setIcon(R.drawable.delete_empty)
+                        .setTitle("Eliminando vehiculo")
+                        .setMessage("¿deseas eliminar este vehiculo?,\nse eliminará de manera permanente.")
+                        .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                delVehicle(id);
+                            }
+                        })
+                        .setNegativeButton("no eliminar",null)
+                        .show();
                 break;
         }
 
     }
     private void editVehicle(){
-        Call<Boolean> call = fixCarApi.putVehicle(id,"3",
+        Call<Boolean> call = FixCarClient.getInstance().getApi().putVehicle(id,String.valueOf(pref.getInt("userId",-1)),
                 kilometraje.getText().toString(),
                 Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString())),
                 Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString())),
@@ -191,7 +219,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
 
     }
     private void addVehicle(){
-        Call<Boolean> call = fixCarApi.postVehicle("3",
+        Call<Boolean> call = FixCarClient.getInstance().getApi().postVehicle(String.valueOf(pref.getInt("userId",-1)),
                 kilometraje.getText().toString(),
                 Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString())),
                 Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString())),
@@ -221,7 +249,22 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void getVehicle(int vehId){
-        Call<VehiculoExpandable> call = fixCarApi.getVehicle(vehId);
+        kilometraje.setEnabled(false);
+        fechaITV.setEnabled(false);
+        fechaNeumaticos.setEnabled(false);
+        fechaAceite.setEnabled(false);
+        fechaRevision.setEnabled(false);
+        modelo.setEnabled(false);
+        marca.setEnabled(false);
+        motor.setEnabled(false);
+        seguro.setEnabled(false);
+        color.setEnabled(false);
+        matricula.setEnabled(false);
+        delButton.setEnabled(false);
+        header.setEnabled(false);
+        fab.setEnabled(false);
+
+        Call<VehiculoExpandable> call = FixCarClient.getInstance().getApi().getVehicle(vehId);
         call.enqueue(new Callback<VehiculoExpandable>() {
             @Override
             public void onResponse(Call<VehiculoExpandable> call, retrofit2.Response<VehiculoExpandable> response) {
@@ -232,6 +275,20 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 Vehiculo respuesta = response.body();
                 getresult = new Vehiculo(respuesta);
                 updateUI();
+                kilometraje.setEnabled(true);
+                fechaITV.setEnabled(true);
+                fechaNeumaticos.setEnabled(true);
+                fechaAceite.setEnabled(true);
+                fechaRevision.setEnabled(true);
+                modelo.setEnabled(true);
+                marca.setEnabled(true);
+                motor.setEnabled(true);
+                seguro.setEnabled(true);
+                color.setEnabled(true);
+                matricula.setEnabled(true);
+                delButton.setEnabled(true);
+                header.setEnabled(true);
+                fab.setEnabled(true);
             }
 
             @Override
@@ -242,21 +299,25 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void delVehicle(int id) {
-        Call<Boolean> call = fixCarApi.delVehicle(id);
-        call.enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
-                if (!response.isSuccessful()) {
-                    Log.e("error", String.valueOf(response.code()));
+        if (id >= 0) {
+            Call<Boolean> call = FixCarClient.getInstance().getApi().delVehicle(id);
+            call.enqueue(new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("error", String.valueOf(response.code()));
+                    }
+                    finish();
                 }
-                finish();
-            }
 
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.e("error2:", t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    Log.e("error2:", t.getMessage());
+                }
+            });
+        }else {
+            finish();
+        }
     }
 
     private void updateUI(){

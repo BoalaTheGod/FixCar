@@ -84,7 +84,6 @@ public class UserTest extends AppCompatActivity {
                     text += "Localidad: "+usuario.getLocalidad()+"\n";
                     text += "Telefono: "+usuario.getTelefono()+"\n";
                     text += "Email: "+usuario.getEmail()+"\n";
-                    text += "Estado: "+usuario.getEstado()+"\n";
                     tv.append(text);
                 }
             }
@@ -113,7 +112,6 @@ public class UserTest extends AppCompatActivity {
                 text += "Localidad: "+usuario.getLocalidad()+"\n";
                 text += "Telefono: "+usuario.getTelefono()+"\n";
                 text += "Email: "+usuario.getEmail()+"\n";
-                text += "Estado: "+usuario.getEstado()+"\n";
                 tv.append(text);
             }
 
@@ -161,13 +159,13 @@ public class UserTest extends AppCompatActivity {
                     return;
                 }
 
-                /**VehiculoExpandable vehiculo = response.body();
+                VehiculoExpandable vehiculo = response.body();
                 String text = "ID: "+vehiculo.getIdVehiculo()+"\n";
                 text += "IdUsuario: "+vehiculo.getIdUsuario()+"\n";
                 text += "Marca: "+vehiculo.getMarca()+"\n";
                 text += "Modelo: "+vehiculo.getModelo()+"\n";
                 text += "ITV: "+Vehiculo.dateToString(vehiculo.getFechaItv())+"\n";
-                tv.append(text);**/
+                tv.append(text);
             }
 
             @Override

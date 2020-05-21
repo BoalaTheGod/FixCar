@@ -2,7 +2,6 @@ package com.boala.fixcar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,8 +20,10 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -47,20 +48,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private Button btTest;
+    private Button btTest, signOut;
     private RecyclerView rvCars;
     private VehAdapterEx adapter;
     private FloatingActionButton fabAddCar;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+
     String[] listItems;
     boolean[] checkedItems;
+
+    boolean dialogShown = false;
+
     ArrayList<Integer> muserItems = new ArrayList<>();
     static ArrayList<VehiculoExpandable> vehData;
     EditText ets;
-
-    FixCarApi fixCarApi;
 
     private ShimmerFrameLayout mShimmerViewContainer;
 
@@ -68,6 +73,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        editor = pref.edit();
+
+        if (!pref.getBoolean("loggedIn",false) && pref.getInt("userId",-1)==-1){
+            startActivity(new Intent(this,SignInActivity.class));
+            finish();
+        }
+
         drawerLayout = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.navigation_view);
         ets = findViewById(R.id.etBus);
         rvCars = findViewById(R.id.rvCars);
+
+        signOut = findViewById(R.id.signOut);
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
@@ -89,34 +104,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
 
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient okHttpClient = new
-                OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
-            @NotNull
-            @Override
-            public Response intercept(@NotNull Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder().header("Authorization", Credentials.basic("Cesur","FixCar"));
-
-                Request newRequest = builder.build();
-                return chain.proceed(newRequest);
-            }
-        }).addInterceptor(loggingInterceptor).build();
-        Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://fixcarcesur.herokuapp.com/model/api/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(okHttpClient)
-                .build();
-        fixCarApi = retrofit.create(FixCarApi.class);
-
-        /**vehData.add(new VehiculoExpandable(758645374,Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
-                Vehiculo.stringToDate("12/05/2015"),Vehiculo.stringToDate("12/05/2015"),
-                "corsa","opel","V6","mutua","rojo","DC3453",""));**/
-
-        getVehicles();
+        if (pref.getBoolean("loggedIn",false)) {
+            getVehicles();
+        }
 
         /**vehData.get(0).setExpanded(true);
         adapter.notifyDataSetChanged();
@@ -131,13 +122,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         /**Dialog de seleccion de filtros**/
+
         listItems = getResources().getStringArray(R.array.filtros);
         checkedItems = new boolean[listItems.length];
         btTest = findViewById(R.id.testBT);
         btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /**AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
                 mBuilder.setTitle("Filtro");
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -171,8 +163,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 AlertDialog mDialog = mBuilder.create();
-                mDialog.show();**/
-                startActivity(new Intent(getApplicationContext(),UserTest.class));
+                mDialog.show();
+            }
+        });
+
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editor.clear();
+                editor.apply();
+                recreate();
             }
         });
 
@@ -200,34 +200,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getVehicles(){
-        Call<List<VehiculoExpandable>> call = fixCarApi.getVehicles();
+        swipeRefreshLayout.setRefreshing(true);
+        Call<List<VehiculoExpandable>> call = FixCarClient.getInstance().getApi().getVehiclesUID(pref.getInt("userId",-1));
         call.enqueue(new Callback<List<VehiculoExpandable>>() {
             @Override
             public void onResponse(Call<List<VehiculoExpandable>> call, retrofit2.Response<List<VehiculoExpandable>> response) {
                 if (!response.isSuccessful()){
                     Log.e("Code: ",String.valueOf(response.code()));
+                    return;
                 }
 
                 List<VehiculoExpandable> vehiculos = response.body();
 
                 vehData.clear();
 
-                for (Vehiculo vehiculo : vehiculos){
-                    vehData.add(new VehiculoExpandable(vehiculo));
+                if (vehiculos==null && vehData.isEmpty()) {
+                    mShimmerViewContainer.stopShimmerAnimation();
+                    mShimmerViewContainer.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                    if (!dialogShown){
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Lista de vehiculos vacia")
+                                .setMessage("¿deseas añadir un vehiculo?")
+                                .setPositiveButton("añadir", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        startActivity(new Intent(getApplicationContext(), EditVehicleActivity.class));
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("no añadir", null)
+                                .show();
+                    dialogShown = true;
                 }
-
-                vehData.get(0).setExpanded(true);
+                }
+                if (vehiculos !=null){
+                    for (Vehiculo vehiculo : vehiculos) {
+                        vehData.add(new VehiculoExpandable(vehiculo));
+                    }
+                    vehData.get(0).setExpanded(true);
+                    Log.d("exito", "se han cargado los vehiculos");
+                    }
                 adapter.notifyDataSetChanged();
-                Log.d("exito","se han cargado los vehiculos");
-                mShimmerViewContainer.stopShimmerAnimation();
-                mShimmerViewContainer.setVisibility(View.GONE);
-                swipeRefreshLayout.setRefreshing(false);
+                    mShimmerViewContainer.stopShimmerAnimation();
+                    mShimmerViewContainer.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+
 
             }
 
             @Override
             public void onFailure(Call<List<VehiculoExpandable>> call, Throwable t) {
                 Log.e("error",t.getMessage());
+                mShimmerViewContainer.stopShimmerAnimation();
+                mShimmerViewContainer.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                vehData.clear();
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -235,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        swipeRefreshLayout.setRefreshing(true);
         getVehicles();
         mShimmerViewContainer.startShimmerAnimation();
     }

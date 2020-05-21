@@ -121,8 +121,15 @@
         android:layout_gravity="start"
         app:menu="@menu/drawer"
         app:headerLayout="@layout/header"
-        tools:visibility="gone"
+        tools:visibility="visible"
         >
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="Cerrar Sesión"
+            android:id="@+id/signOut"
+            />
     </com.google.android.material.navigation.NavigationView>
 
 

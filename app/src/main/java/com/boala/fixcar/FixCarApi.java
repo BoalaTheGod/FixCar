@@ -27,6 +27,10 @@ public interface FixCarApi {
     Call<VehiculoExpandable> getVehicle(@Path("idvehiculo") int id);
     @POST("vehiculopost")
     Call<Vehiculo> postVehicle(@Body Vehiculo vehiculo);
+
+    @GET("vehiculoidusuario{uid}")
+    Call<List<VehiculoExpandable>> getVehiclesUID(@Path("uid") int id);
+
     @FormUrlEncoded
     @POST("vehiculopost")
     Call<Boolean> postVehicle(
@@ -65,5 +69,18 @@ public interface FixCarApi {
     Call<Boolean> delVehicle(
             @Path("idvehiculo") int id
     );
+    @FormUrlEncoded
+    @POST("usuariopost")
+    Call<Boolean> postUser(
+            @Field("nombre") String nombre,
+            @Field("direccion") String direccion,
+            @Field("localidad") String localidad,
+            @Field("telefono") String telefono,
+            @Field("email") String email,
+            @Field("fecha") String fecha,
+            @Field("password") String password
+    );
+    @GET("idmailusuario")
+    Call<Integer> getUserByMail(@Query("email") String email);
 
 }
