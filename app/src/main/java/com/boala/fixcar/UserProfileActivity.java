@@ -65,7 +65,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 }
                 user = response.body();
                 try {
-                    nombreTop.setText(user.getNombre());
+                    nombreTop.setText(user.getName());
                 } catch (Exception e) {
                     e.printStackTrace();
                     nombreTop.setText("");
@@ -77,13 +77,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     emailTop.setText("");
                 }
                 try {
-                    telefonoTop.setText(String.valueOf(user.getTelefono()));
+                    telefonoTop.setText(String.valueOf(user.getPhoneNumber()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     telefonoTop.setText("");
                 }
                 try {
-                    etnombre.setText(user.getNombre());
+                    etnombre.setText(user.getName());
                 } catch (Exception e) {
                     e.printStackTrace();
                     etnombre.setText("");
@@ -95,31 +95,31 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     etemail.setText("");
                 }
                 try {
-                    etDireccion.setText(user.getDireccion());
+                    etDireccion.setText(user.getAdress());
                 } catch (Exception e) {
                     e.printStackTrace();
                     etDireccion.setText("");
                 }
                 try {
-                    etFechaNac.setText(Vehiculo.dateToString(user.getFecha()));
+                    etFechaNac.setText(Vehiculo.dateToString(user.getDate()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     etFechaNac.setText("");
                 }
                 try {
-                    etLocalidad.setText(user.getLocalidad());
+                    etLocalidad.setText(user.getCity());
                 } catch (Exception e) {
                     e.printStackTrace();
                     etLocalidad.setText("");
                 }
                 try {
-                    etLocalidad.setText(user.getLocalidad());
+                    etLocalidad.setText(user.getCity());
                 } catch (Exception e) {
                     e.printStackTrace();
                     etLocalidad.setText("");
                 }
                 try {
-                    etTelefono.setText(String.valueOf(user.getTelefono()));
+                    etTelefono.setText(String.valueOf(user.getPhoneNumber()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     etTelefono.setText("");

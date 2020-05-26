@@ -101,4 +101,7 @@ public interface FixCarApi {
 
     );
 
+     @GET("taller")
+    Call<List<Taller>> getTalleres();
+
 }

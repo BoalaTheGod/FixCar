@@ -1,34 +1,48 @@
 package com.boala.fixcar;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class Usuario {
-    private int idusuario, telefono;
-    private String nombre, password, direccion, localidad, email, imagen;
-    private Date fecha;
+    private int idusuario;
+    @SerializedName("telefono")
+    private int phoneNumber;
+    @SerializedName("nombre")
+    private String name;
+    private String password;
+    @SerializedName("direccion")
+    private String adress;
+    @SerializedName("localidad")
+    private String city;
+    private String email;
+    @SerializedName("imagen")
+    private String image;
+    @SerializedName("fecha")
+    private Date date;
 
-    public Usuario(int idusuario, int telefono, int estado, String nombre, String password, String confirma, String direccion, String localidad, String email, String imagen, Date fecha) {
+    public Usuario(int idusuario, int phoneNumber, int estado, String name, String password, String confirma, String adress, String city, String email, String image, Date date) {
         this.idusuario = idusuario;
-        this.telefono = telefono;
-        this.nombre = nombre;
+        this.phoneNumber = phoneNumber;
+        this.name = name;
         this.password = password;
-        this.direccion = direccion;
-        this.localidad = localidad;
+        this.adress = adress;
+        this.city = city;
         this.email = email;
-        this.imagen = imagen;
-        this.fecha = fecha;
+        this.image = image;
+        this.date = date;
     }
 
     public Usuario() {
         this.idusuario = 0;
-        this.telefono = 0;
-        this.nombre = "";
+        this.phoneNumber = 0;
+        this.name = "";
         this.password = "";
-        this.direccion = "";
-        this.localidad = "";
+        this.adress = "";
+        this.city = "";
         this.email = "";
-        this.imagen = "";
-        this.fecha = Vehiculo.stringToDate("00/00/0000");
+        this.image = "";
+        this.date = Vehiculo.stringToDate("00/00/0000");
     }
 
     public int getIdusuario() {
@@ -39,20 +53,20 @@ public class Usuario {
         this.idusuario = idusuario;
     }
 
-    public int getTelefono() {
-        return telefono;
+    public int getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setTelefono(int telefono) {
-        this.telefono = telefono;
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -63,20 +77,20 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getAdress() {
+        return adress;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setAdress(String adress) {
+        this.adress = adress;
     }
 
-    public String getLocalidad() {
-        return localidad;
+    public String getCity() {
+        return city;
     }
 
-    public void setLocalidad(String localidad) {
-        this.localidad = localidad;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getEmail() {
@@ -87,34 +101,34 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getImagen() {
-        return imagen;
+    public String getImage() {
+        return image;
     }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public Date getDate() {
+        return date;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override
     public String toString() {
         return "Usuario{" +
                 "idusuario=" + idusuario +
-                ", telefono=" + telefono +
-                ", nombre='" + nombre + '\'' +
+                ", telefono=" + phoneNumber +
+                ", nombre='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", localidad='" + localidad + '\'' +
+                ", direccion='" + adress + '\'' +
+                ", localidad='" + city + '\'' +
                 ", email='" + email + '\'' +
-                ", imagen='" + imagen + '\'' +
-                ", fecha=" + fecha +
+                ", imagen='" + image + '\'' +
+                ", fecha=" + date +
                 '}';
     }
 }

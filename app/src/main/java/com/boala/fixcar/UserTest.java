@@ -22,7 +22,6 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 public class UserTest extends AppCompatActivity {
@@ -78,11 +77,11 @@ public class UserTest extends AppCompatActivity {
 
                 for (Usuario usuario : usuarios){
                     String text = "ID: "+usuario.getIdusuario()+"\n";
-                    text += "Nombre: "+usuario.getNombre()+"\n";
+                    text += "Nombre: "+usuario.getName()+"\n";
                     text += "Password: "+usuario.getPassword()+"\n";
-                    text += "Direccion: "+usuario.getDireccion()+"\n";
-                    text += "Localidad: "+usuario.getLocalidad()+"\n";
-                    text += "Telefono: "+usuario.getTelefono()+"\n";
+                    text += "Direccion: "+usuario.getAdress()+"\n";
+                    text += "Localidad: "+usuario.getCity()+"\n";
+                    text += "Telefono: "+usuario.getPhoneNumber()+"\n";
                     text += "Email: "+usuario.getEmail()+"\n";
                     tv.append(text);
                 }
@@ -106,11 +105,11 @@ public class UserTest extends AppCompatActivity {
 
                 Usuario usuario = response.body();
                 String text = "ID: "+usuario.getIdusuario()+"\n";
-                text += "Nombre: "+usuario.getNombre()+"\n";
+                text += "Nombre: "+usuario.getName()+"\n";
                 text += "Password: "+usuario.getPassword()+"\n";
-                text += "Direccion: "+usuario.getDireccion()+"\n";
-                text += "Localidad: "+usuario.getLocalidad()+"\n";
-                text += "Telefono: "+usuario.getTelefono()+"\n";
+                text += "Direccion: "+usuario.getAdress()+"\n";
+                text += "Localidad: "+usuario.getCity()+"\n";
+                text += "Telefono: "+usuario.getPhoneNumber()+"\n";
                 text += "Email: "+usuario.getEmail()+"\n";
                 tv.append(text);
             }
@@ -135,9 +134,9 @@ public class UserTest extends AppCompatActivity {
                 for (VehiculoExpandable vehiculo : vehiculos){
                     String text = "ID: "+vehiculo.getIdVehiculo()+"\n";
                     text += "IdUsuario: "+vehiculo.getIdUsuario()+"\n";
-                    text += "Marca: "+vehiculo.getMarca()+"\n";
-                    text += "Modelo: "+vehiculo.getModelo()+"\n";
-                    text += "ITV: "+vehiculo.getFechaItv()+"\n";
+                    text += "Marca: "+vehiculo.getBrand()+"\n";
+                    text += "Modelo: "+vehiculo.getModel()+"\n";
+                    text += "ITV: "+vehiculo.getItvDate()+"\n";
                     text += "expanded: "+vehiculo.isExpanded()+"\n";
                     tv.append(text);
                 }
@@ -162,9 +161,9 @@ public class UserTest extends AppCompatActivity {
                 VehiculoExpandable vehiculo = response.body();
                 String text = "ID: "+vehiculo.getIdVehiculo()+"\n";
                 text += "IdUsuario: "+vehiculo.getIdUsuario()+"\n";
-                text += "Marca: "+vehiculo.getMarca()+"\n";
-                text += "Modelo: "+vehiculo.getModelo()+"\n";
-                text += "ITV: "+Vehiculo.dateToString(vehiculo.getFechaItv())+"\n";
+                text += "Marca: "+vehiculo.getBrand()+"\n";
+                text += "Modelo: "+vehiculo.getModel()+"\n";
+                text += "ITV: "+Vehiculo.dateToString(vehiculo.getItvDate())+"\n";
                 tv.append(text);
             }
 

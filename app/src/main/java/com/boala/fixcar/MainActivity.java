@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private EditText ets;//edittext para la busqueda por calle
     private ShimmerFrameLayout mShimmerViewContainer;
     private CircleImageView circleImageView;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +75,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
         }
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = findViewById(R.id.navigation_view);
+        setNavigationViewListener();
         ets = findViewById(R.id.etBus);
         RecyclerView rvCars = findViewById(R.id.rvCars);
         Button signOut = findViewById(R.id.signOut);
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+                /**AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
                 mBuilder.setTitle("Filtro");
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -157,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
+                mDialog.show();**/
+                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
             }
         });
         /**Boton de cerrar sesion**/
@@ -274,10 +278,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        switch (item.getItemId()) {
+            case R.id.talleresList:
+                startActivity(new Intent(this,ListaTalleresActivity.class));
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+    return true;
     }
-
-    private void setNavigationViewListener() {
+    private void setNavigationViewListener(){
         navigationView.setNavigationItemSelectedListener(this);
     }
 }
+

@@ -17,70 +17,77 @@ public class Vehiculo {
     @SerializedName("idusuario")
     private int idUsuario;
     @SerializedName("km_vehiculo")
-    private int kmVehiculo;
+    private int kmVehicle;
     @SerializedName("itv_fecha")
-    private Date fechaItv;
+    private Date itvDate;
     @SerializedName("fecha_ruedas")
-    private Date fechaRuedas;
+    private Date tiresDate;
     @SerializedName("fecha_aceite")
-    private Date fechaAceite;
+    private Date oilDate;
     @SerializedName("fecha_revision")
-    private Date fechaRevision;
-    private String modelo;
-    private String marca;
-    private String motor;
-    private String seguro;
+    private Date revisionDate;
+    @SerializedName("modelo")
+    private String model;
+    @SerializedName("marca")
+    private String brand;
+    @SerializedName("motor")
+    private String engine;
+    @SerializedName("seguro")
+    private String ensurance;
+    @SerializedName("color")
     private String color;
-    private String matricula;
-    private String imagen;
+    @SerializedName("matricula")
+    private String licencePlate;
+    @SerializedName("imagen")
+    private String image;
 
 
-    public Vehiculo(int kmVehiculo, Date fechaItv, Date fechaRuedas, Date fechaAceite, Date fechaRevision, String modelo, String marca, String motor, String seguro, String color, String matricula, String imagen) {
-        this.kmVehiculo = kmVehiculo;
-        this.fechaItv = fechaItv;
-        this.fechaRuedas = fechaRuedas;
-        this.fechaAceite = fechaAceite;
-        this.fechaRevision = fechaRevision;
-        this.modelo = modelo;
-        this.marca = marca;
-        this.motor = motor;
-        this.seguro = seguro;
+    public Vehiculo(int kmVehicle, Date itvDate, Date tiresDate, Date oilDate, Date revisionDate, String model, String brand, String engine, String ensurance, String color, String licencePlate, String image) {
+        this.kmVehicle = kmVehicle;
+        this.itvDate = itvDate;
+        this.tiresDate = tiresDate;
+        this.oilDate = oilDate;
+        this.revisionDate = revisionDate;
+        this.model = model;
+        this.brand = brand;
+        this.engine = engine;
+        this.ensurance = ensurance;
         this.color = color;
-        this.matricula = matricula;
-        this.imagen = imagen;
+        this.licencePlate = licencePlate;
+        this.image = image;
     }
 
     public Vehiculo(Vehiculo vehiculo) {
         this.idVehiculo = vehiculo.idVehiculo;
         this.idUsuario = vehiculo.idUsuario;
-        this.kmVehiculo = vehiculo.kmVehiculo;
-        this.fechaItv = vehiculo.fechaItv;
-        this.fechaRuedas = vehiculo.fechaRuedas;
-        this.fechaAceite = vehiculo.fechaAceite;
-        this.fechaRevision = vehiculo.fechaRevision;
-        this.modelo = vehiculo.modelo;
-        this.marca = vehiculo.marca;
-        this.motor = vehiculo.motor;
-        this.seguro = vehiculo.seguro;
+        this.kmVehicle = vehiculo.kmVehicle;
+        this.itvDate = vehiculo.itvDate;
+        this.tiresDate = vehiculo.tiresDate;
+        this.oilDate = vehiculo.oilDate;
+        this.revisionDate = vehiculo.revisionDate;
+        this.model = vehiculo.model;
+        this.brand = vehiculo.brand;
+        this.engine = vehiculo.engine;
+        this.ensurance = vehiculo.ensurance;
         this.color = vehiculo.color;
-        this.matricula = vehiculo.matricula;
-        this.imagen = vehiculo.imagen;
+        this.licencePlate = vehiculo.licencePlate;
+        this.image = vehiculo.image;
     }
 
     public Vehiculo() {
         idVehiculo = 0;
-        this.kmVehiculo = 0;
-        this.fechaItv = new Date();
-        this.fechaRuedas = new Date();
-        this.fechaAceite = new Date();
-        this.fechaRevision = new Date();
-        this.modelo = "";
-        this.marca = "";
-        this.motor = "";
-        this.seguro = "";
+        this.kmVehicle = 0;
+        this.itvDate = new Date();
+        this.tiresDate = new Date();
+        this.oilDate = new Date();
+        this.revisionDate = new Date();
+        this.model = "";
+        this.brand = "";
+        this.engine = "";
+        this.ensurance = "";
         this.color = "";
-        this.matricula = "";
-        this.imagen = "";
+        this.licencePlate = "";
+        this.image = "";
     }
 
     public int getIdVehiculo() {
@@ -99,76 +106,76 @@ public class Vehiculo {
         this.idUsuario = idUsuario;
     }
 
-    public int getKmVehiculo() {
-        return kmVehiculo;
+    public int getKmVehicle() {
+        return kmVehicle;
     }
 
-    public void setKmVehiculo(int kmVehiculo) {
-        this.kmVehiculo = kmVehiculo;
+    public void setKmVehicle(int kmVehicle) {
+        this.kmVehicle = kmVehicle;
     }
 
-    public Date getFechaItv() {
-        return fechaItv;
+    public Date getItvDate() {
+        return itvDate;
     }
 
-    public void setFechaItv(Date fechaItv) {
-        this.fechaItv = fechaItv;
+    public void setItvDate(Date itvDate) {
+        this.itvDate = itvDate;
     }
 
-    public Date getFechaRuedas() {
-        return fechaRuedas;
+    public Date getTiresDate() {
+        return tiresDate;
     }
 
-    public void setFechaRuedas(Date fechaRuedas) {
-        this.fechaRuedas = fechaRuedas;
+    public void setTiresDate(Date tiresDate) {
+        this.tiresDate = tiresDate;
     }
 
-    public Date getFechaAceite() {
-        return fechaAceite;
+    public Date getOilDate() {
+        return oilDate;
     }
 
-    public void setFechaAceite(Date fechaAceite) {
-        this.fechaAceite = fechaAceite;
+    public void setOilDate(Date oilDate) {
+        this.oilDate = oilDate;
     }
 
-    public Date getFechaRevision() {
-        return fechaRevision;
+    public Date getRevisionDate() {
+        return revisionDate;
     }
 
-    public void setFechaRevision(Date fechaRevision) {
-        this.fechaRevision = fechaRevision;
+    public void setRevisionDate(Date revisionDate) {
+        this.revisionDate = revisionDate;
     }
 
-    public String getModelo() {
-        return modelo;
+    public String getModel() {
+        return model;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    public void setModel(String model) {
+        this.model = model;
     }
 
-    public String getMarca() {
-        return marca;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    public String getMotor() {
-        return motor;
+    public String getEngine() {
+        return engine;
     }
 
-    public void setMotor(String motor) {
-        this.motor = motor;
+    public void setEngine(String engine) {
+        this.engine = engine;
     }
 
-    public String getSeguro() {
-        return seguro;
+    public String getEnsurance() {
+        return ensurance;
     }
 
-    public void setSeguro(String seguro) {
-        this.seguro = seguro;
+    public void setEnsurance(String ensurance) {
+        this.ensurance = ensurance;
     }
 
     public String getColor() {
@@ -179,20 +186,20 @@ public class Vehiculo {
         this.color = color;
     }
 
-    public String getMatricula() {
-        return matricula;
+    public String getLicencePlate() {
+        return licencePlate;
     }
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
+    public void setLicencePlate(String licencePlate) {
+        this.licencePlate = licencePlate;
     }
 
-    public String getImagen() {
-        return imagen;
+    public String getImage() {
+        return image;
     }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public static String dateToString(Date raw) {
@@ -225,17 +232,17 @@ public class Vehiculo {
         return "Vehiculo{" +
                 "idVehiculo=" + idVehiculo +
                 ", idUsuario=" + idUsuario +
-                ", kmVehiculo=" + kmVehiculo +
-                ", fechaItv=" + fechaItv +
-                ", fechaRuedas=" + fechaRuedas +
-                ", fechaAceite=" + fechaAceite +
-                ", fechaRevision=" + fechaRevision +
-                ", modelo='" + modelo + '\'' +
-                ", marca='" + marca + '\'' +
-                ", motor='" + motor + '\'' +
-                ", seguro='" + seguro + '\'' +
+                ", kmVehiculo=" + kmVehicle +
+                ", fechaItv=" + itvDate +
+                ", fechaRuedas=" + tiresDate +
+                ", fechaAceite=" + oilDate +
+                ", fechaRevision=" + revisionDate +
+                ", modelo='" + model + '\'' +
+                ", marca='" + brand + '\'' +
+                ", motor='" + engine + '\'' +
+                ", seguro='" + ensurance + '\'' +
                 ", color='" + color + '\'' +
-                ", matricula='" + matricula + '\'' +
+                ", matricula='" + licencePlate + '\'' +
                 '}';
     }
 

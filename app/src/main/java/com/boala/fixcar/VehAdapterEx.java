@@ -2,15 +2,18 @@ package com.boala.fixcar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
@@ -36,6 +39,14 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
     public void onBindViewHolder(@NonNull VehAdapterEx.VehHolder holder, final int position) {
         final VehiculoExpandable data = content.get(position);
         holder.setData(data);
+/**
+ AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+ final int id = (int) System.currentTimeMillis();
+ Intent intentAlarm = new Intent(context, MainActivity.class);
+ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intentAlarm,PendingIntent.FLAG_UPDATE_CURRENT);
+ alarmManager.setExact(AlarmManager.RTC_WAKEUP,data.getFechaItv().getTime(),pendingIntent);
+ **/
         LinearLayout LLCard = holder.itemView.findViewById(R.id.LLCard);
         LLCard.setOnClickListener(new View.OnClickListener() {
             boolean expanded = data.isExpanded();
@@ -66,6 +77,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
     public class VehHolder extends RecyclerView.ViewHolder {
         private TextView marca, modelo, matricula, motor, color, kilometraje, itv, neumaticos, aceite, revision;
         LinearLayout expandable;
+        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon;
 
         public VehHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,21 +92,47 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             aceite = itemView.findViewById(R.id.aceite);
             revision = itemView.findViewById(R.id.revision);
             expandable = itemView.findViewById(R.id.expandableTab);
+            itvIcon = itemView.findViewById(R.id.itvIcon);
+            neumaticosIcon = itemView.findViewById(R.id.neumaticosIcon);
+            aceiteIcon = itemView.findViewById(R.id.aceiteIcon);
+            revisionIcon = itemView.findViewById(R.id.revisionIcon);
         }
 
         public void setData(VehiculoExpandable data) {
             boolean expanded = data.isExpanded();
             expandable.setVisibility(expanded ? View.VISIBLE : View.GONE);
-            marca.setText(data.getMarca());
-            modelo.setText(data.getModelo());
-            matricula.setText(data.getMatricula());
+            marca.setText(data.getBrand());
+            modelo.setText(data.getModel());
+            matricula.setText(data.getLicencePlate());
             color.setText(data.getColor());
-            motor.setText(data.getMotor());
-            kilometraje.setText(data.getKmVehiculo() + "km");
-            itv.setText(Vehiculo.dateToString(data.getFechaItv()));
-            neumaticos.setText(Vehiculo.dateToString(data.getFechaRuedas()));
-            aceite.setText(Vehiculo.dateToString(data.getFechaAceite()));
-            revision.setText(Vehiculo.dateToString(data.getFechaRevision()));
+            motor.setText(data.getEngine());
+            kilometraje.setText(data.getKmVehicle() + "km");
+            itv.setText(Vehiculo.dateToString(data.getItvDate()));
+            neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
+            aceite.setText(Vehiculo.dateToString(data.getOilDate()));
+            revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
+            Log.e("time", String.valueOf(data.getItvDate().getTime()));
+            Log.e("tiempos","itv: "+data.getItvDate().getTime()+",actual: "+System.currentTimeMillis());
+            if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000){
+                itvIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_logo_itv_red));
+            }else {
+                itvIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_logo_itv));
+            }
+            if (data.getOilDate().getTime()-System.currentTimeMillis() < 432000000){
+                aceiteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.oil_red));
+            }else {
+                aceiteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.oil));
+            }
+            if (data.getTiresDate().getTime()-System.currentTimeMillis() < 432000000){
+                neumaticosIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_tire_alert_red));
+            }else {
+                neumaticosIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_tire_alert));
+            }
+            if (data.getRevisionDate().getTime()-System.currentTimeMillis() < 432000000){
+                revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog_red));
+            }else{
+                revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog));
+            }
 
         }
     }

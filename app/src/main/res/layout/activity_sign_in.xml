@@ -188,7 +188,7 @@
         android:id="@+id/dismissForm"
         android:visibility="gone"
         />
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_marginHorizontal="24dp"
         android:layout_height="wrap_content"

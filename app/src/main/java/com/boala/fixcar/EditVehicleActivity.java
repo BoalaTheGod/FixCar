@@ -295,17 +295,17 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
      * Funcion que actualiza la interfaz con los datos del vehiculo seleccionado
      **/
     private void updateUI() {
-        fechaITV.setText(Vehiculo.dateToString(getresult.getFechaItv()));
-        fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getFechaRuedas()));
-        fechaAceite.setText(Vehiculo.dateToString(getresult.getFechaAceite()));
-        fechaRevision.setText(Vehiculo.dateToString(getresult.getFechaRevision()));
-        marca.setText(getresult.getMarca());
-        modelo.setText(getresult.getModelo());
-        matricula.setText(getresult.getMatricula());
-        motor.setText(getresult.getMotor());
+        fechaITV.setText(Vehiculo.dateToString(getresult.getItvDate()));
+        fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getTiresDate()));
+        fechaAceite.setText(Vehiculo.dateToString(getresult.getOilDate()));
+        fechaRevision.setText(Vehiculo.dateToString(getresult.getRevisionDate()));
+        marca.setText(getresult.getBrand());
+        modelo.setText(getresult.getModel());
+        matricula.setText(getresult.getLicencePlate());
+        motor.setText(getresult.getEngine());
         color.setText(getresult.getColor());
-        kilometraje.setText(String.valueOf(getresult.getKmVehiculo()));
-        seguro.setText(getresult.getSeguro());
+        kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
+        seguro.setText(getresult.getEnsurance());
     }
 
     @Override

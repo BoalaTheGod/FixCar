@@ -4,4 +4,5 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="background">#dddddd</color>
     <color name="delButtonTint">@color/cardview_light_background</color>
+    <color name="chipBackground">#2A535353</color>
 </resources>
