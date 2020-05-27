@@ -13,26 +13,26 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TallerAdapter extends RecyclerView.Adapter<TallerAdapter.TallerHolder> {
+public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.TallerHolder> {
 
     private Context context;
-    private ArrayList<Taller> content;
+    private ArrayList<WorkShop> content;
 
-    public TallerAdapter(Context context, ArrayList<Taller> content) {
+    public WorkShopAdapter(Context context, ArrayList<WorkShop> content) {
         this.context = context;
         this.content = content;
     }
 
     @NonNull
     @Override
-    public TallerAdapter.TallerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WorkShopAdapter.TallerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_taller, parent, false);
-        return new TallerAdapter.TallerHolder(view);
+        return new WorkShopAdapter.TallerHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TallerAdapter.TallerHolder holder, int position) {
-        final Taller data = content.get(position);
+    public void onBindViewHolder(@NonNull WorkShopAdapter.TallerHolder holder, int position) {
+        final WorkShop data = content.get(position);
         holder.setData(data);
         holder.shopCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +59,7 @@ public class TallerAdapter extends RecyclerView.Adapter<TallerAdapter.TallerHold
             shopCard = itemView.findViewById(R.id.shopCard);
         }
 
-        public void setData(Taller data) {
+        public void setData(WorkShop data) {
             tvNombre.setText(data.getName());
             tvTipo.setText(data.getEmail());
         }

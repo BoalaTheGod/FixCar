@@ -15,23 +15,23 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListaTalleresActivity extends AppCompatActivity {
+public class WorkShopListActivity extends AppCompatActivity {
 private RecyclerView rvTalleres;
 private SwipeRefreshLayout refreshLayout;
-private TallerAdapter adapter;
-private ArrayList<Taller> tallerList;
+private WorkShopAdapter adapter;
+private ArrayList<WorkShop> workShopList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_talleres);
+        setContentView(R.layout.activity_workshop_list);
         rvTalleres = findViewById(R.id.rvTalleres);
         refreshLayout = findViewById(R.id.refreshTalleres);
-        tallerList = new ArrayList<>();
+        workShopList = new ArrayList<>();
         Context context;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTalleres.setLayoutManager(linearLayoutManager);
-        adapter = new TallerAdapter(this, tallerList);
+        adapter = new WorkShopAdapter(this, workShopList);
         rvTalleres.setAdapter(adapter);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -43,25 +43,25 @@ private ArrayList<Taller> tallerList;
 
     }
     private void getTalleres(){
-        Call<List<Taller>> call = FixCarClient.getInstance().getApi().getTalleres();
-        call.enqueue(new Callback<List<Taller>>() {
+        Call<List<WorkShop>> call = FixCarClient.getInstance().getApi().getTalleres();
+        call.enqueue(new Callback<List<WorkShop>>() {
             @Override
-            public void onResponse(Call<List<Taller>> call, Response<List<Taller>> response) {
+            public void onResponse(Call<List<WorkShop>> call, Response<List<WorkShop>> response) {
                 if (!response.isSuccessful()) {
                     Log.e("Code: ", String.valueOf(response.code()));
                     return;
                 }
-                ArrayList<Taller> talleres = (ArrayList) response.body();
-                tallerList.clear();
-                for (Taller taller : talleres){
-                    tallerList.add(taller);
+                ArrayList<WorkShop> talleres = (ArrayList) response.body();
+                workShopList.clear();
+                for (WorkShop workShop : talleres){
+                    workShopList.add(workShop);
                 }
                 adapter.notifyDataSetChanged();
                 refreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onFailure(Call<List<Taller>> call, Throwable t) {
+            public void onFailure(Call<List<WorkShop>> call, Throwable t) {
                 Log.e("error", t.getMessage());
             }
         });

@@ -2,7 +2,7 @@ package com.boala.fixcar;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Taller {
+public class WorkShop {
     private int idtaller;
     @SerializedName("nombre")
     private String name;
@@ -15,7 +15,7 @@ public class Taller {
     private String state;
     private String email;
 
-    public Taller(int idtaller, String name, String cif, String adress, String type, String state, String email) {
+    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email) {
         this.idtaller = idtaller;
         this.name = name;
         this.cif = cif;

@@ -102,6 +102,9 @@ public interface FixCarApi {
     );
 
      @GET("taller")
-    Call<List<Taller>> getTalleres();
+    Call<List<WorkShop>> getTalleres();
+
+    @GET("idtaller{idtaller}")
+    Call<WorkShop> getTaller(@Path("idtaller") int id);
 
 }
