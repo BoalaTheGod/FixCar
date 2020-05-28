@@ -97,7 +97,8 @@ public interface FixCarApi {
             @Query("localidad") String localidad,
             @Query("telefono") String telefono,
             @Query("email") String email,
-            @Query("fecha") String fecha
+            @Query("fecha") String fecha,
+            @Query("estado") String estado
 
     );
 

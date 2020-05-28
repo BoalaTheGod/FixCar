@@ -139,7 +139,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     public void saveData() {
 
         Call<Boolean> call = FixCarClient.getInstance().getApi().putUser(pref.getInt("userId", -1), String.valueOf(pref.getInt("userId", -1)), nombre,
-                direccion, localidad, telefono, email, fechaNac);
+                direccion, localidad, telefono, email, fechaNac,"1");
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {

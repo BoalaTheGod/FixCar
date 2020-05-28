@@ -1,9 +1,11 @@
 package com.boala.fixcar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,16 +16,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -60,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
+
+
+
 
         drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -147,7 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();**/
-                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                //startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                scheduleJob();
             }
         });
         /**Boton de cerrar sesion**/
@@ -275,5 +291,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setNavigationViewListener(){
         navigationView.setNavigationItemSelectedListener(this);
     }
+    public void scheduleJob(){
+        ComponentName componentName = new ComponentName(this, AlarmSchedulerJobService.class);
+        JobInfo info = new JobInfo.Builder(123,componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(3600*24*1000)
+                .setPersisted(true)
+                .build();
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int rescode = scheduler.schedule(info);
+        if (rescode == JobScheduler.RESULT_SUCCESS){
+            Log.d("tag?","success");
+        }else{
+            Log.d("tag?","failed");
+        }
+    }
+    public void cancellJob(){
+        Context context;
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(123);
+        Log.d("tag2","job cancelled");
+    }
+
 }
 
