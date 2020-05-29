@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ListPreference
+        app:key="theme"
+        app:title="@string/chanThem"
+        app:entries="@array/themeEntries"
+        app:entryValues="@array/themeValues"
+        app:icon="@drawable/theme_light_dark"
+        />
+    <SwitchPreference
+        app:key="notifications"
+        app:title="Activar notificaciones"
+        app:defaultValue="false"
+        app:icon="@drawable/bell_ring"
+        />
+
+</PreferenceScreen>

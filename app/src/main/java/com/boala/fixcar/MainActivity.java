@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();**/
                 //startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                scheduleJob();
             }
         });
         /**Boton de cerrar sesion**/
@@ -284,6 +283,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.talleresList:
                 startActivity(new Intent(this, WorkShopListActivity.class));
                 break;
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
     return true;
@@ -291,27 +293,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setNavigationViewListener(){
         navigationView.setNavigationItemSelectedListener(this);
     }
-    public void scheduleJob(){
-        ComponentName componentName = new ComponentName(this, AlarmSchedulerJobService.class);
-        JobInfo info = new JobInfo.Builder(123,componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(3600*24*1000)
-                .setPersisted(true)
-                .build();
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int rescode = scheduler.schedule(info);
-        if (rescode == JobScheduler.RESULT_SUCCESS){
-            Log.d("tag?","success");
-        }else{
-            Log.d("tag?","failed");
-        }
-    }
-    public void cancellJob(){
-        Context context;
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(123);
-        Log.d("tag2","job cancelled");
-    }
+
 
 }
 

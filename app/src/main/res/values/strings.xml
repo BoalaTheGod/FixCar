@@ -27,4 +27,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_shop_profile">ShopProfileActivity</string>
     <string name="longString">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut interdum lectus at purus tempus, in dignissim nunc tempor. Aenean ut erat non purus consectetur molestie sit amet non elit. Integer varius neque vitae neque sollicitudin fringilla. In ac sodales risus, vel aliquet elit. Etiam rhoncus eu est a egestas. Proin dignissim et lacus in condimentum. Duis in nunc urna. Ut euismod quam ex, sed commodo lorem ultricies ac. Phasellus pretium mollis ligula non aliquet. Nulla a iaculis turpis. Mauris elementum urna vel nisi vehicula aliquam. Etiam consequat enim vitae tincidunt viverra.</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="chanThem">Cambiar tema</string>
 </resources>

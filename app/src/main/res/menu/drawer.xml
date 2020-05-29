@@ -4,4 +4,8 @@
     android:title="Talleres"
     android:id="@+id/talleresList"
     />
+    <item
+        android:title="Ajustes"
+        android:id="@+id/settings"
+        />
 </menu>

@@ -95,6 +95,7 @@ public class AlarmSchedulerJobService extends JobService {
                             }
                             i++;
                         }
+                        jobFinished(jobParameters,false);
 
 
                     }
