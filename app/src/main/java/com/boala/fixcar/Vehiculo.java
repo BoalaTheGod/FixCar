@@ -33,16 +33,14 @@ public class Vehiculo {
     @SerializedName("motor")
     private String engine;
     @SerializedName("seguro")
-    private String ensurance;
-    @SerializedName("color")
-    private String color;
+    private Date ensuranceDate;
     @SerializedName("matricula")
     private String licencePlate;
     @SerializedName("imagen")
     private String image;
 
 
-    public Vehiculo(int kmVehicle, Date itvDate, Date tiresDate, Date oilDate, Date revisionDate, String model, String brand, String engine, String ensurance, String color, String licencePlate, String image) {
+    public Vehiculo(int kmVehicle, Date itvDate, Date tiresDate, Date oilDate, Date revisionDate, String model, String brand, String engine, Date ensuranceDate, String licencePlate, String image) {
         this.kmVehicle = kmVehicle;
         this.itvDate = itvDate;
         this.tiresDate = tiresDate;
@@ -51,8 +49,7 @@ public class Vehiculo {
         this.model = model;
         this.brand = brand;
         this.engine = engine;
-        this.ensurance = ensurance;
-        this.color = color;
+        this.ensuranceDate = ensuranceDate;
         this.licencePlate = licencePlate;
         this.image = image;
     }
@@ -68,8 +65,7 @@ public class Vehiculo {
         this.model = vehiculo.model;
         this.brand = vehiculo.brand;
         this.engine = vehiculo.engine;
-        this.ensurance = vehiculo.ensurance;
-        this.color = vehiculo.color;
+        this.ensuranceDate = vehiculo.ensuranceDate;
         this.licencePlate = vehiculo.licencePlate;
         this.image = vehiculo.image;
     }
@@ -84,8 +80,7 @@ public class Vehiculo {
         this.model = "";
         this.brand = "";
         this.engine = "";
-        this.ensurance = "";
-        this.color = "";
+        this.ensuranceDate = new Date();
         this.licencePlate = "";
         this.image = "";
     }
@@ -170,20 +165,12 @@ public class Vehiculo {
         this.engine = engine;
     }
 
-    public String getEnsurance() {
-        return ensurance;
+    public Date getEnsuranceDate() {
+        return ensuranceDate;
     }
 
-    public void setEnsurance(String ensurance) {
-        this.ensurance = ensurance;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
+    public void setEnsuranceDate(Date ensuranceDate) {
+        this.ensuranceDate = ensuranceDate;
     }
 
     public String getLicencePlate() {
@@ -240,8 +227,7 @@ public class Vehiculo {
                 ", modelo='" + model + '\'' +
                 ", marca='" + brand + '\'' +
                 ", motor='" + engine + '\'' +
-                ", seguro='" + ensurance + '\'' +
-                ", color='" + color + '\'' +
+                ", seguro='" + ensuranceDate + '\'' +
                 ", matricula='" + licencePlate + '\'' +
                 '}';
     }

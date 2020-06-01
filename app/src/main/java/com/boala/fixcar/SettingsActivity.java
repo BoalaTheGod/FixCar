@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity{
             ComponentName componentName = new ComponentName(getContext(), AlarmSchedulerJobService.class);
             JobInfo info = new JobInfo.Builder(123,componentName)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(3600*24*1000)
+                    .setMinimumLatency(3600*12*1000)
                     .setPersisted(true)
                     .build();
             JobScheduler scheduler = (JobScheduler) getActivity().getSystemService(JOB_SCHEDULER_SERVICE);

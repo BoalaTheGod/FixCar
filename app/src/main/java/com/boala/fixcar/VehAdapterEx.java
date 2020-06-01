@@ -75,9 +75,9 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
     }
 
     public class VehHolder extends RecyclerView.ViewHolder {
-        private TextView marca, modelo, matricula, motor, color, kilometraje, itv, neumaticos, aceite, revision;
+        private TextView marca, modelo, matricula, motor, kilometraje, itv, neumaticos, aceite, revision, ensurance;
         LinearLayout expandable;
-        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon;
+        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon, ensuranceIcon;
 
         public VehHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,7 +85,6 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             modelo = itemView.findViewById(R.id.modelo);
             matricula = itemView.findViewById(R.id.matricula);
             motor = itemView.findViewById(R.id.motor);
-            color = itemView.findViewById(R.id.color);
             kilometraje = itemView.findViewById(R.id.kilometraje);
             itv = itemView.findViewById(R.id.itv);
             neumaticos = itemView.findViewById(R.id.neumaticos);
@@ -96,6 +95,8 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             neumaticosIcon = itemView.findViewById(R.id.neumaticosIcon);
             aceiteIcon = itemView.findViewById(R.id.aceiteIcon);
             revisionIcon = itemView.findViewById(R.id.revisionIcon);
+            ensuranceIcon = itemView.findViewById(R.id.ensuranceIcon);
+            ensurance = itemView.findViewById(R.id.ensurance);
         }
 
         public void setData(VehiculoExpandable data) {
@@ -104,13 +105,13 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             marca.setText(data.getBrand());
             modelo.setText(data.getModel());
             matricula.setText(data.getLicencePlate());
-            color.setText(data.getColor());
             motor.setText(data.getEngine());
             kilometraje.setText(data.getKmVehicle() + "km");
             itv.setText(Vehiculo.dateToString(data.getItvDate()));
             neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
             aceite.setText(Vehiculo.dateToString(data.getOilDate()));
             revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
+            ensurance.setText(Vehiculo.dateToString(data.getEnsuranceDate()));
             Log.e("time", String.valueOf(data.getItvDate().getTime()));
             Log.e("tiempos","itv: "+data.getItvDate().getTime()+",actual: "+System.currentTimeMillis());
             if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000){
@@ -132,6 +133,11 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog_red));
             }else{
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog));
+            }
+            if (data.getEnsuranceDate().getTime()-System.currentTimeMillis() < 432000000){
+                ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car_red));
+            }else{
+                ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car));
             }
 
         }

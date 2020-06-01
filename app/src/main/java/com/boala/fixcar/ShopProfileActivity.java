@@ -3,6 +3,9 @@ package com.boala.fixcar;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,6 +34,7 @@ private Toolbar toolbar;
 private TextView addressTextView, numberTextView, descTextView, emailTextView;
 private CollapsingToolbarLayout toolbarLayout;
 private RatingBar ratingBar;
+private MapView mapview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +51,15 @@ private RatingBar ratingBar;
         ratingBar = findViewById(R.id.ratingBar);
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
+
+        mapview = findViewById(R.id.mapview);
+
+        mapview.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+
+            }
+        });
 
 
         chipRV = findViewById(R.id.chipRV);

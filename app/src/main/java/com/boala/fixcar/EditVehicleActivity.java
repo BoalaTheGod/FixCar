@@ -26,7 +26,7 @@ import retrofit2.Callback;
 
 public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RESULT_LOAD_IMAGE = 1;
-    private EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, color, kilometraje, seguro;
+    private EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro;
     private ImageView header;
     private int id = -1;
     private int pos = -1;
@@ -57,13 +57,13 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         modelo = findViewById(R.id.modelo);
         matricula = findViewById(R.id.matricula);
         motor = findViewById(R.id.motor);
-        color = findViewById(R.id.color);
         kilometraje = findViewById(R.id.kilometraje);
         seguro = findViewById(R.id.seguro);
         header = findViewById(R.id.header);
         header.setOnClickListener(this);
         delButton = findViewById(R.id.delVehicle);
         delButton.setOnClickListener(this);
+        seguro.setOnClickListener(this);
 
         id = getIntent().getIntExtra("idVeh", -1);
         pos = getIntent().getIntExtra("pos", -1);
@@ -107,6 +107,9 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.fechaRevision:
                 showDatePickerDialog(fechaRevision);
+                break;
+            case R.id.seguro:
+                showDatePickerDialog(seguro);
                 break;
             case R.id.fab:
                 try {
@@ -159,8 +162,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 modelo.getText().toString(),
                 marca.getText().toString(),
                 motor.getText().toString(),
-                seguro.getText().toString(),
-                color.getText().toString(),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(seguro.getText().toString())),
                 matricula.getText().toString(),
                 "imagen.jpg");
         call.enqueue(new Callback<Boolean>() {
@@ -193,8 +195,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 modelo.getText().toString(),
                 marca.getText().toString(),
                 motor.getText().toString(),
-                seguro.getText().toString(),
-                color.getText().toString(),
+                Vehiculo.dateToString2(Vehiculo.stringToDate(seguro.getText().toString())),
                 matricula.getText().toString(),
                 "imagen.jpg");
         call.enqueue(new Callback<Boolean>() {
@@ -226,7 +227,6 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         marca.setEnabled(false);
         motor.setEnabled(false);
         seguro.setEnabled(false);
-        color.setEnabled(false);
         matricula.setEnabled(false);
         delButton.setEnabled(false);
         header.setEnabled(false);
@@ -252,7 +252,6 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 marca.setEnabled(true);
                 motor.setEnabled(true);
                 seguro.setEnabled(true);
-                color.setEnabled(true);
                 matricula.setEnabled(true);
                 delButton.setEnabled(true);
                 header.setEnabled(true);
@@ -303,9 +302,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         modelo.setText(getresult.getModel());
         matricula.setText(getresult.getLicencePlate());
         motor.setText(getresult.getEngine());
-        color.setText(getresult.getColor());
         kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
-        seguro.setText(getresult.getEnsurance());
+        seguro.setText(Vehiculo.dateToString(getresult.getEnsuranceDate()));
     }
 
     @Override

@@ -149,35 +149,6 @@
                 android:layout_height="0.6dp"
                 android:alpha="0.3"
                 android:background="@android:color/darker_gray"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="4dp"
-                >
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/palette"
-                    android:adjustViewBounds="true"
-                    android:layout_marginStart="2dp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:textAlignment="viewEnd"
-                    android:layout_marginStart="10dp"
-                    android:text="color"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:textAlignment="viewEnd"
-                    android:layout_marginEnd="10dp"
-                    android:text="color"
-                    android:id="@+id/color"
-                    />
-            </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.6dp"
@@ -315,6 +286,41 @@
                     android:layout_marginEnd="10dp"
                     android:text="aceite"
                     android:id="@+id/aceite"
+                    />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:alpha="0.3"
+                android:background="@android:color/darker_gray"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="4dp"
+                >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/shield_car"
+                    android:adjustViewBounds="true"
+                    android:layout_marginStart="2dp"
+                    android:id="@+id/ensuranceIcon"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:textAlignment="viewEnd"
+                    android:layout_marginStart="10dp"
+                    android:text="Seguro"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:textAlignment="viewEnd"
+                    android:layout_marginEnd="10dp"
+                    android:text="aceite"
+                    android:id="@+id/ensurance"
                     />
             </LinearLayout>
             <View

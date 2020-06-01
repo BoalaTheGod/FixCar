@@ -45,7 +45,6 @@ public interface FixCarApi {
             @Field("marca") String marca,
             @Field("motor") String motor,
             @Field("seguro") String seguro,
-            @Field("color") String color,
             @Field("matricula") String matricula,
             @Field("imagen") String imagen
     );
@@ -63,7 +62,6 @@ public interface FixCarApi {
             @Query("marca") String marca,
             @Query("motor") String motor,
             @Query("seguro") String seguro,
-            @Query("color") String color,
             @Query("matricula") String matricula,
             @Query("imagen") String imagen
     );

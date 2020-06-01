@@ -5,8 +5,8 @@ import java.util.Date;
 public class VehiculoExpandable extends Vehiculo {
     /**Clase para poder expandir las tarjetas de vehiculos**/
     private boolean expanded = false;
-    public VehiculoExpandable(int kmVehiculo, Date fechaItv, Date fechaRuedas, Date fechaAceite, Date fechaRevision, String modelo, String marca, String motor, String seguro, String color, String matricula, String imagen) {
-        super(kmVehiculo, fechaItv, fechaRuedas, fechaAceite, fechaRevision, modelo, marca, motor, seguro, color, matricula, imagen);
+    public VehiculoExpandable(int kmVehiculo, Date fechaItv, Date fechaRuedas, Date fechaAceite, Date fechaRevision, String modelo, String marca, String motor, Date seguro, String color, String matricula, String imagen) {
+        super(kmVehiculo, fechaItv, fechaRuedas, fechaAceite, fechaRevision, modelo, marca, motor, seguro, matricula, imagen);
         expanded = false;
     }
 

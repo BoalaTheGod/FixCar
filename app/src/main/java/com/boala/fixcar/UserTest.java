@@ -174,7 +174,7 @@ public class UserTest extends AppCompatActivity {
         });
     }
     private void addVehicle(){
-        Call<Boolean> call = fixCarApi.postVehicle("3","254687","2020-05-15","2020-05-15","2020-05-15","2020-05-15","panda","fiat","1.1","mutua","verde","2837DC","panda.jpg");
+        Call<Boolean> call = fixCarApi.postVehicle("3","254687","2020-05-15","2020-05-15","2020-05-15","2020-05-15","panda","fiat","1.1","2020-05-15","2837DC","panda.jpg");
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
@@ -199,9 +199,8 @@ public class UserTest extends AppCompatActivity {
                 "2020-10-10",
                 "test2",
                 "test2",
-                "test2",
-                "test2",
-                "test2",
+                "",
+                "2020-10-10",
                 "test2",
                 "imagen.jpg");
         call.enqueue(new Callback<Boolean>() {
