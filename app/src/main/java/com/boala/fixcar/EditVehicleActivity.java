@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,15 +18,22 @@ import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.loader.content.CursorLoader;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int RESULT_LOAD_IMAGE = 100;
     private EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro;
     private ImageView header;
     private int id = -1;
@@ -34,6 +42,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     private Vehiculo getresult;
     private FloatingActionButton fab;
     private SharedPreferences pref;
+    private Uri selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fab = findViewById(R.id.fab);
+
 
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
@@ -126,8 +136,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
             case R.id.header:
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, RESULT_LOAD_IMAGE);
                 break;
             case R.id.delVehicle:
@@ -171,7 +180,11 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                 }
-                finish();
+                if (selectedImage != null){
+                    uploadFile(selectedImage);
+                }else {
+                    finish();
+                }
             }
 
             @Override
@@ -204,7 +217,11 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                 }
-                finish();
+                if (selectedImage != null){
+                    uploadFile(selectedImage);
+                }else {
+                    finish();
+                }
             }
 
             @Override
@@ -304,18 +321,54 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         motor.setText(getresult.getEngine());
         kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
         seguro.setText(Vehiculo.dateToString(getresult.getEnsuranceDate()));
+        Picasso.get().load("https://fixcarcesur.herokuapp.com/"+getresult.getImage().substring(2)).into(header);
+        header.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         /**Se recoge le resultado del intent para guardar la imagen selecionada**/
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
+            selectedImage = data.getData();
 
             header.setImageURI(selectedImage);
             header.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
+    }
+
+    private String getRealPathFromURI(Uri contentUri){
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+
+    private void uploadFile(Uri fileUri){
+        File file = new File(getRealPathFromURI(fileUri));
+        MediaType contentType;
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+
+        Call<Void> call = FixCarClient.getInstance().getApi().uploadVehImage(id, requestFile);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                    return;
+                }
+                Log.d("exito","se ha subido la imagen");
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }

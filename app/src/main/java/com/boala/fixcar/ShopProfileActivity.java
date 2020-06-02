@@ -1,17 +1,35 @@
 package com.boala.fixcar;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
@@ -22,10 +40,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class ShopProfileActivity extends AppCompatActivity {
+public class ShopProfileActivity extends AppCompatActivity implements OnMapReadyCallback{
 private int ID;
 private RecyclerView chipRV;
 private ChipAdapter adapter;
@@ -34,7 +56,15 @@ private Toolbar toolbar;
 private TextView addressTextView, numberTextView, descTextView, emailTextView;
 private CollapsingToolbarLayout toolbarLayout;
 private RatingBar ratingBar;
-private MapView mapview;
+
+    private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 69;
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 1000;
+    private GoogleMap mMap;
+    private LocationManager locationManager;
+    private WorkShop workShop;
+    private MapFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,14 +82,7 @@ private MapView mapview;
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
 
-        mapview = findViewById(R.id.mapview);
-
-        mapview.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-
-            }
-        });
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 
 
         chipRV = findViewById(R.id.chipRV);
@@ -101,13 +124,14 @@ private MapView mapview;
                     Log.e("Code: ", String.valueOf(response.code()));
                     return;
                 }
-                WorkShop workShop = response.body();
+                workShop = response.body();
                 addressTextView.setText(workShop.getAdress());
-                numberTextView.setText("986425742");
+                numberTextView.setText(workShop.getPhone());
                 emailTextView.setText(workShop.getEmail());
                 toolbarLayout.setTitle(workShop.getName());
                 toolbar.setTitle(workShop.getName());
                 ratingBar.setRating(4);
+                mapFragment.getMapAsync(ShopProfileActivity.this);
             }
 
             @Override
@@ -115,5 +139,47 @@ private MapView mapview;
                 Log.e("error", t.getMessage());
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        goToLocation();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void goToLocation(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if (mMap != null){
+                Context context;
+                Geocoder gc = new Geocoder(this);
+                try {
+                    List<Address> list = gc.getFromLocationName(workShop.getAdress(), 1);
+                    if (list.size() > 0) {
+                        Address address = list.get(0);
+                        Log.d("location: ", address.toString());
+
+                        double lat = address.getLatitude();
+                        double lng = address.getLongitude();
+                        Log.d("coords: ", lat+","+lng);
+
+                        LatLng latLng = new LatLng(lat, lng);
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(workShop.getName()));
+                        mMap.moveCamera(cameraUpdate);
+                    }
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }else {
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
+        }
     }
 }

@@ -17,7 +17,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FixCarClient {
-    private static final String BASE_URL = "https://fixcarcesur.herokuapp.com/model/api/";
+    private static final String BASE_URL = "https://fixcarcesur.herokuapp.com/api/";
     private static FixCarClient mInstance;
     private Retrofit retrofit;
 

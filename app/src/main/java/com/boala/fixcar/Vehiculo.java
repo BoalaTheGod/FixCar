@@ -12,31 +12,31 @@ import java.util.Date;
 import androidx.annotation.Nullable;
 
 public class Vehiculo {
-    @SerializedName("idvehiculo")
+    @SerializedName("idvehicle")
     private int idVehiculo;
-    @SerializedName("idusuario")
+    @SerializedName("uIdUser")
     private int idUsuario;
-    @SerializedName("km_vehiculo")
+    @SerializedName("vehicle_km")
     private int kmVehicle;
-    @SerializedName("itv_fecha")
+    @SerializedName("date_itv")
     private Date itvDate;
-    @SerializedName("fecha_ruedas")
+    @SerializedName("wheels_date")
     private Date tiresDate;
-    @SerializedName("fecha_aceite")
+    @SerializedName("oil_date")
     private Date oilDate;
-    @SerializedName("fecha_revision")
+    @SerializedName("review_date")
     private Date revisionDate;
-    @SerializedName("modelo")
+    @SerializedName("vehicle_model")
     private String model;
-    @SerializedName("marca")
+    @SerializedName("vehicle_band")
     private String brand;
-    @SerializedName("motor")
+    @SerializedName("vehicle_engine")
     private String engine;
-    @SerializedName("seguro")
+    @SerializedName("vehicle_insurance")
     private Date ensuranceDate;
-    @SerializedName("matricula")
+    @SerializedName("vehicle_registration")
     private String licencePlate;
-    @SerializedName("imagen")
+    @SerializedName("image")
     private String image;
 
 

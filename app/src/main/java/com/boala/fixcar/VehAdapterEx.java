@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -77,7 +79,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
     public class VehHolder extends RecyclerView.ViewHolder {
         private TextView marca, modelo, matricula, motor, kilometraje, itv, neumaticos, aceite, revision, ensurance;
         LinearLayout expandable;
-        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon, ensuranceIcon;
+        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon, ensuranceIcon,imageView;
 
         public VehHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +99,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             revisionIcon = itemView.findViewById(R.id.revisionIcon);
             ensuranceIcon = itemView.findViewById(R.id.ensuranceIcon);
             ensurance = itemView.findViewById(R.id.ensurance);
+            imageView = itemView.findViewById(R.id.cardImage);
         }
 
         public void setData(VehiculoExpandable data) {
@@ -112,6 +115,8 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             aceite.setText(Vehiculo.dateToString(data.getOilDate()));
             revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
             ensurance.setText(Vehiculo.dateToString(data.getEnsuranceDate()));
+            Log.e("imagen: ",data.getImage());
+            Picasso.get().load("https://fixcarcesur.herokuapp.com/"+data.getImage().substring(2)).into(imageView);
             Log.e("time", String.valueOf(data.getItvDate().getTime()));
             Log.e("tiempos","itv: "+data.getItvDate().getTime()+",actual: "+System.currentTimeMillis());
             if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000){

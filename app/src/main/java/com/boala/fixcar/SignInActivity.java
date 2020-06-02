@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,16 +66,17 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     /**Funcion para encriptar la contraseña**/
     public String md5(String string) {
         try {
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("MD5");
 
-            digest.update(string.getBytes());
-            byte messageDigest[] = digest.digest();
+            byte[] messageDigest = md.digest(string.getBytes());
 
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i < messageDigest.length; i++) {
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
             }
-            return hexString.toString();
+            return hashtext;
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -239,6 +242,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onFailure(Call<Usuario> call, Throwable t) {
                         Log.e("error", t.getMessage());
+                        t.printStackTrace();
                     }
                 });
             }

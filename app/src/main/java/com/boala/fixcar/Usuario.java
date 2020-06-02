@@ -5,23 +5,27 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 public class Usuario {
+    @SerializedName("iduser")
     private int idusuario;
-    @SerializedName("telefono")
-    private int phoneNumber;
-    @SerializedName("nombre")
+    @SerializedName("phone")
+    private String phoneNumber;
+    @SerializedName("name")
     private String name;
+    @SerializedName("pass")
     private String password;
-    @SerializedName("direccion")
+    @SerializedName("adress")
     private String adress;
-    @SerializedName("localidad")
+    @SerializedName("location")
     private String city;
     private String email;
-    @SerializedName("imagen")
+    @SerializedName("image")
     private String image;
-    @SerializedName("fecha")
+    @SerializedName("birth_date")
     private Date date;
+    @SerializedName("state")
+    private int state;
 
-    public Usuario(int idusuario, int phoneNumber, int estado, String name, String password, String confirma, String adress, String city, String email, String image, Date date) {
+    public Usuario(int idusuario, String phoneNumber, int estado, String name, String password, String confirma, String adress, String city, String email, String image, Date date) {
         this.idusuario = idusuario;
         this.phoneNumber = phoneNumber;
         this.name = name;
@@ -35,7 +39,7 @@ public class Usuario {
 
     public Usuario() {
         this.idusuario = 0;
-        this.phoneNumber = 0;
+        this.phoneNumber = "";
         this.name = "";
         this.password = "";
         this.adress = "";
@@ -43,6 +47,19 @@ public class Usuario {
         this.email = "";
         this.image = "";
         this.date = Vehiculo.stringToDate("00/00/0000");
+    }
+
+    public Usuario(Usuario body) {
+        this.idusuario = body.idusuario;
+        this.phoneNumber = body.phoneNumber;
+        this.name = body.name;
+        this.password = body.password;
+        this.adress = body.adress;
+        this.city = body.city;
+        this.email = body.email;
+        this.image = body.image;
+        this.date = body.date;
+        this.state = body.state;
     }
 
     public int getIdusuario() {
@@ -53,11 +70,11 @@ public class Usuario {
         this.idusuario = idusuario;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

@@ -35,7 +35,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/download"
+                    android:id="@+id/cardImage"
 
                     />
                 </androidx.cardview.widget.CardView>

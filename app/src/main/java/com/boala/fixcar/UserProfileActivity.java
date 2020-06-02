@@ -63,7 +63,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     Log.e("error", String.valueOf(response.code()));
                     return;
                 }
-                user = response.body();
+                user = new Usuario(response.body());
                 try {
                     nombreTop.setText(user.getName());
                 } catch (Exception e) {
@@ -131,7 +131,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onFailure(Call<Usuario> call, Throwable t) {
-                Log.e("error", t.getMessage());
+                t.printStackTrace();
             }
         });
     }

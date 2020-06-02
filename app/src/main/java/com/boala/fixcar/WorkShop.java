@@ -3,19 +3,22 @@ package com.boala.fixcar;
 import com.google.gson.annotations.SerializedName;
 
 public class WorkShop {
+    @SerializedName("idworkshop")
     private int idtaller;
-    @SerializedName("nombre")
+    @SerializedName("name")
     private String name;
     private String cif;
-    @SerializedName("direccion")
+    @SerializedName("adress")
     private String adress;
-    @SerializedName("tipo_taller")
+    @SerializedName("workshop_type")
     private String type;
-    @SerializedName("estado")
+    @SerializedName("state")
     private String state;
     private String email;
+    @SerializedName("phone")
+    private String phone;
 
-    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email) {
+    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email,String phone) {
         this.idtaller = idtaller;
         this.name = name;
         this.cif = cif;
@@ -23,6 +26,15 @@ public class WorkShop {
         this.type = type;
         this.state = state;
         this.email = email;
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public int getIdtaller() {
