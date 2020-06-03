@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();**/
-                //startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
             }
         });
         /**Boton de cerrar sesion**/

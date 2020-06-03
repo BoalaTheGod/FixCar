@@ -4,16 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -25,10 +32,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.security.Permission;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, LocationListener {
@@ -57,6 +67,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         goToLocation();
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        Geocoder gc = new Geocoder(this);
+        Call<List<WorkShop>> call = FixCarClient.getInstance().getApi().getTalleres();
+        call.enqueue(new Callback<List<WorkShop>>() {
+            @Override
+            public void onResponse(Call<List<WorkShop>> call, Response<List<WorkShop>> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                ArrayList<WorkShop> workShops = (ArrayList<WorkShop>) response.body();
+                for (WorkShop workShop : workShops){
+
+                    try {
+                        List<Address> list = gc.getFromLocationName(workShop.getLocation()+", "+workShop.getAdress(), 1);
+                        if (list.size() > 0) {
+                            Address address = list.get(0);
+                            Log.d("location: ", address.toString());
+
+                            double lat = address.getLatitude();
+                            double lng = address.getLongitude();
+                            Log.d("coords: ", lat+","+lng);
+
+                            LatLng latLng = new LatLng(lat, lng);
+                            MarkerOptions marker = new MarkerOptions().position(latLng).title(workShop.getName()).snippet(workShop.getDescription()+
+                                    "\n "+workShop.getIdtaller());
+                            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                @Override
+                                public void onInfoWindowClick(Marker marker) {
+                                    String raw = marker.getSnippet();
+                                    String[] array = raw.split(" ");
+                                    int id = Integer.valueOf(array[array.length-1]);
+                                    Intent intent = new Intent(getApplicationContext(), ShopProfileActivity.class);
+                                    intent.putExtra("id",id);
+                                    startActivity(intent);
+                                    Log.e("tag",""+id);
+                                }
+                            });
+                            mMap.addMarker(marker);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<WorkShop>> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -88,7 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,15);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,12);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }

@@ -1,10 +1,12 @@
 package com.boala.fixcar;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
@@ -25,6 +28,8 @@ import java.io.File;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.loader.content.CursorLoader;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -43,13 +48,16 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     private FloatingActionButton fab;
     private SharedPreferences pref;
     private Uri selectedImage;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout toolbarLayout;
     private String fechaITVText, fechaNeumaticosText, fechaAceiteText, fechaRevisionText, marcaText, modeloText, matriculaText, motorText, kilometrajeText, seguroText,insuranceNoteText,itvNoteText,tiresNoteText,oilNoteText,reviewNoteText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_vehicle);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbarLayout = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolbar);
         fab = findViewById(R.id.fab);
 
@@ -142,8 +150,12 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
             case R.id.header:
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},132);
+                }else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                }
                 break;
             case R.id.delVehicle:
 
@@ -454,6 +466,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         motor.setText(getresult.getEngine());
         kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
         seguro.setText(Vehiculo.dateToString(getresult.getInsuranceDate()));
+        toolbarLayout.setTitle(getresult.getBrand()+" "+getresult.getModel());
 
         if (getresult.getImage()!=null && getresult.getImage().length()>1) {
             Picasso.get().load("https://fixcarcesur.herokuapp.com/"+getresult.getImage().substring(2)).into(header);

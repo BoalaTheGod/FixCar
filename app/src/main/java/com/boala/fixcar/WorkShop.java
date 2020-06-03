@@ -17,8 +17,12 @@ public class WorkShop {
     private String email;
     @SerializedName("phone")
     private String phone;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("location")
+    private String location;
 
-    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email,String phone) {
+    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email, String phone, String description, String location) {
         this.idtaller = idtaller;
         this.name = name;
         this.cif = cif;
@@ -27,6 +31,8 @@ public class WorkShop {
         this.state = state;
         this.email = email;
         this.phone = phone;
+        this.description = description;
+        this.location = location;
     }
 
     public String getPhone() {
@@ -91,5 +97,21 @@ public class WorkShop {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

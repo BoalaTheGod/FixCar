@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -93,17 +94,10 @@ private RatingBar ratingBar;
         chipRV.setLayoutManager(linearLayoutManager);
         chipRV.setAdapter(adapter);
 
-        chipList.add("cambio de aceite");
-        chipList.add("chapa y pintura");
-        chipList.add("cambio de neumáticos");
-        chipList.add("revisiones");
-        chipList.add("ITV");
-
-        adapter.notifyDataSetChanged();
-
         if (ID != -1){
             getWorkShop();
         }
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +122,10 @@ private RatingBar ratingBar;
                 addressTextView.setText(workShop.getAdress());
                 numberTextView.setText(workShop.getPhone());
                 emailTextView.setText(workShop.getEmail());
+                descTextView.setText(workShop.getDescription());
                 toolbarLayout.setTitle(workShop.getName());
                 toolbar.setTitle(workShop.getName());
+                setChips();
                 ratingBar.setRating(4);
                 mapFragment.getMapAsync(ShopProfileActivity.this);
             }
@@ -139,6 +135,15 @@ private RatingBar ratingBar;
                 Log.e("error", t.getMessage());
             }
         });
+    }
+
+    private void setChips(){
+       String raw = workShop.getType();
+       String[] array = raw.split(",");
+       for (String string : array){
+           chipList.add(string);
+       }
+       adapter.notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -157,7 +162,7 @@ private RatingBar ratingBar;
                 Context context;
                 Geocoder gc = new Geocoder(this);
                 try {
-                    List<Address> list = gc.getFromLocationName(workShop.getAdress(), 1);
+                    List<Address> list = gc.getFromLocationName(workShop.getLocation()+", "+workShop.getAdress(), 1);
                     if (list.size() > 0) {
                         Address address = list.get(0);
                         Log.d("location: ", address.toString());
@@ -168,7 +173,17 @@ private RatingBar ratingBar;
 
                         LatLng latLng = new LatLng(lat, lng);
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(workShop.getName()));
+                        MarkerOptions marker = new MarkerOptions().position(latLng).title(workShop.getName()).snippet(workShop.getDescription()+"\n "+workShop.getIdtaller());
+                        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                            @Override
+                            public void onInfoWindowClick(Marker marker) {
+                                String raw = marker.getSnippet();
+                                String[] array = raw.split(" ");
+                                int id = Integer.valueOf(array[array.length-1]);
+                                Log.e("tag",""+id);
+                            }
+                        });
+                        mMap.addMarker(marker);
                         mMap.moveCamera(cameraUpdate);
                     }
 
@@ -182,4 +197,5 @@ private RatingBar ratingBar;
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
         }
     }
+
 }
