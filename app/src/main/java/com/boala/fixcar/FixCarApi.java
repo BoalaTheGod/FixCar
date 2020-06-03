@@ -40,33 +40,35 @@ public interface FixCarApi {
     Call<Boolean> postVehicle(
             @Field("idusuario") String idusuario,
             @Field("km_vehiculo") String km_vehiculo,
-            @Field("itv_fecha") String itv_fecha,
-            @Field("fecha_ruedas") String fecha_ruedas,
-            @Field("fecha_aceite") String fecha_aceite,
-            @Field("fecha_revision") String fecha_revision,
             @Field("modelo") String modelo,
             @Field("marca") String marca,
             @Field("motor") String motor,
-            @Field("seguro") String seguro,
-            @Field("matricula") String matricula,
-            @Field("imagen") String imagen
+            @Field("matricula") String matricula
     );
 
     @PUT("vehiculoput{idvehiculo}")
     Call<Boolean> putVehicle(
             @Path("idvehiculo") int id,
-            @Query("idusuario") String idusuario,
             @Query("km_vehiculo") String km_vehiculo,
-            @Query("itv_fecha") String itv_fecha,
-            @Query("fecha_ruedas") String fecha_ruedas,
-            @Query("fecha_aceite") String fecha_aceite,
-            @Query("fecha_revision") String fecha_revision,
             @Query("modelo") String modelo,
             @Query("marca") String marca,
             @Query("motor") String motor,
+            @Query("matricula") String matricula
+    );
+
+    @PUT("reminder{idvehiculo}")
+    Call<Boolean> reminderPut(
+            @Path("idvehiculo") int id,
+            @Query("itv_fecha") String itv_fecha,
+            @Query("itv_note") String itv_note,
+            @Query("fecha_ruedas") String fecha_ruedas,
+            @Query("wheels_note") String wheels_note,
+            @Query("fecha_aceite") String fecha_aceite,
+            @Query("oil_note") String oil_note,
+            @Query("fecha_revision") String fecha_revision,
+            @Query("review_note") String review_note,
             @Query("seguro") String seguro,
-            @Query("matricula") String matricula,
-            @Query("imagen") String imagen
+            @Query("vehicle_note") String vehicle_note
     );
 
     @DELETE("vehiculodel{idvehiculo}")

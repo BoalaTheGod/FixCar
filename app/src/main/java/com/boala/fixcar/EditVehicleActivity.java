@@ -34,7 +34,7 @@ import retrofit2.Response;
 
 public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RESULT_LOAD_IMAGE = 100;
-    private EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro;
+    private EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro,insuranceNote,itvNote,tiresNote,oilNote,reviewNote;
     private ImageView header;
     private int id = -1;
     private int pos = -1;
@@ -43,6 +43,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     private FloatingActionButton fab;
     private SharedPreferences pref;
     private Uri selectedImage;
+    private String fechaITVText, fechaNeumaticosText, fechaAceiteText, fechaRevisionText, marcaText, modeloText, matriculaText, motorText, kilometrajeText, seguroText,insuranceNoteText,itvNoteText,tiresNoteText,oilNoteText,reviewNoteText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,11 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         delButton = findViewById(R.id.delVehicle);
         delButton.setOnClickListener(this);
         seguro.setOnClickListener(this);
+        insuranceNote = findViewById(R.id.insuranceNote);
+        itvNote = findViewById(R.id.itvNote);
+        tiresNote = findViewById(R.id.tiresNote);
+        oilNote = findViewById(R.id.oilNote);
+        reviewNote = findViewById(R.id.reviewNote);
 
         id = getIntent().getIntExtra("idVeh", -1);
         pos = getIntent().getIntExtra("pos", -1);
@@ -158,33 +164,131 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
 
     }
 
+    private void parseTextViews(){
+        if (kilometraje.getText()==null){
+            kilometrajeText = "";
+        }else{
+            kilometrajeText = kilometraje.getText().toString();
+        }
+        if (modelo.getText()==null){
+            modeloText = "";
+        }else{
+            modeloText = modelo.getText().toString();
+        }
+        if (marca.getText()==null){
+            marcaText = "";
+        }else{
+            marcaText = marca.getText().toString();
+        }
+        if (motor.getText()==null){
+            motorText = "";
+        }else{
+            motorText = motor.getText().toString();
+        }
+        if (matricula.getText()==null){
+            matriculaText = "";
+        }else{
+            matriculaText = matricula.getText().toString();
+        }
+        if (fechaITV.getText()==null){
+            fechaITVText = "";
+        }else{
+            fechaITVText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString()));
+        }
+        if (itvNote.getText()==null){
+            itvNoteText = "";
+        }else{
+            itvNoteText = itvNote.getText().toString();
+        }
+        if (fechaAceite.getText()==null){
+            fechaAceiteText = "";
+        }else{
+            fechaAceiteText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaAceite.getText().toString()));
+        }
+        if (oilNote.getText()==null){
+            oilNoteText = "";
+        }else{
+            oilNoteText = oilNote.getText().toString();
+        }
+        if (fechaNeumaticos.getText()==null){
+            fechaNeumaticosText = "";
+        }else{
+            fechaNeumaticosText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString()));
+        }
+        if (tiresNote.getText()==null){
+            tiresNoteText = "";
+        }else{
+            tiresNoteText = tiresNote.getText().toString();
+        }
+        if (fechaRevision.getText()==null){
+            fechaRevisionText = "";
+        }else{
+            fechaRevisionText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaRevision.getText().toString()));
+        }
+        if (reviewNote.getText()==null){
+            reviewNoteText = "";
+        }else{
+            reviewNoteText = reviewNote.getText().toString();
+        }
+        if (seguro.getText()==null){
+            seguroText = "";
+        }else{
+            seguroText = Vehiculo.dateToString2(Vehiculo.stringToDate(seguro.getText().toString()));
+        }
+        if (insuranceNote.getText()==null){
+            insuranceNoteText = "";
+        }else{
+            insuranceNoteText = insuranceNote.getText().toString();
+        }
+    }
+
     /**
      * Funcion que guarda los cambios en la base datos
      **/
     private void editVehicle() {
-        Call<Boolean> call = FixCarClient.getInstance().getApi().putVehicle(id, String.valueOf(pref.getInt("userId", -1)),
-                kilometraje.getText().toString(),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString())),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString())),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaAceite.getText().toString())),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaRevision.getText().toString())),
-                modelo.getText().toString(),
-                marca.getText().toString(),
-                motor.getText().toString(),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(seguro.getText().toString())),
-                matricula.getText().toString(),
-                "imagen.jpg");
+        parseTextViews();
+        Call<Boolean> call = FixCarClient.getInstance().getApi().putVehicle(id,
+                kilometrajeText,
+                modeloText,
+                marcaText,
+                motorText,
+                matriculaText
+        );
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
                 if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                 }
-                if (selectedImage != null){
-                    uploadFile(selectedImage);
-                }else {
-                    finish();
-                }
+                Call<Boolean> call1 = FixCarClient.getInstance().getApi().reminderPut(id,
+                        fechaITVText,
+                        itvNoteText,
+                        fechaNeumaticosText,
+                        tiresNoteText,
+                        fechaAceiteText,
+                        oilNoteText,
+                        fechaRevisionText,
+                        reviewNoteText,
+                        seguroText,
+                        insuranceNoteText);
+                call1.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("error", String.valueOf(response.code()));
+                        }
+                        if (selectedImage != null){
+                            uploadFile(selectedImage);
+                        }else {
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.e("error2:", t.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -199,29 +303,48 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
      * Funcion que guarda el vehiculo nuevo
      **/
     private void addVehicle() {
+        parseTextViews();
         Call<Boolean> call = FixCarClient.getInstance().getApi().postVehicle(String.valueOf(pref.getInt("userId", -1)),
-                kilometraje.getText().toString(),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString())),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString())),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaAceite.getText().toString())),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(fechaRevision.getText().toString())),
-                modelo.getText().toString(),
-                marca.getText().toString(),
-                motor.getText().toString(),
-                Vehiculo.dateToString2(Vehiculo.stringToDate(seguro.getText().toString())),
-                matricula.getText().toString(),
-                "imagen.jpg");
+                kilometrajeText,
+                modeloText,
+                marcaText,
+                motorText,
+                matriculaText);
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
                 if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                 }
-                if (selectedImage != null){
-                    uploadFile(selectedImage);
-                }else {
-                    finish();
-                }
+                Call<Boolean> call1 = FixCarClient.getInstance().getApi().reminderPut(id,
+                        fechaITVText,
+                        itvNoteText,
+                        fechaNeumaticosText,
+                        tiresNoteText,
+                        fechaAceiteText,
+                        oilNoteText,
+                        fechaRevisionText,
+                        reviewNoteText,
+                        seguroText,
+                        insuranceNoteText);
+                call1.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("error", String.valueOf(response.code()));
+                        }
+                        if (selectedImage != null){
+                            uploadFile(selectedImage);
+                        }else {
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.e("error2:", t.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -248,6 +371,11 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         delButton.setEnabled(false);
         header.setEnabled(false);
         fab.setEnabled(false);
+        insuranceNote.setEnabled(false);
+        reviewNote.setEnabled(false);
+        tiresNote.setEnabled(false);
+        oilNote.setEnabled(false);
+        itvNote.setEnabled(false);
 
         Call<VehiculoExpandable> call = FixCarClient.getInstance().getApi().getVehicle(vehId);
         call.enqueue(new Callback<VehiculoExpandable>() {
@@ -273,6 +401,11 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 delButton.setEnabled(true);
                 header.setEnabled(true);
                 fab.setEnabled(true);
+                insuranceNote.setEnabled(true);
+                reviewNote.setEnabled(true);
+                tiresNote.setEnabled(true);
+                oilNote.setEnabled(true);
+                itvNote.setEnabled(true);
             }
 
             @Override
@@ -320,9 +453,18 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         matricula.setText(getresult.getLicencePlate());
         motor.setText(getresult.getEngine());
         kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
-        seguro.setText(Vehiculo.dateToString(getresult.getEnsuranceDate()));
-        Picasso.get().load("https://fixcarcesur.herokuapp.com/"+getresult.getImage().substring(2)).into(header);
+        seguro.setText(Vehiculo.dateToString(getresult.getInsuranceDate()));
+
+        if (getresult.getImage()!=null && getresult.getImage().length()>1) {
+            Picasso.get().load("https://fixcarcesur.herokuapp.com/"+getresult.getImage().substring(2)).into(header);
+        }
+
         header.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        itvNote.setText(getresult.getItv_note());
+        insuranceNote.setText(getresult.getVehicle_note());
+        oilNote.setText(getresult.getOil_note());
+        tiresNote.setText(getresult.getWheels_note());
+        reviewNote.setText(getresult.getReview_note());
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

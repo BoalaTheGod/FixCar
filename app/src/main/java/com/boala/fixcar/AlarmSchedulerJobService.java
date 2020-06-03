@@ -1,17 +1,12 @@
 package com.boala.fixcar;
 
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +53,7 @@ public class AlarmSchedulerJobService extends JobService {
                                         .setContentTitle("ITV")
                                         .setContentText("quedan "+((vehiculo.getItvDate().getTime()-System.currentTimeMillis())/(1000*3600*24))+" dias, "+vehiculo.getBrand()+" "+vehiculo.getModel())
                                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                                notificationManager.notify(11+i,builder.build());
+                                notificationManager.notify(11+(i+15),builder.build());
                             }
 
                             if (vehiculo.getRevisionDate().getTime()-System.currentTimeMillis() <= TIME && vehiculo.getRevisionDate().getTime()-System.currentTimeMillis() > 0){
@@ -69,7 +64,7 @@ public class AlarmSchedulerJobService extends JobService {
                                         .setContentTitle("Revisión")
                                         .setContentText("quedan "+((vehiculo.getRevisionDate().getTime()-System.currentTimeMillis())/(1000*3600*24))+" dias, "+vehiculo.getBrand()+" "+vehiculo.getModel())
                                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                                notificationManager.notify(12+i,builder.build());
+                                notificationManager.notify(12+(i+15),builder.build());
                             }
 
                             if (vehiculo.getOilDate().getTime()-System.currentTimeMillis() <= TIME && vehiculo.getOilDate().getTime()-System.currentTimeMillis() > 0){
@@ -80,7 +75,7 @@ public class AlarmSchedulerJobService extends JobService {
                                         .setContentTitle("Cambio de aceite")
                                         .setContentText("quedan "+((vehiculo.getOilDate().getTime()-System.currentTimeMillis())/(1000*3600*24))+" dias, "+vehiculo.getBrand()+" "+vehiculo.getModel())
                                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                                notificationManager.notify(13+i,builder.build());
+                                notificationManager.notify(13+(i+15),builder.build());
                             }
 
                             if (vehiculo.getTiresDate().getTime()-System.currentTimeMillis() <= TIME && vehiculo.getTiresDate().getTime()-System.currentTimeMillis() > 0){
@@ -91,7 +86,17 @@ public class AlarmSchedulerJobService extends JobService {
                                         .setContentTitle("Cambio de neumaticos")
                                         .setContentText("quedan "+((vehiculo.getTiresDate().getTime()-System.currentTimeMillis())/(1000*3600*24))+" dias, "+vehiculo.getBrand()+" "+vehiculo.getModel())
                                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                                notificationManager.notify(14+i,builder.build());
+                                notificationManager.notify(14+(i+15),builder.build());
+                            }
+                            if (vehiculo.getInsuranceDate().getTime()-System.currentTimeMillis() <= TIME && vehiculo.getInsuranceDate().getTime()-System.currentTimeMillis() > 0){
+                                notificationManager = getSystemService(NotificationManager.class);
+                                createNotificationChannel();
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "notifyFixCar")
+                                        .setSmallIcon(R.drawable.shield_car_white)
+                                        .setContentTitle("Renovacion seguro")
+                                        .setContentText("quedan "+((vehiculo.getInsuranceDate().getTime()-System.currentTimeMillis())/(1000*3600*24))+" dias, "+vehiculo.getBrand()+" "+vehiculo.getModel())
+                                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                                notificationManager.notify(15+(i+15),builder.build());
                             }
                             i++;
                         }

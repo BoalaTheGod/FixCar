@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
         /**Se comprueba si la sesion esta iniciada, y si no, se va al login**/
-        if (!pref.getBoolean("loggedIn", false) && pref.getInt("userId", -1) == -1) {
+        if (!pref.getBoolean("loggedIn", false)){
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }

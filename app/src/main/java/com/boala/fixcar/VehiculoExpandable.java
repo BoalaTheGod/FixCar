@@ -5,10 +5,12 @@ import java.util.Date;
 public class VehiculoExpandable extends Vehiculo {
     /**Clase para poder expandir las tarjetas de vehiculos**/
     private boolean expanded = false;
-    public VehiculoExpandable(int kmVehiculo, Date fechaItv, Date fechaRuedas, Date fechaAceite, Date fechaRevision, String modelo, String marca, String motor, Date seguro, String color, String matricula, String imagen) {
-        super(kmVehiculo, fechaItv, fechaRuedas, fechaAceite, fechaRevision, modelo, marca, motor, seguro, matricula, imagen);
-        expanded = false;
+
+    public VehiculoExpandable(int idVehiculo, int idUsuario, int kmVehicle, Date itvDate, Date tiresDate, Date oilDate, Date revisionDate, String model, String brand, String engine, Date insuranceDate, String licencePlate, String image, String itv_note, String wheels_note, String oil_note, String review_note, String vehicle_note, boolean expanded) {
+        super(idVehiculo, idUsuario, kmVehicle, itvDate, tiresDate, oilDate, revisionDate, model, brand, engine, insuranceDate, licencePlate, image, itv_note, wheels_note, oil_note, review_note, vehicle_note);
+        this.expanded = false;
     }
+
 
     public VehiculoExpandable(Vehiculo vehiculo){
         super(vehiculo);

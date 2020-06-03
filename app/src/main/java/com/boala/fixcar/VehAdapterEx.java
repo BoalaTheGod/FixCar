@@ -104,19 +104,75 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
 
         public void setData(VehiculoExpandable data) {
             boolean expanded = data.isExpanded();
-            expandable.setVisibility(expanded ? View.VISIBLE : View.GONE);
+
+/** filtros fallidos
+            if (data.getKmVehicle()==0){
+                kilometraje.setVisibility(View.GONE);
+            }else{
+                kilometraje.setText(data.getKmVehicle() + "km");
+            }
+            if (data.getItvDate()==null){
+                itv.setVisibility(View.GONE);
+            }else{
+                itv.setText(Vehiculo.dateToString(data.getItvDate()));
+            }
+            if (data.getBrand()==null){
+                marca.setVisibility(View.GONE);
+            }else{
+                marca.setText(data.getBrand());
+            }
+            if (data.getModel()==null){
+                modelo.setVisibility(View.GONE);
+            }else{
+                modelo.setText(data.getModel());
+            }
+            if (data.getLicencePlate()==null){
+                matricula.setVisibility(View.GONE);
+            }else{
+                matricula.setText(data.getLicencePlate());
+            }
+            if (data.getEngine()==null){
+                motor.setVisibility(View.GONE);
+            }else{
+                motor.setText(data.getEngine());
+            }
+            if (data.getTiresDate()==null){
+                neumaticos.setVisibility(View.GONE);
+            }else{
+                neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
+            }
+            if (data.getOilDate()==null){
+                aceite.setVisibility(View.GONE);
+            }else{
+                aceite.setText(Vehiculo.dateToString(data.getOilDate()));
+            }
+            if (data.getRevisionDate()==null){
+                revision.setVisibility(View.GONE);
+            }else{
+                revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
+            }
+            if (data.getInsuranceDate()==null){
+                ensurance.setVisibility(View.GONE);
+            }else{
+                ensurance.setText(Vehiculo.dateToString(data.getInsuranceDate()));
+            }
+ **/
+            kilometraje.setText(data.getKmVehicle() + "km");
+            itv.setText(Vehiculo.dateToString(data.getItvDate()));
             marca.setText(data.getBrand());
             modelo.setText(data.getModel());
             matricula.setText(data.getLicencePlate());
             motor.setText(data.getEngine());
-            kilometraje.setText(data.getKmVehicle() + "km");
-            itv.setText(Vehiculo.dateToString(data.getItvDate()));
             neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
             aceite.setText(Vehiculo.dateToString(data.getOilDate()));
             revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
-            ensurance.setText(Vehiculo.dateToString(data.getEnsuranceDate()));
+            ensurance.setText(Vehiculo.dateToString(data.getInsuranceDate()));
+            expandable.setVisibility(expanded ? View.VISIBLE : View.GONE);
+
             Log.e("imagen: ",data.getImage());
-            Picasso.get().load("https://fixcarcesur.herokuapp.com/"+data.getImage().substring(2)).into(imageView);
+            if (data.getImage()!=null && data.getImage().length()>1) {
+                Picasso.get().load("https://fixcarcesur.herokuapp.com/" + data.getImage().substring(2)).into(imageView);
+            }
             Log.e("time", String.valueOf(data.getItvDate().getTime()));
             Log.e("tiempos","itv: "+data.getItvDate().getTime()+",actual: "+System.currentTimeMillis());
             if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000){
@@ -139,13 +195,14 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             }else{
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog));
             }
-            if (data.getEnsuranceDate().getTime()-System.currentTimeMillis() < 432000000){
+            if (data.getInsuranceDate().getTime()-System.currentTimeMillis() < 432000000){
                 ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car_red));
             }else{
                 ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car));
             }
 
         }
+
     }
 }
 

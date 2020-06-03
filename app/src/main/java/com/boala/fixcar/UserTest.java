@@ -26,7 +26,7 @@ import java.util.List;
 
 public class UserTest extends AppCompatActivity {
 /**Clase para probar funciones, su contenido es irrelevante**/
-    TextView tv;
+   /** TextView tv;
 
     FixCarApi fixCarApi;
 
@@ -173,7 +173,7 @@ public class UserTest extends AppCompatActivity {
             }
         });
     }
-    private void addVehicle(){
+    /**private void addVehicle(){
         Call<Boolean> call = fixCarApi.postVehicle("3","254687","2020-05-15","2020-05-15","2020-05-15","2020-05-15","panda","fiat","1.1","2020-05-15","2837DC","panda.jpg");
         call.enqueue(new Callback<Boolean>() {
             @Override
