@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -35,11 +36,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ShimmerFrameLayout mShimmerViewContainer;
     private CircleImageView circleImageView;
     private DrawerLayout drawerLayout;
+    private ImageButton searchBT;
+    private TextView name,email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-
-
+        searchBT = findViewById(R.id.searchBT);
         drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,6 +101,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rvCars.setLayoutManager(linearLayoutManager);
         adapter = new VehAdapterEx(this, vehData);
         rvCars.setAdapter(adapter);
+
+        searchBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                intent.putExtra("search",ets.getText().toString());
+                startActivity(intent);
+            }
+        });
+
+        name = navigationView.getHeaderView(0).findViewById(R.id.hName);
+        email = navigationView.getHeaderView(0).findViewById(R.id.hMail);
 
         circleImageView = navigationView.getHeaderView(0).findViewById(R.id.circleImage);
         circleImageView.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();**/
-                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
             }
         });
         /**Boton de cerrar sesion**/
@@ -204,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      **/
     public void getVehicles() {
         swipeRefreshLayout.setRefreshing(true);
+        setProfileInfo();
         Call<List<VehiculoExpandable>> call = FixCarClient.getInstance().getApi().getVehiclesUID(pref.getInt("userId", -1));
         call.enqueue(new Callback<List<VehiculoExpandable>>() {
             @Override
@@ -292,6 +310,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void setNavigationViewListener(){
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    private void setProfileInfo(){
+        Call<Usuario> call = FixCarClient.getInstance().getApi().getUser(pref.getInt("userId",-1));
+        call.enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                Usuario user = response.body();
+                if (user.getImage()!=null && user.getImage().length()>1) {
+                    Picasso.get().load("https://fixcarcesur.herokuapp.com" + user.getImage().substring(2)).
+                            placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).
+                            into(circleImageView);
+                    Log.e("Imagen: ","https://fixcarcesur.herokuapp.com" + user.getImage().substring(2));
+                }
+                name.setText(user.getName());
+                email.setText(user.getEmail());
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
     }
 
 

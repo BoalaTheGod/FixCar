@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -39,6 +40,7 @@ import retrofit2.Response;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +59,7 @@ private Toolbar toolbar;
 private TextView addressTextView, numberTextView, descTextView, emailTextView;
 private CollapsingToolbarLayout toolbarLayout;
 private RatingBar ratingBar;
+private ImageView header;
 
     private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 69;
     private static final long MIN_TIME = 400;
@@ -80,6 +83,8 @@ private RatingBar ratingBar;
         descTextView = findViewById(R.id.descTextView);
         emailTextView = findViewById(R.id.emailTextView);
         ratingBar = findViewById(R.id.ratingBar);
+
+        header = findViewById(R.id.header);
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
 
@@ -127,6 +132,9 @@ private RatingBar ratingBar;
                 toolbar.setTitle(workShop.getName());
                 setChips();
                 ratingBar.setRating(4);
+                if (workShop.getImage()!=null && workShop.getImage().length()>1) {
+                    Picasso.get().load("https://fixcarcesur.herokuapp.com/" + workShop.getImage().substring(2)).into(header);
+                }
                 mapFragment.getMapAsync(ShopProfileActivity.this);
             }
 

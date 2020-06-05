@@ -33,9 +33,11 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="center"
                     android:adjustViewBounds="true"
+                    android:src="@drawable/ic_car_placeholder"
                     android:id="@+id/cardImage"
+                    android:background="#D5D5D5"
 
                     />
                 </androidx.cardview.widget.CardView>

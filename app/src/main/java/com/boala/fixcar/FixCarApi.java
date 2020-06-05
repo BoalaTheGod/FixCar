@@ -37,7 +37,7 @@ public interface FixCarApi {
 
     @FormUrlEncoded
     @POST("vehiculopost")
-    Call<Boolean> postVehicle(
+    Call<Integer> postVehicle(
             @Field("idusuario") String idusuario,
             @Field("km_vehiculo") String km_vehiculo,
             @Field("modelo") String modelo,
@@ -114,5 +114,27 @@ public interface FixCarApi {
     @Multipart
     @POST("vehiclepic{id}")
     Call<Void> uploadVehImage(@Path("id") int id, @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
+    @Multipart
+    @POST("userpic{id}")
+    Call<Void> uploadUserImage(@Path("id") int id, @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
+
+    @GET("documentidusuario{id}")
+    Call<List<DocumentFixCar>> getDocuments(@Path("id") int id);
+
+    @FormUrlEncoded
+    @POST("documentpost")
+    Call<Integer> postDocument(
+            @Field("type_document") String type_document,
+            @Field("notes") String notes,
+            @Field("iduser") String iduser,
+            @Field("idvehicle") String idvehicle
+    );
+    @Multipart
+    @POST("documentpic{id}")
+    Call<Void> uploadDocImage(@Path("id") int id, @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
+    @DELETE("documentdel{id}")
+    Call<Boolean> delDocument(
+            @Path("id") int id
+    );
 
 }

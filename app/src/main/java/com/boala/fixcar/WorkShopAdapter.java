@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -52,16 +55,21 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
     public class TallerHolder extends RecyclerView.ViewHolder {
         private TextView tvNombre, tvTipo;
         private CardView shopCard;
+        private ImageView imageView;
         public TallerHolder(@NonNull View itemView) {
             super(itemView);
             tvNombre = itemView.findViewById(R.id.nombreTaller);
             tvTipo = itemView.findViewById(R.id.tipoTaller);
             shopCard = itemView.findViewById(R.id.shopCard);
+            imageView = itemView.findViewById(R.id.workshopImage);
         }
 
         public void setData(WorkShop data) {
             tvNombre.setText(data.getName());
             tvTipo.setText(data.getEmail());
+            if (data.getImage()!=null && data.getImage().length()>1) {
+                Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getImage().substring(2)).into(imageView);
+            }
         }
     }
 }

@@ -23,6 +23,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:id="@+id/workshopImage"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/taller_generico" />
@@ -43,6 +44,7 @@
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:id="@+id/nombreTaller"
+                android:singleLine="true"
                 />
 
             <TextView
@@ -53,6 +55,7 @@
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:id="@+id/tipoTaller"
+                android:singleLine="true"
                 />
 
         </LinearLayout>

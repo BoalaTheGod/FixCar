@@ -12,12 +12,16 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +35,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final float MIN_DISTANCE = 1000;
     private GoogleMap mMap;
     private LocationManager locationManager;
+    private String search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         Context context;
         mapFragment.getMapAsync(this);
+        search = getIntent().getStringExtra("search");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -77,39 +85,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return;
                 }
                 ArrayList<WorkShop> workShops = (ArrayList<WorkShop>) response.body();
-                for (WorkShop workShop : workShops){
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (WorkShop workShop : workShops) {
+                            try {
+                                List<Address> list = gc.getFromLocationName(workShop.getLocation() + ", " + workShop.getAdress(), 1);
+                                if (list.size() > 0) {
+                                    Address address = list.get(0);
+                                    Log.d("location: ", address.toString());
+                                    if (search.split(" ").length==1 && search.toLowerCase().equals(address.getLocality().toLowerCase()) || search.equals("")) {
 
-                    try {
-                        List<Address> list = gc.getFromLocationName(workShop.getLocation()+", "+workShop.getAdress(), 1);
-                        if (list.size() > 0) {
-                            Address address = list.get(0);
-                            Log.d("location: ", address.toString());
+                                        double lat = address.getLatitude();
+                                        double lng = address.getLongitude();
+                                        Log.d("coords: ", lat + "," + lng);
 
-                            double lat = address.getLatitude();
-                            double lng = address.getLongitude();
-                            Log.d("coords: ", lat+","+lng);
+                                        LatLng latLng = new LatLng(lat, lng);
+                                        MarkerOptions marker = new MarkerOptions().position(latLng).title(workShop.getName()).snippet(workShop.getDescription() +
+                                                "\n " + workShop.getIdtaller());
 
-                            LatLng latLng = new LatLng(lat, lng);
-                            MarkerOptions marker = new MarkerOptions().position(latLng).title(workShop.getName()).snippet(workShop.getDescription()+
-                                    "\n "+workShop.getIdtaller());
-                            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                @Override
-                                public void onInfoWindowClick(Marker marker) {
-                                    String raw = marker.getSnippet();
-                                    String[] array = raw.split(" ");
-                                    int id = Integer.valueOf(array[array.length-1]);
-                                    Intent intent = new Intent(getApplicationContext(), ShopProfileActivity.class);
-                                    intent.putExtra("id",id);
-                                    startActivity(intent);
-                                    Log.e("tag",""+id);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                                    @Override
+                                                    public void onInfoWindowClick(Marker marker) {
+                                                        String raw = marker.getSnippet();
+                                                        String[] array = raw.split(" ");
+                                                        int id = Integer.valueOf(array[array.length - 1]);
+                                                        Intent intent = new Intent(getApplicationContext(), ShopProfileActivity.class);
+                                                        intent.putExtra("id", id);
+                                                        startActivity(intent);
+                                                        Log.e("tag", "" + id);
+                                                    }
+                                                });
+                                                mMap.addMarker(marker);
+                                            }
+                                        });
+                                    }
                                 }
-                            });
-                            mMap.addMarker(marker);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }catch (Exception e){
-                        e.printStackTrace();
                     }
-                }
+                });
+
             }
 
             @Override
@@ -123,11 +144,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case MY_PERMISSION_REQUEST_FINE_LOCATION:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     goToLocation();
-                }else {
+                } else {
                     finish();
                 }
                 return;
@@ -148,7 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,12);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }
@@ -169,15 +190,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void goToLocation(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if (mMap != null){
-                mMap.setMyLocationEnabled(true);
-                locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
-                locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+    public void goToLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (mMap != null) {
+                if (search.equals("")) {
+                    mMap.setMyLocationEnabled(true);
+                    locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+                    locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+                } else if (search.split(" ").length > 1) {
+                    Geocoder gc = new Geocoder(this);
+                    try {
+                        List<Address> list = gc.getFromLocationName(search, 1);
+                        if (list.size() > 0) {
+                            Address address = list.get(0);
+                            Log.d("location: ", address.toString());
+
+                            double lat = address.getLatitude();
+                            double lng = address.getLongitude();
+                            Log.d("coords: ", lat + "," + lng);
+
+                            LatLng latLng = new LatLng(lat, lng);
+                            MarkerOptions hereMarker = new MarkerOptions().position(latLng);
+                            Bitmap drawableBitmap = getBitmap(R.drawable.human_handsup);
+                            hereMarker.icon(BitmapDescriptorFactory.fromBitmap(drawableBitmap));
+                            mMap.addMarker(hereMarker);
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                            mMap.animateCamera(cameraUpdate);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Geocoder gc = new Geocoder(this);
+                    try {
+                        List<Address> list = gc.getFromLocationName(search, 1);
+                        if (list.size() > 0) {
+                            Address address = list.get(0);
+                            Log.d("location: ", address.toString());
+
+                            double lat = address.getLatitude();
+                            double lng = address.getLongitude();
+                            Log.d("coords: ", lat + "," + lng);
+
+                            LatLng latLng = new LatLng(lat, lng);
+                            MarkerOptions hereMarker = new MarkerOptions().position(latLng);
+                            Bitmap drawableBitmap = getBitmap(R.drawable.human_handsup);
+                            hereMarker.icon(BitmapDescriptorFactory.fromBitmap(drawableBitmap));
+                            mMap.addMarker(hereMarker);
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
+                            mMap.animateCamera(cameraUpdate);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
             }
-        }else {
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
         }
+    }
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

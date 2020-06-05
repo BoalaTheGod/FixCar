@@ -47,6 +47,7 @@
                     android:layout_weight="1"
                     />
                 <ImageButton
+                    android:id="@+id/searchBT"
                     android:layout_width="48dp"
                     android:layout_height="match_parent"
                     android:src="@drawable/magnify"

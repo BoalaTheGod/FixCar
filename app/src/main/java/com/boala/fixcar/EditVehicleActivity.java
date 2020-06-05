@@ -3,6 +3,7 @@ package com.boala.fixcar;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,13 +25,18 @@ import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.loader.content.CursorLoader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -39,18 +45,25 @@ import retrofit2.Response;
 
 public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RESULT_LOAD_IMAGE = 100;
-    private EditText fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro,insuranceNote,itvNote,tiresNote,oilNote,reviewNote;
-    private ImageView header;
+    private static final int RESULT_LOAD_DOCUMENT = 102;
+    private EditText docTypeET,docNotesET,fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro,insuranceNote,itvNote,tiresNote,oilNote,reviewNote;
+    private ImageView header, addDocIMG;
     private int id = -1;
     private int pos = -1;
-    private Button delButton;
+    private Button delButton,addDoc;
     private Vehiculo getresult;
     private FloatingActionButton fab;
     private SharedPreferences pref;
     private Uri selectedImage;
+    private Uri selectedDocImg;
     private Toolbar toolbar;
     private CollapsingToolbarLayout toolbarLayout;
+    private RecyclerView rvDocs;
+    private DocAdapter adapter;
+    public static ArrayList<DocumentFixCar> docsData;
+    private CardView addDocCard;
     private String fechaITVText, fechaNeumaticosText, fechaAceiteText, fechaRevisionText, marcaText, modeloText, matriculaText, motorText, kilometrajeText, seguroText,insuranceNoteText,itvNoteText,tiresNoteText,oilNoteText,reviewNoteText;
+    private int docId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +76,15 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
 
 
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+
+        addDocCard = findViewById(R.id.addDocCard);
+
+        docTypeET = findViewById(R.id.docTypeET);
+        docNotesET = findViewById(R.id.docNotesET);
+        addDocIMG = findViewById(R.id.addDocIMG);
+        addDocIMG.setOnClickListener(this);
+        addDoc = findViewById(R.id.addDocBT);
+        addDoc.setOnClickListener(this);
 
         fechaITV = findViewById(R.id.fechaItv);
         fechaITV.setOnClickListener(this);
@@ -88,6 +110,14 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         tiresNote = findViewById(R.id.tiresNote);
         oilNote = findViewById(R.id.oilNote);
         reviewNote = findViewById(R.id.reviewNote);
+
+        docsData = new ArrayList<>();
+        rvDocs = findViewById(R.id.docsRV);
+        Context context;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvDocs.setLayoutManager(linearLayoutManager);
+        adapter = new DocAdapter(this, docsData);
+        rvDocs.setAdapter(adapter);
 
         id = getIntent().getIntExtra("idVeh", -1);
         pos = getIntent().getIntExtra("pos", -1);
@@ -171,6 +201,24 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                         })
                         .setNegativeButton("no eliminar", null)
                         .show();
+                break;
+            case R.id.addDocIMG:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},132);
+                }else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, RESULT_LOAD_DOCUMENT);
+                }
+                break;
+            case R.id.addDocBT:
+                if (addDocCard.getVisibility() == View.GONE){
+                    addDocCard.setVisibility(View.VISIBLE);
+                    addDoc.setText("Guardar");
+                }else{
+                    addDocCard.setVisibility(View.GONE);
+                    addDoc.setText("Añadir Documento");
+                    uploadDocument();
+                }
                 break;
         }
 
@@ -290,7 +338,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                             Log.e("error", String.valueOf(response.code()));
                         }
                         if (selectedImage != null){
-                            uploadFile(selectedImage);
+                            uploadPicture(selectedImage);
                         }else {
                             finish();
                         }
@@ -316,18 +364,19 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
      **/
     private void addVehicle() {
         parseTextViews();
-        Call<Boolean> call = FixCarClient.getInstance().getApi().postVehicle(String.valueOf(pref.getInt("userId", -1)),
+        Call<Integer> call = FixCarClient.getInstance().getApi().postVehicle(String.valueOf(pref.getInt("userId", -1)),
                 kilometrajeText,
                 modeloText,
                 marcaText,
                 motorText,
                 matriculaText);
-        call.enqueue(new Callback<Boolean>() {
+        call.enqueue(new Callback<Integer>() {
             @Override
-            public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
+            public void onResponse(Call<Integer> call, retrofit2.Response<Integer> response) {
                 if (!response.isSuccessful()) {
                     Log.e("error", String.valueOf(response.code()));
                 }
+                id = response.body();
                 Call<Boolean> call1 = FixCarClient.getInstance().getApi().reminderPut(id,
                         fechaITVText,
                         itvNoteText,
@@ -346,7 +395,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                             Log.e("error", String.valueOf(response.code()));
                         }
                         if (selectedImage != null){
-                            uploadFile(selectedImage);
+                            uploadPicture(selectedImage);
                         }else {
                             finish();
                         }
@@ -360,7 +409,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
+            public void onFailure(Call<Integer> call, Throwable t) {
                 Log.e("error2:", t.getMessage());
             }
         });
@@ -478,6 +527,35 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         oilNote.setText(getresult.getOil_note());
         tiresNote.setText(getresult.getWheels_note());
         reviewNote.setText(getresult.getReview_note());
+        getDocuments();
+
+    }
+    private void getDocuments(){
+        Call<List<DocumentFixCar>> call = FixCarClient.getInstance().getApi().getDocuments(pref.getInt("userId",-1));
+        call.enqueue(new Callback<List<DocumentFixCar>>() {
+            @Override
+            public void onResponse(Call<List<DocumentFixCar>> call, Response<List<DocumentFixCar>> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                List<DocumentFixCar> documents = response.body();
+                docsData.clear();
+                if (documents!=null){
+                    for (DocumentFixCar document : documents){
+                        if (document.getIdVehicle() == id){
+                            docsData.add(new DocumentFixCar(document));
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<DocumentFixCar>> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -488,6 +566,11 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
 
             header.setImageURI(selectedImage);
             header.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
+        if (requestCode == RESULT_LOAD_DOCUMENT && resultCode == RESULT_OK && null != data) {
+            selectedDocImg = data.getData();
+
+            addDocIMG.setImageURI(selectedDocImg);
         }
 
     }
@@ -503,7 +586,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         return result;
     }
 
-    private void uploadFile(Uri fileUri){
+    private void uploadPicture(Uri fileUri){
         File file = new File(getRealPathFromURI(fileUri));
         MediaType contentType;
         RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
@@ -526,4 +609,57 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
+    private void uploadDocumentIMG(Uri fileUri){
+        File file = new File(getRealPathFromURI(fileUri));
+        MediaType contentType;
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+
+        Call<Void> call = FixCarClient.getInstance().getApi().uploadDocImage(docId, requestFile);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                    return;
+                }
+                Log.d("exito","se ha subido la imagen");
+                selectedDocImg = null;
+                docTypeET.setText("");
+                docNotesET.setText("");
+                addDocIMG.setImageResource(R.drawable.image_plus);
+                getDocuments();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+    private void uploadDocument(){
+        Call<Integer> call = FixCarClient.getInstance().getApi().postDocument(docTypeET.getText().toString(),docNotesET.getText().toString(),String.valueOf(pref.getInt("userId",-1)),String.valueOf(id));
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("error", String.valueOf(response.code()));
+                    return;
+                }
+                docId = response.body();
+                if (selectedDocImg != null){
+                    uploadDocumentIMG(selectedDocImg);
+                }else{
+                docTypeET.setText("");
+                docNotesET.setText("");
+                addDocIMG.setImageResource(R.drawable.image_plus);
+                getDocuments();}
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
 }

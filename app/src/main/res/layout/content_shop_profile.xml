@@ -94,7 +94,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/longString"
+                android:text=""
                 android:id="@+id/descTextView"
                 android:layout_margin="5dp"
                 />
@@ -123,21 +123,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="address"
+                android:text=""
                 android:id="@+id/addressTextView"
                 android:layout_margin="5dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="number"
+                android:text=""
                 android:id="@+id/numberTextView"
                 android:layout_margin="5dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="email"
+                android:text=""
                 android:id="@+id/emailTextView"
                 android:layout_margin="5dp"
                 />

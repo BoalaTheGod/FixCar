@@ -158,44 +158,66 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             }
  **/
             kilometraje.setText(data.getKmVehicle() + "km");
-            itv.setText(Vehiculo.dateToString(data.getItvDate()));
+            if (!Vehiculo.dateToString(data.getItvDate()).equals("30/11/0002")) {
+                itv.setText(Vehiculo.dateToString(data.getItvDate()));
+            }else{
+                itv.setText("");
+            }
             marca.setText(data.getBrand());
             modelo.setText(data.getModel());
             matricula.setText(data.getLicencePlate());
             motor.setText(data.getEngine());
-            neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
-            aceite.setText(Vehiculo.dateToString(data.getOilDate()));
-            revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
-            ensurance.setText(Vehiculo.dateToString(data.getInsuranceDate()));
+            if (!Vehiculo.dateToString(data.getTiresDate()).equals("30/11/0002")) {
+                neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
+            }else{
+                neumaticos.setText("");
+            }
+            if (!Vehiculo.dateToString(data.getOilDate()).equals("30/11/0002")) {
+                aceite.setText(Vehiculo.dateToString(data.getOilDate()));
+            }else{
+                aceite.setText("");
+            }
+            if (!Vehiculo.dateToString(data.getRevisionDate()).equals("30/11/0002")) {
+                revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
+            }else{
+                revision.setText("");
+            }
+            if (!Vehiculo.dateToString(data.getInsuranceDate()).equals("30/11/0002")) {
+                ensurance.setText(Vehiculo.dateToString(data.getInsuranceDate()));
+            }else{
+                ensurance.setText("");
+            }
             expandable.setVisibility(expanded ? View.VISIBLE : View.GONE);
 
             Log.e("imagen: ",data.getImage());
             if (data.getImage()!=null && data.getImage().length()>1) {
-                Picasso.get().load("https://fixcarcesur.herokuapp.com/" + data.getImage().substring(2)).into(imageView);
+                Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getImage().substring(2)).placeholder(R.drawable.ic_car_placeholder).error(R.drawable.ic_car_placeholder).into(imageView);
+                Log.e("imagen: ","https://fixcarcesur.herokuapp.com" + data.getImage().substring(2));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
             Log.e("time", String.valueOf(data.getItvDate().getTime()));
             Log.e("tiempos","itv: "+data.getItvDate().getTime()+",actual: "+System.currentTimeMillis());
-            if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000){
+            if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getItvDate()).equals("30/11/0002")){
                 itvIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_logo_itv_red));
             }else {
                 itvIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_logo_itv));
             }
-            if (data.getOilDate().getTime()-System.currentTimeMillis() < 432000000){
+            if (data.getOilDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getOilDate()).equals("30/11/0002")){
                 aceiteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.oil_red));
             }else {
                 aceiteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.oil));
             }
-            if (data.getTiresDate().getTime()-System.currentTimeMillis() < 432000000){
+            if (data.getTiresDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getTiresDate()).equals("30/11/0002")){
                 neumaticosIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_tire_alert_red));
             }else {
                 neumaticosIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_tire_alert));
             }
-            if (data.getRevisionDate().getTime()-System.currentTimeMillis() < 432000000){
+            if (data.getRevisionDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getRevisionDate()).equals("30/11/0002")){
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog_red));
             }else{
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog));
             }
-            if (data.getInsuranceDate().getTime()-System.currentTimeMillis() < 432000000){
+            if (data.getInsuranceDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getInsuranceDate()).equals("30/11/0002")){
                 ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car_red));
             }else{
                 ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car));

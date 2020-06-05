@@ -24,6 +24,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_below="@id/headerCoverImage"
+            android:id="@+id/profilePicture"
             android:layout_centerHorizontal="true"
             android:clickable="true"
             android:padding="20dp"
