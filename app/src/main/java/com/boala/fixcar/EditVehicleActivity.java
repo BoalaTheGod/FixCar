@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -505,16 +506,37 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
      * Funcion que actualiza la interfaz con los datos del vehiculo seleccionado
      **/
     private void updateUI() {
-        fechaITV.setText(Vehiculo.dateToString(getresult.getItvDate()));
-        fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getTiresDate()));
-        fechaAceite.setText(Vehiculo.dateToString(getresult.getOilDate()));
-        fechaRevision.setText(Vehiculo.dateToString(getresult.getRevisionDate()));
+        Date zero = Vehiculo.stringToDate("01/01/1900");
+        if (!getresult.getItvDate().before(zero)) {
+            fechaITV.setText(Vehiculo.dateToString(getresult.getItvDate()));
+        }else {
+            fechaITV.setText("");
+        }
+        if (!getresult.getTiresDate().before(zero)) {
+            fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getTiresDate()));
+        }else {
+            fechaITV.setText("");
+        }
+        if (!getresult.getOilDate().before(zero)) {
+            fechaAceite.setText(Vehiculo.dateToString(getresult.getOilDate()));
+        }else {
+            fechaITV.setText("");
+        }
+        if (!getresult.getRevisionDate().before(zero)) {
+            fechaRevision.setText(Vehiculo.dateToString(getresult.getRevisionDate()));
+        }else {
+            fechaITV.setText("");
+        }
         marca.setText(getresult.getBrand());
         modelo.setText(getresult.getModel());
         matricula.setText(getresult.getLicencePlate());
         motor.setText(getresult.getEngine());
         kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
-        seguro.setText(Vehiculo.dateToString(getresult.getInsuranceDate()));
+        if (!getresult.getInsuranceDate().before(zero)) {
+            seguro.setText(Vehiculo.dateToString(getresult.getInsuranceDate()));
+        }else {
+            fechaITV.setText("");
+        }
         toolbarLayout.setTitle(getresult.getBrand()+" "+getresult.getModel());
 
         if (getresult.getImage()!=null && getresult.getImage().length()>1) {

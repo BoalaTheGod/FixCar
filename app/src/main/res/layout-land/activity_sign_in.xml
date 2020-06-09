@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/car_engine"
+    android:animateLayoutChanges="true"
+    tools:context=".SignInActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_gravity="center" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:alpha="0.8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:animateLayoutChanges="true">
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre"
+        android:id="@+id/nameLabel" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:id="@+id/nombre"
+        android:inputType="textPersonName" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:id="@+id/emailLabel"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:id="@+id/email"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Direccion"
+        android:clickable="true"
+        android:id="@+id/direccionLabel"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:id="@+id/direccion"
+        android:inputType="textPostalAddress"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Localidad"
+        android:clickable="true"
+        android:id="@+id/localidadLabel"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:id="@+id/localidad"
+        android:inputType="textPostalAddress"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contraseña"
+                android:id="@+id/passLabel"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/password"
+                android:inputType="textPassword" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirmar contraseña"
+                android:clickable="true"
+                android:id="@+id/passConLabel" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/passwordConfirm"
+                android:inputType="textPassword" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Telefono"
+                android:clickable="true"
+                android:id="@+id/telefonoLabel"
+                android:visibility="gone"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/telefono"
+                android:inputType="phone"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha de nacimiento"
+                android:clickable="true"
+                android:id="@+id/fechaNacLabel"
+                android:visibility="gone"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:id="@+id/fechaNac"
+                android:clickable="true"
+                android:focusable="false"
+                android:inputType="date"
+                android:visibility="gone"
+                />
+        </LinearLayout>
+
+
+
+
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="#FFFFFF"
+        android:text="¿Ya tienes una cuenta?, Inicia sesión"
+        android:clickable="true"
+        android:id="@+id/alredyReg" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="24dp"
+        android:layout_height="wrap_content"
+        android:text="Regístrate"
+        android:textAllCaps="false"
+        android:alpha="0.8"
+        android:layout_gravity="bottom"
+        android:id="@+id/send" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="#FFFFFF"
+        android:text="¿No quieres seguir rellenando formularios?, Omitir"
+        android:clickable="true"
+        android:id="@+id/dismissForm"
+        android:visibility="gone"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="24dp"
+        android:layout_height="wrap_content"
+        android:text="Completar información"
+        android:textAllCaps="false"
+        android:alpha="0.8"
+        android:layout_gravity="bottom"
+        android:id="@+id/completeForm"
+        android:visibility="gone"
+        />
+
+
+</LinearLayout>

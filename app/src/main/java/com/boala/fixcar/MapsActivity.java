@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, LocationListener {
@@ -55,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager locationManager;
     private String search;
+    private Address addressAux;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +74,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        goToLocation();
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        goToLocation();
+
+    }
+
+    public void putMarkers(){
         Geocoder gc = new Geocoder(this);
         Call<List<WorkShop>> call = FixCarClient.getInstance().getApi().getTalleres();
         call.enqueue(new Callback<List<WorkShop>>() {
@@ -94,7 +100,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 if (list.size() > 0) {
                                     Address address = list.get(0);
                                     Log.d("location: ", address.toString());
-                                    if (search.split(" ").length==1 && search.toLowerCase().equals(address.getLocality().toLowerCase()) || search.equals("")) {
+                                    if (addressAux == null){
+                                        addressAux = new Address(Locale.getDefault());
+                                        addressAux.setLocality(" ");
+                                    }
+                                    if (addressAux.getLocality().toLowerCase().equals(address.getLocality().toLowerCase()) || search.isEmpty()) {
 
                                         double lat = address.getLatitude();
                                         double lng = address.getLongitude();
@@ -188,12 +198,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onProviderDisabled(String s) {
 
     }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void goToLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
-                if (search.equals("")) {
+                if (search.isEmpty()) {
+                    putMarkers();
                     mMap.setMyLocationEnabled(true);
                     locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
@@ -202,11 +212,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     try {
                         List<Address> list = gc.getFromLocationName(search, 1);
                         if (list.size() > 0) {
-                            Address address = list.get(0);
-                            Log.d("location: ", address.toString());
+                            addressAux = list.get(0);
+                            Log.d("location: ", addressAux.toString());
+                            putMarkers();
 
-                            double lat = address.getLatitude();
-                            double lng = address.getLongitude();
+                            double lat = addressAux.getLatitude();
+                            double lng = addressAux.getLongitude();
                             Log.d("coords: ", lat + "," + lng);
 
                             LatLng latLng = new LatLng(lat, lng);
@@ -225,11 +236,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     try {
                         List<Address> list = gc.getFromLocationName(search, 1);
                         if (list.size() > 0) {
-                            Address address = list.get(0);
-                            Log.d("location: ", address.toString());
+                            addressAux = list.get(0);
+                            Log.d("location: ", addressAux.toString());
+                            putMarkers();
 
-                            double lat = address.getLatitude();
-                            double lng = address.getLongitude();
+                            double lat = addressAux.getLatitude();
+                            double lng = addressAux.getLongitude();
                             Log.d("coords: ", lat + "," + lng);
 
                             LatLng latLng = new LatLng(lat, lng);

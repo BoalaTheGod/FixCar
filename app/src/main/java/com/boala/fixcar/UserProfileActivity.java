@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.Date;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -127,7 +128,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     etDireccion.setText("");
                 }
                 try {
-                    etFechaNac.setText(Vehiculo.dateToString(user.getDate()));
+                    Date zero = Vehiculo.stringToDate("01/01/1900");
+                    if (!user.getDate().before(zero)) {
+                        etFechaNac.setText(Vehiculo.dateToString(user.getDate()));
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     etFechaNac.setText("");

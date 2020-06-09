@@ -3,6 +3,8 @@ package com.boala.fixcar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,12 +37,19 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_document, parent, false);
         return new DocAdapter.DocHolder(view);
     }
-private int position2;
     @Override
     public void onBindViewHolder(@NonNull DocHolder holder, int position) {
         final DocumentFixCar data = content.get(position);
         holder.setData(data);
-        position2 = position;
+        holder.itemView.findViewById(R.id.docImageView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://fixcarcesur.herokuapp.com"+data.getDocuments().substring(2);
+                Intent galleryIntent = new Intent(context,FullScreenImageActivity.class);
+                galleryIntent.putExtra("imgLink",url);
+                context.startActivity(galleryIntent);
+            }
+        });
         holder.itemView.findViewById(R.id.docCard).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -53,7 +62,7 @@ private int position2;
                         .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                delDocument(data.getIddocuments(),data);
+                                delDocument(data.getIddocuments(),data,position);
                             }
                         })
                         .setNegativeButton("no eliminar", null)
@@ -62,7 +71,7 @@ private int position2;
             }
         });
     }
-    private void delDocument(int id,DocumentFixCar data) {
+    private void delDocument(int id,DocumentFixCar data,int position) {
         if (id >= 0) {
             Call<Boolean> call = FixCarClient.getInstance().getApi().delDocument(id);
             call.enqueue(new Callback<Boolean>() {
@@ -71,8 +80,9 @@ private int position2;
                     if (!response.isSuccessful()) {
                         Log.e("error", String.valueOf(response.code()));
                     }
-                    EditVehicleActivity.docsData.remove(data);
-                    notifyItemRemoved(position2);
+                    content.remove(content.get(position));
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position,content.size());
                 }
 
                 @Override
