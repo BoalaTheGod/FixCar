@@ -23,8 +23,10 @@ public class WorkShop {
     private String location;
     @SerializedName("image")
     private String image;
+    @SerializedName("video")
+    private String video;
 
-    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email, String phone, String description, String location, String image) {
+    public WorkShop(int idtaller, String name, String cif, String adress, String type, String state, String email, String phone, String description, String location, String image, String video) {
         this.idtaller = idtaller;
         this.name = name;
         this.cif = cif;
@@ -36,6 +38,7 @@ public class WorkShop {
         this.description = description;
         this.location = location;
         this.image = image;
+        this.video = video;
     }
 
     public String getPhone() {
@@ -124,5 +127,13 @@ public class WorkShop {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 }

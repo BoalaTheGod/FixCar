@@ -52,7 +52,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView navigationView;
     private VehAdapterEx adapter;
-    private FloatingActionButton fabAddCar;
+    static FloatingActionButton fabAddCar;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;

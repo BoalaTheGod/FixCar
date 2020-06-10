@@ -150,7 +150,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp">
+                        android:padding="2dp"
+                        android:animateLayoutChanges="true"
+                        android:longClickable="true"
+                        android:id="@+id/ensuranceLayout"
+                        >
 
                         <ImageView
                             android:layout_width="25dp"
@@ -163,6 +167,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:animateLayoutChanges="true"
                             >
                         <EditText
                             android:id="@+id/seguro"
@@ -174,15 +179,41 @@
                             android:maxLines="1"
                             android:hint="Fecha de renovacion del seguro"
                             android:background="@color/transparent"
-                            android:layout_margin="5dp" />
-
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:background="@drawable/effect_ripple"
+                                android:id="@+id/ensurancePH"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                >
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Renovacion del seguro"
+                                android:textSize="18sp"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                />
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/plus"
+                                    />
+                            </LinearLayout>
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/insuranceNote"
                                 android:hint="Notas"
                                 android:background="@color/transparent"
-                                android:layout_margin="5dp" />
+                                android:layout_margin="5dp"
+                                android:visibility="gone"
+                                />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -197,7 +228,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp">
+                        android:padding="2dp"
+                        android:animateLayoutChanges="true"
+                        android:longClickable="true"
+                        android:id="@+id/itvLayout"
+                        >
 
                         <ImageView
                             android:layout_width="25dp"
@@ -209,6 +244,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:animateLayoutChanges="true"
                             >
                         <EditText
                             android:id="@+id/fechaItv"
@@ -220,14 +256,41 @@
                             android:maxLines="1"
                             android:hint="Fecha de la ITV"
                             android:background="@color/transparent"
-                            android:layout_margin="5dp" />
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:background="@drawable/effect_ripple"
+                                android:id="@+id/itvPH"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                >
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Pasar la ITV"
+                                android:textSize="18sp"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                />
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/plus"
+                                    />
+                            </LinearLayout>
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/itvNote"
                                 android:hint="Notas"
                                 android:background="@color/transparent"
-                                android:layout_margin="5dp" />
+                                android:layout_margin="5dp"
+                                android:visibility="gone"
+                                />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -241,7 +304,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp">
+                        android:padding="2dp"
+                        android:animateLayoutChanges="true"
+                        android:longClickable="true"
+                        android:id="@+id/tiresLayout"
+                        >
 
                         <ImageView
                             android:layout_width="25dp"
@@ -253,6 +320,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:animateLayoutChanges="true"
                             >
                         <EditText
                             android:id="@+id/fechaNeumaticos"
@@ -264,14 +332,41 @@
                             android:maxLines="1"
                             android:hint="Fecha del cambio de neumaticos"
                             android:background="@color/transparent"
-                            android:layout_margin="5dp" />
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:background="@drawable/effect_ripple"
+                                android:id="@+id/tiresPH"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                >
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Cambio de neumaticos"
+                                android:textSize="18sp"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                />
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/plus"
+                                    />
+                            </LinearLayout>
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/tiresNote"
                                 android:hint="Notas"
                                 android:background="@color/transparent"
-                                android:layout_margin="5dp" />
+                                android:layout_margin="5dp"
+                                android:visibility="gone"
+                                />
                         </LinearLayout>
                     </LinearLayout>
                     <View
@@ -283,7 +378,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp">
+                        android:padding="2dp"
+                        android:animateLayoutChanges="true"
+                        android:longClickable="true"
+                        android:id="@+id/oilLayout"
+                        >
 
                         <ImageView
                             android:layout_width="25dp"
@@ -295,6 +394,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:animateLayoutChanges="true"
                             >
                         <EditText
                             android:id="@+id/fechaAceite"
@@ -306,14 +406,41 @@
                             android:maxLines="1"
                             android:hint="Fecha del cambio de aceite"
                             android:background="@color/transparent"
-                            android:layout_margin="5dp" />
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:background="@drawable/effect_ripple"
+                                android:id="@+id/oilPH"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                >
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Cambio de aceite"
+                                android:textSize="18sp"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                />
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/plus"
+                                    />
+                            </LinearLayout>
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/oilNote"
                                 android:hint="Notas"
                                 android:background="@color/transparent"
-                                android:layout_margin="5dp" />
+                                android:layout_margin="5dp"
+                                android:visibility="gone"
+                                />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -326,7 +453,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp">
+                        android:padding="2dp"
+                        android:animateLayoutChanges="true"
+                        android:longClickable="true"
+                        android:id="@+id/revisionLayout"
+                        >
 
                         <ImageView
                             android:layout_width="25dp"
@@ -338,6 +469,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:animateLayoutChanges="true"
                             >
                         <EditText
                             android:id="@+id/fechaRevision"
@@ -349,14 +481,41 @@
                             android:maxLines="1"
                             android:hint="Fecha de la revision del vehiculo"
                             android:background="@color/transparent"
-                            android:layout_margin="5dp" />
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:background="@drawable/effect_ripple"
+                                android:id="@+id/revisionPH"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                >
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Revisión"
+                                android:textSize="18sp"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                />
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/plus"
+                                    />
+                            </LinearLayout>
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/reviewNote"
                                 android:hint="Notas"
                                 android:background="@color/transparent"
-                                android:layout_margin="5dp" />
+                                android:layout_margin="5dp"
+                                android:visibility="gone"
+                                />
                         </LinearLayout>
                     </LinearLayout>
 

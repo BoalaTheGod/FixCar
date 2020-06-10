@@ -56,6 +56,7 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             @Override
             public void onClick(View view) {
                 data.setExpanded(!expanded);
+                MainActivity.fabAddCar.show();
                 notifyItemChanged(position);
             }
         });
@@ -78,8 +79,8 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
 
     public class VehHolder extends RecyclerView.ViewHolder {
         private TextView marca, modelo, matricula, motor, kilometraje, itv, neumaticos, aceite, revision, ensurance;
-        LinearLayout expandable;
-        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon, ensuranceIcon,imageView;
+        LinearLayout expandable,itvLayout, tiresLayout,oilLayout,revisionLayout,ensuranceLayout;
+        ImageView itvIcon, aceiteIcon, neumaticosIcon, revisionIcon, ensuranceIcon,imageView, alert;
 
         public VehHolder(@NonNull View itemView) {
             super(itemView);
@@ -100,11 +101,18 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             ensuranceIcon = itemView.findViewById(R.id.ensuranceIcon);
             ensurance = itemView.findViewById(R.id.ensurance);
             imageView = itemView.findViewById(R.id.cardImage);
+            itvLayout = itemView.findViewById(R.id.itvLayout);
+            tiresLayout = itemView.findViewById(R.id.tiresLayout);
+            oilLayout = itemView.findViewById(R.id.oilLayout);
+            revisionLayout = itemView.findViewById(R.id.revisionLayout);
+            ensuranceLayout = itemView.findViewById(R.id.ensuranceLayout);
+            alert = itemView.findViewById(R.id.notificationAlert);
+
         }
 
         public void setData(VehiculoExpandable data) {
             boolean expanded = data.isExpanded();
-
+            boolean hasNotification = false;
 /** filtros fallidos
             if (data.getKmVehicle()==0){
                 kilometraje.setVisibility(View.GONE);
@@ -158,34 +166,44 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
             }
  **/
             kilometraje.setText(data.getKmVehicle() + "km");
-            if (!Vehiculo.dateToString(data.getItvDate()).equals("30/11/0002")) {
-                itv.setText(Vehiculo.dateToString(data.getItvDate()));
-            }else{
+            if (Vehiculo.dateToString(data.getItvDate()).equals("30/11/0002")) {
                 itv.setText("");
+                itvLayout.setVisibility(View.GONE);
+            }else{
+                itv.setText(Vehiculo.dateToString(data.getItvDate()));
+                itvLayout.setVisibility(View.VISIBLE);
             }
             marca.setText(data.getBrand());
             modelo.setText(data.getModel());
             matricula.setText(data.getLicencePlate());
             motor.setText(data.getEngine());
-            if (!Vehiculo.dateToString(data.getTiresDate()).equals("30/11/0002")) {
-                neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
-            }else{
+            if (Vehiculo.dateToString(data.getTiresDate()).equals("30/11/0002")) {
                 neumaticos.setText("");
-            }
-            if (!Vehiculo.dateToString(data.getOilDate()).equals("30/11/0002")) {
-                aceite.setText(Vehiculo.dateToString(data.getOilDate()));
+                tiresLayout.setVisibility(View.GONE);
             }else{
+                neumaticos.setText(Vehiculo.dateToString(data.getTiresDate()));
+                tiresLayout.setVisibility(View.VISIBLE);
+            }
+            if (Vehiculo.dateToString(data.getOilDate()).equals("30/11/0002")) {
                 aceite.setText("");
-            }
-            if (!Vehiculo.dateToString(data.getRevisionDate()).equals("30/11/0002")) {
-                revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
+                oilLayout.setVisibility(View.GONE);
             }else{
+                aceite.setText(Vehiculo.dateToString(data.getOilDate()));
+                oilLayout.setVisibility(View.VISIBLE);
+            }
+            if (Vehiculo.dateToString(data.getRevisionDate()).equals("30/11/0002")) {
                 revision.setText("");
-            }
-            if (!Vehiculo.dateToString(data.getInsuranceDate()).equals("30/11/0002")) {
-                ensurance.setText(Vehiculo.dateToString(data.getInsuranceDate()));
+                revisionLayout.setVisibility(View.GONE);
             }else{
+                revision.setText(Vehiculo.dateToString(data.getRevisionDate()));
+                revisionLayout.setVisibility(View.VISIBLE);
+            }
+            if (Vehiculo.dateToString(data.getInsuranceDate()).equals("30/11/0002")) {
                 ensurance.setText("");
+                ensuranceLayout.setVisibility(View.GONE);
+            }else{
+                ensurance.setText(Vehiculo.dateToString(data.getInsuranceDate()));
+                ensuranceLayout.setVisibility(View.VISIBLE);
             }
             expandable.setVisibility(expanded ? View.VISIBLE : View.GONE);
 
@@ -195,32 +213,45 @@ public class VehAdapterEx extends RecyclerView.Adapter<VehAdapterEx.VehHolder> {
                 Log.e("imagen: ","https://fixcarcesur.herokuapp.com" + data.getImage().substring(2));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
+
+
+
             Log.e("time", String.valueOf(data.getItvDate().getTime()));
             Log.e("tiempos","itv: "+data.getItvDate().getTime()+",actual: "+System.currentTimeMillis());
             if (data.getItvDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getItvDate()).equals("30/11/0002")){
                 itvIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_logo_itv_red));
+                hasNotification = true;
             }else {
                 itvIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_logo_itv));
             }
             if (data.getOilDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getOilDate()).equals("30/11/0002")){
                 aceiteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.oil_red));
+                hasNotification = true;
             }else {
                 aceiteIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.oil));
             }
             if (data.getTiresDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getTiresDate()).equals("30/11/0002")){
                 neumaticosIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_tire_alert_red));
+                hasNotification = true;
             }else {
                 neumaticosIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_tire_alert));
             }
             if (data.getRevisionDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getRevisionDate()).equals("30/11/0002")){
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog_red));
+                hasNotification = true;
             }else{
                 revisionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.car_cog));
             }
             if (data.getInsuranceDate().getTime()-System.currentTimeMillis() < 432000000 && !Vehiculo.dateToString(data.getInsuranceDate()).equals("30/11/0002")){
                 ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car_red));
+                hasNotification = true;
             }else{
                 ensuranceIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shield_car));
+            }
+            if (hasNotification){
+                alert.setVisibility(View.VISIBLE);
+            }else {
+                alert.setVisibility(View.GONE);
             }
 
         }

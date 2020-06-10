@@ -4,7 +4,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,6 +60,30 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
                 context.startActivity(galleryIntent);
             }
         });
+        holder.itemView.findViewById(R.id.shareBT).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri bmpUri = getLocalBitmapUri(holder.itemView.findViewById(R.id.docImageView));
+                if (bmpUri != null) {
+
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+                    shareIntent.setType("image/*");
+
+                    context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                } else {
+
+                }
+            }
+        });
+        holder.itemView.findViewById(R.id.downloadBT).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLocalBitmapUri(holder.itemView.findViewById(R.id.docImageView));
+                Toast.makeText(context,"Se ha descargado el documento",Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.itemView.findViewById(R.id.docCard).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -70,6 +104,28 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
                 return false;
             }
         });
+    }
+    public Uri getLocalBitmapUri(ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        Bitmap bmp = null;
+        if (drawable instanceof BitmapDrawable){
+            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } else {
+            return null;
+        }
+        Uri bmpUri = null;
+        try {
+            File file =  new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), "share_image_" + System.currentTimeMillis() + ".png");
+            file.getParentFile().mkdirs();
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            bmpUri = FileProvider.getUriForFile(context,"com.boala.fixcar.provider",file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bmpUri;
     }
     private void delDocument(int id,DocumentFixCar data,int position) {
         if (id >= 0) {
@@ -100,18 +156,25 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
     }
 
     public class DocHolder extends RecyclerView.ViewHolder {
-        private ImageView docImage;
+        private ImageView docImage,shareBT,downloadBT;
         private TextView docType, docNotes;
         public DocHolder(@NonNull View itemView) {
             super(itemView);
             docImage = itemView.findViewById(R.id.docImageView);
             docType = itemView.findViewById(R.id.docTypeTV);
             docNotes = itemView.findViewById(R.id.docNotesTV);
+            shareBT = itemView.findViewById(R.id.shareBT);
+            downloadBT = itemView.findViewById(R.id.downloadBT);
         }
 
         public void setData(DocumentFixCar data) {
             if (data.getDocuments() != null) {
                 Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getDocuments().substring(2)).into(docImage);
+                shareBT.setVisibility(View.VISIBLE);
+                downloadBT.setVisibility(View.VISIBLE);
+            }else {
+                shareBT.setVisibility(View.GONE);
+                downloadBT.setVisibility(View.GONE);
             }
             docType.setText(data.getType_document());
             docNotes.setText(data.getNotes());

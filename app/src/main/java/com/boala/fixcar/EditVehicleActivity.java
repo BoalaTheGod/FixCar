@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
     private static final int RESULT_LOAD_IMAGE = 100;
     private static final int RESULT_LOAD_DOCUMENT = 102;
     private EditText docTypeET,docNotesET,fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro,insuranceNote,itvNote,tiresNote,oilNote,reviewNote;
@@ -63,6 +65,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
     private DocAdapter adapter;
     public static ArrayList<DocumentFixCar> docsData;
     private CardView addDocCard;
+    private LinearLayout ensurancePH,itvPH,tiresPH,oilPH,revisionPH, ensuranceLayout, itvLayout, tiresLayout, revisionLayout, oilLayout;
     private String fechaITVText, fechaNeumaticosText, fechaAceiteText, fechaRevisionText, marcaText, modeloText, matriculaText, motorText, kilometrajeText, seguroText,insuranceNoteText,itvNoteText,tiresNoteText,oilNoteText,reviewNoteText;
     private int docId;
 
@@ -111,6 +114,29 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         tiresNote = findViewById(R.id.tiresNote);
         oilNote = findViewById(R.id.oilNote);
         reviewNote = findViewById(R.id.reviewNote);
+
+        ensurancePH = findViewById(R.id.ensurancePH);
+        ensurancePH.setOnClickListener(this);
+        itvPH = findViewById(R.id.itvPH);
+        itvPH.setOnClickListener(this);
+        tiresPH = findViewById(R.id.tiresPH);
+        tiresPH.setOnClickListener(this);
+        oilPH = findViewById(R.id.oilPH);
+        oilPH.setOnClickListener(this);
+        revisionPH = findViewById(R.id.revisionPH);
+        revisionPH.setOnClickListener(this);
+
+        ensuranceLayout = findViewById(R.id.ensuranceLayout);
+        ensuranceLayout.setOnLongClickListener(this);
+        itvLayout = findViewById(R.id.itvLayout);
+        itvLayout.setOnLongClickListener(this);
+        tiresLayout = findViewById(R.id.tiresLayout);
+        tiresLayout.setOnLongClickListener(this);
+        oilLayout = findViewById(R.id.oilLayout);
+        oilLayout.setOnLongClickListener(this);
+        revisionLayout = findViewById(R.id.revisionLayout);
+        revisionLayout.setOnLongClickListener(this);
+
 
         docsData = new ArrayList<>();
         rvDocs = findViewById(R.id.docsRV);
@@ -221,8 +247,139 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                     uploadDocument();
                 }
                 break;
+            case R.id.ensurancePH:
+                seguro.setVisibility(View.VISIBLE);
+                insuranceNote.setVisibility(View.VISIBLE);
+                ensurancePH.setVisibility(View.GONE);
+                break;
+            case R.id.revisionPH:
+                fechaRevision.setVisibility(View.VISIBLE);
+                reviewNote.setVisibility(View.VISIBLE);
+                revisionPH.setVisibility(View.GONE);
+                break;
+            case R.id.oilPH:
+                fechaAceite.setVisibility(View.VISIBLE);
+                oilNote.setVisibility(View.VISIBLE);
+                oilPH.setVisibility(View.GONE);
+                break;
+            case R.id.tiresPH:
+                fechaNeumaticos.setVisibility(View.VISIBLE);
+                tiresNote.setVisibility(View.VISIBLE);
+                tiresPH.setVisibility(View.GONE);
+                break;
+            case R.id.itvPH:
+                fechaITV.setVisibility(View.VISIBLE);
+                itvNote.setVisibility(View.VISIBLE);
+                itvPH.setVisibility(View.GONE);
+                break;
         }
 
+    }
+    @Override
+    public boolean onLongClick(View view) {
+        switch (view.getId()){
+            case R.id.ensuranceLayout:
+                if (ensurancePH.getVisibility() == View.GONE) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.delete_empty)
+                            .setTitle("Eliminando Recordatorio")
+                            .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
+                            .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    seguro.setText("");
+                                    insuranceNote.setText("");
+                                    seguro.setVisibility(View.GONE);
+                                    insuranceNote.setVisibility(View.GONE);
+                                    ensurancePH.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .setNegativeButton("no eliminar", null)
+                            .show();
+                }
+                break;
+            case R.id.itvLayout:
+                if (itvPH.getVisibility() == View.GONE) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.delete_empty)
+                            .setTitle("Eliminando Recordatorio")
+                            .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
+                            .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    fechaITV.setText("");
+                                    itvNote.setText("");
+                                    fechaITV.setVisibility(View.GONE);
+                                    itvNote.setVisibility(View.GONE);
+                                    itvPH.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .setNegativeButton("no eliminar", null)
+                            .show();
+                }
+                break;
+            case R.id.tiresLayout:
+                if (tiresPH.getVisibility() == View.GONE) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.delete_empty)
+                            .setTitle("Eliminando Recordatorio")
+                            .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
+                            .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    fechaNeumaticos.setText("");
+                                    tiresNote.setText("");
+                                    fechaNeumaticos.setVisibility(View.GONE);
+                                    tiresNote.setVisibility(View.GONE);
+                                    tiresPH.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .setNegativeButton("no eliminar", null)
+                            .show();
+                }
+                break;
+            case R.id.oilLayout:
+                if (oilPH.getVisibility() == View.GONE) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.delete_empty)
+                            .setTitle("Eliminando Recordatorio")
+                            .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
+                            .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    fechaAceite.setText("");
+                                    oilNote.setText("");
+                                    fechaAceite.setVisibility(View.GONE);
+                                    oilNote.setVisibility(View.GONE);
+                                    oilPH.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .setNegativeButton("no eliminar", null)
+                            .show();
+                }
+                break;
+            case R.id.revisionLayout:
+                if (revisionPH.getVisibility() == View.GONE) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.delete_empty)
+                            .setTitle("Eliminando Recordatorio")
+                            .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
+                            .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    fechaRevision.setText("");
+                                    reviewNote.setText("");
+                                    fechaRevision.setVisibility(View.GONE);
+                                    reviewNote.setVisibility(View.GONE);
+                                    revisionPH.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .setNegativeButton("no eliminar", null)
+                            .show();
+                }
+                break;
+        }
+        return true;
     }
 
     private void parseTextViews(){
@@ -251,8 +408,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         }else{
             matriculaText = matricula.getText().toString();
         }
-        if (fechaITV.getText()==null){
-            fechaITVText = "";
+        if (fechaITV.getText()==null || fechaITV.getText().toString().isEmpty()){
+            fechaITVText = "00-00-0000";
         }else{
             fechaITVText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaITV.getText().toString()));
         }
@@ -261,8 +418,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         }else{
             itvNoteText = itvNote.getText().toString();
         }
-        if (fechaAceite.getText()==null){
-            fechaAceiteText = "";
+        if (fechaAceite.getText()==null || fechaAceite.getText().toString().isEmpty()){
+            fechaAceiteText = "00-00-0000";
         }else{
             fechaAceiteText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaAceite.getText().toString()));
         }
@@ -271,8 +428,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         }else{
             oilNoteText = oilNote.getText().toString();
         }
-        if (fechaNeumaticos.getText()==null){
-            fechaNeumaticosText = "";
+        if (fechaNeumaticos.getText()==null || fechaNeumaticos.getText().toString().isEmpty()){
+            fechaNeumaticosText = "00-00-0000";
         }else{
             fechaNeumaticosText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaNeumaticos.getText().toString()));
         }
@@ -281,8 +438,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         }else{
             tiresNoteText = tiresNote.getText().toString();
         }
-        if (fechaRevision.getText()==null){
-            fechaRevisionText = "";
+        if (fechaRevision.getText()==null || fechaRevision.getText().toString().isEmpty()){
+            fechaRevisionText = "00-00-0000";
         }else{
             fechaRevisionText = Vehiculo.dateToString2(Vehiculo.stringToDate(fechaRevision.getText().toString()));
         }
@@ -291,8 +448,8 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         }else{
             reviewNoteText = reviewNote.getText().toString();
         }
-        if (seguro.getText()==null){
-            seguroText = "";
+        if (seguro.getText()==null || seguro.getText().toString().isEmpty()){
+            seguroText = "00-00-0000";
         }else{
             seguroText = Vehiculo.dateToString2(Vehiculo.stringToDate(seguro.getText().toString()));
         }
@@ -509,23 +666,47 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         Date zero = Vehiculo.stringToDate("01/01/1900");
         if (!getresult.getItvDate().before(zero)) {
             fechaITV.setText(Vehiculo.dateToString(getresult.getItvDate()));
+            fechaITV.setVisibility(View.VISIBLE);
+            itvNote.setVisibility(View.VISIBLE);
+            itvPH.setVisibility(View.GONE);
         }else {
             fechaITV.setText("");
+            fechaITV.setVisibility(View.GONE);
+            itvNote.setVisibility(View.GONE);
+            itvPH.setVisibility(View.VISIBLE);
         }
         if (!getresult.getTiresDate().before(zero)) {
             fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getTiresDate()));
+            fechaNeumaticos.setVisibility(View.VISIBLE);
+            tiresNote.setVisibility(View.VISIBLE);
+            tiresPH.setVisibility(View.GONE);
         }else {
-            fechaITV.setText("");
+            fechaNeumaticos.setText("");
+            fechaNeumaticos.setVisibility(View.GONE);
+            tiresNote.setVisibility(View.GONE);
+            tiresPH.setVisibility(View.VISIBLE);
         }
         if (!getresult.getOilDate().before(zero)) {
             fechaAceite.setText(Vehiculo.dateToString(getresult.getOilDate()));
+            fechaAceite.setVisibility(View.VISIBLE);
+            oilNote.setVisibility(View.VISIBLE);
+            oilPH.setVisibility(View.GONE);
         }else {
-            fechaITV.setText("");
+            fechaAceite.setText("");
+            fechaAceite.setVisibility(View.GONE);
+            oilNote.setVisibility(View.GONE);
+            oilPH.setVisibility(View.VISIBLE);
         }
         if (!getresult.getRevisionDate().before(zero)) {
             fechaRevision.setText(Vehiculo.dateToString(getresult.getRevisionDate()));
+            fechaRevision.setVisibility(View.VISIBLE);
+            reviewNote.setVisibility(View.VISIBLE);
+            revisionPH.setVisibility(View.GONE);
         }else {
-            fechaITV.setText("");
+            fechaRevision.setText("");
+            fechaRevision.setVisibility(View.GONE);
+            reviewNote.setVisibility(View.GONE);
+            revisionPH.setVisibility(View.VISIBLE);
         }
         marca.setText(getresult.getBrand());
         modelo.setText(getresult.getModel());
@@ -534,8 +715,14 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         kilometraje.setText(String.valueOf(getresult.getKmVehicle()));
         if (!getresult.getInsuranceDate().before(zero)) {
             seguro.setText(Vehiculo.dateToString(getresult.getInsuranceDate()));
+            seguro.setVisibility(View.VISIBLE);
+            insuranceNote.setVisibility(View.VISIBLE);
+            ensurancePH.setVisibility(View.GONE);
         }else {
-            fechaITV.setText("");
+            seguro.setText("");
+            seguro.setVisibility(View.GONE);
+            insuranceNote.setVisibility(View.GONE);
+            ensurancePH.setVisibility(View.VISIBLE);
         }
         toolbarLayout.setTitle(getresult.getBrand()+" "+getresult.getModel());
 

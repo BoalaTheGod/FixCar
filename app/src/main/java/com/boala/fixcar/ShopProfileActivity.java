@@ -25,12 +25,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,6 +65,7 @@ private TextView addressTextView, numberTextView, descTextView, emailTextView;
 private CollapsingToolbarLayout toolbarLayout;
 private RatingBar ratingBar;
 private ImageView header;
+private CardView vidCard,mapCard;
 
     private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 69;
     private static final long MIN_TIME = 400;
@@ -68,6 +74,7 @@ private ImageView header;
     private LocationManager locationManager;
     private WorkShop workShop;
     private MapFragment mapFragment;
+    private YouTubePlayerFragment youTubePlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,11 @@ private ImageView header;
         descTextView = findViewById(R.id.descTextView);
         emailTextView = findViewById(R.id.emailTextView);
         ratingBar = findViewById(R.id.ratingBar);
+
+        mapCard = findViewById(R.id.mapCard);
+        vidCard = findViewById(R.id.vidCard);
+
+        youTubePlayerView = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtubeVid);
 
         header = findViewById(R.id.header);
 
@@ -135,7 +147,27 @@ private ImageView header;
                 if (workShop.getImage()!=null && workShop.getImage().length()>1) {
                     Picasso.get().load("https://fixcarcesur.herokuapp.com/" + workShop.getImage().substring(2)).into(header);
                 }
-                mapFragment.getMapAsync(ShopProfileActivity.this);
+                if (workShop.getState().equals("Premium")) {
+                    mapFragment.getMapAsync(ShopProfileActivity.this);
+                    if (!workShop.getVideo().equals("")){
+                        youTubePlayerView.initialize("AIzaSyDtl-8-48v0x-YHEyENZ-tW8PL52dnszU0", new YouTubePlayer.OnInitializedListener() {
+                            @Override
+                            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                                youTubePlayer.cueVideo(workShop.getVideo());
+                            }
+
+                            @Override
+                            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+                            }
+                        });
+                    }else{
+                        vidCard.setVisibility(View.GONE);
+                    }
+                }else {
+                    mapCard.setVisibility(View.GONE);
+                    vidCard.setVisibility(View.GONE);
+                }
             }
 
             @Override
