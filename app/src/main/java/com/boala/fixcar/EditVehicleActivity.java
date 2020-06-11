@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -46,11 +48,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class EditVehicleActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RESULT_LOAD_IMAGE = 100;
     private static final int RESULT_LOAD_DOCUMENT = 102;
     private EditText docTypeET,docNotesET,fechaITV, fechaNeumaticos, fechaAceite, fechaRevision, marca, modelo, matricula, motor, kilometraje, seguro,insuranceNote,itvNote,tiresNote,oilNote,reviewNote;
-    private ImageView header, addDocIMG;
+    private ImageView header, addDocIMG, delEnsurance, delITV, delTires,delOil, delReview;
     private int id = -1;
     private int pos = -1;
     private Button delButton,addDoc;
@@ -78,6 +80,18 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         setSupportActionBar(toolbar);
         fab = findViewById(R.id.fab);
 
+        delEnsurance = findViewById(R.id.delEnsurance);
+        delEnsurance.setOnClickListener(this);
+        delITV = findViewById(R.id.delITV);
+        delITV.setOnClickListener(this);
+        delTires = findViewById(R.id.delTires);
+        delTires.setOnClickListener(this);
+        delOil = findViewById(R.id.delOil);
+        delOil.setOnClickListener(this);
+        delReview = findViewById(R.id.delReview);
+        delReview.setOnClickListener(this);
+
+
 
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
@@ -89,6 +103,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         addDocIMG.setOnClickListener(this);
         addDoc = findViewById(R.id.addDocBT);
         addDoc.setOnClickListener(this);
+        docTypeET.setOnClickListener(this);
 
         fechaITV = findViewById(R.id.fechaItv);
         fechaITV.setOnClickListener(this);
@@ -127,15 +142,10 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
         revisionPH.setOnClickListener(this);
 
         ensuranceLayout = findViewById(R.id.ensuranceLayout);
-        ensuranceLayout.setOnLongClickListener(this);
         itvLayout = findViewById(R.id.itvLayout);
-        itvLayout.setOnLongClickListener(this);
         tiresLayout = findViewById(R.id.tiresLayout);
-        tiresLayout.setOnLongClickListener(this);
         oilLayout = findViewById(R.id.oilLayout);
-        oilLayout.setOnLongClickListener(this);
         revisionLayout = findViewById(R.id.revisionLayout);
-        revisionLayout.setOnLongClickListener(this);
 
 
         docsData = new ArrayList<>();
@@ -215,7 +225,6 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
             case R.id.delVehicle:
-
                 new AlertDialog.Builder(this)
                         .setIcon(R.drawable.delete_empty)
                         .setTitle("Eliminando vehiculo")
@@ -251,34 +260,33 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 seguro.setVisibility(View.VISIBLE);
                 insuranceNote.setVisibility(View.VISIBLE);
                 ensurancePH.setVisibility(View.GONE);
+                delEnsurance.setVisibility(View.VISIBLE);
                 break;
             case R.id.revisionPH:
                 fechaRevision.setVisibility(View.VISIBLE);
                 reviewNote.setVisibility(View.VISIBLE);
                 revisionPH.setVisibility(View.GONE);
+                delReview.setVisibility(View.VISIBLE);
                 break;
             case R.id.oilPH:
                 fechaAceite.setVisibility(View.VISIBLE);
                 oilNote.setVisibility(View.VISIBLE);
                 oilPH.setVisibility(View.GONE);
+                delOil.setVisibility(View.VISIBLE);
                 break;
             case R.id.tiresPH:
                 fechaNeumaticos.setVisibility(View.VISIBLE);
                 tiresNote.setVisibility(View.VISIBLE);
                 tiresPH.setVisibility(View.GONE);
+                delTires.setVisibility(View.VISIBLE);
                 break;
             case R.id.itvPH:
                 fechaITV.setVisibility(View.VISIBLE);
                 itvNote.setVisibility(View.VISIBLE);
                 itvPH.setVisibility(View.GONE);
+                delITV.setVisibility(View.VISIBLE);
                 break;
-        }
-
-    }
-    @Override
-    public boolean onLongClick(View view) {
-        switch (view.getId()){
-            case R.id.ensuranceLayout:
+            case R.id.delEnsurance:
                 if (ensurancePH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
                             .setIcon(R.drawable.delete_empty)
@@ -292,13 +300,14 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                                     seguro.setVisibility(View.GONE);
                                     insuranceNote.setVisibility(View.GONE);
                                     ensurancePH.setVisibility(View.VISIBLE);
+                                    delEnsurance.setVisibility(View.GONE);
                                 }
                             })
                             .setNegativeButton("no eliminar", null)
                             .show();
                 }
                 break;
-            case R.id.itvLayout:
+            case R.id.delITV:
                 if (itvPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
                             .setIcon(R.drawable.delete_empty)
@@ -312,13 +321,14 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                                     fechaITV.setVisibility(View.GONE);
                                     itvNote.setVisibility(View.GONE);
                                     itvPH.setVisibility(View.VISIBLE);
+                                    delITV.setVisibility(View.GONE);
                                 }
                             })
                             .setNegativeButton("no eliminar", null)
                             .show();
                 }
                 break;
-            case R.id.tiresLayout:
+            case R.id.delTires:
                 if (tiresPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
                             .setIcon(R.drawable.delete_empty)
@@ -332,13 +342,14 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                                     fechaNeumaticos.setVisibility(View.GONE);
                                     tiresNote.setVisibility(View.GONE);
                                     tiresPH.setVisibility(View.VISIBLE);
+                                    delTires.setVisibility(View.GONE);
                                 }
                             })
                             .setNegativeButton("no eliminar", null)
                             .show();
                 }
                 break;
-            case R.id.oilLayout:
+            case R.id.delOil:
                 if (oilPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
                             .setIcon(R.drawable.delete_empty)
@@ -352,13 +363,14 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                                     fechaAceite.setVisibility(View.GONE);
                                     oilNote.setVisibility(View.GONE);
                                     oilPH.setVisibility(View.VISIBLE);
+                                    delOil.setVisibility(View.GONE);
                                 }
                             })
                             .setNegativeButton("no eliminar", null)
                             .show();
                 }
                 break;
-            case R.id.revisionLayout:
+            case R.id.delReview:
                 if (revisionPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
                             .setIcon(R.drawable.delete_empty)
@@ -372,16 +384,42 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                                     fechaRevision.setVisibility(View.GONE);
                                     reviewNote.setVisibility(View.GONE);
                                     revisionPH.setVisibility(View.VISIBLE);
+                                    delReview.setVisibility(View.GONE);
                                 }
                             })
                             .setNegativeButton("no eliminar", null)
                             .show();
                 }
                 break;
+            case R.id.docTypeET:
+                final String[] selectedItem = new String[1];
+                Context context;
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                final String[] docTypes = new String[]{
+                        "Documentos de identidad",
+                        "Mis seguros",
+                        "Mis datos ITV",
+                        "Mis revisiones",
+                        "Otros datos"
+                };
+                builder.setSingleChoiceItems(docTypes, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedItem[0] = Arrays.asList(docTypes).get(i);
+                    }
+                });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        docTypeET.setText(selectedItem[0]);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                break;
         }
-        return true;
-    }
 
+    }
     private void parseTextViews(){
         if (kilometraje.getText()==null){
             kilometrajeText = "";
@@ -669,44 +707,52 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             fechaITV.setVisibility(View.VISIBLE);
             itvNote.setVisibility(View.VISIBLE);
             itvPH.setVisibility(View.GONE);
+            delITV.setVisibility(View.VISIBLE);
         }else {
             fechaITV.setText("");
             fechaITV.setVisibility(View.GONE);
             itvNote.setVisibility(View.GONE);
             itvPH.setVisibility(View.VISIBLE);
+            delITV.setVisibility(View.GONE);
         }
         if (!getresult.getTiresDate().before(zero)) {
             fechaNeumaticos.setText(Vehiculo.dateToString(getresult.getTiresDate()));
             fechaNeumaticos.setVisibility(View.VISIBLE);
             tiresNote.setVisibility(View.VISIBLE);
             tiresPH.setVisibility(View.GONE);
+            delTires.setVisibility(View.VISIBLE);
         }else {
             fechaNeumaticos.setText("");
             fechaNeumaticos.setVisibility(View.GONE);
             tiresNote.setVisibility(View.GONE);
             tiresPH.setVisibility(View.VISIBLE);
+            delTires.setVisibility(View.GONE);
         }
         if (!getresult.getOilDate().before(zero)) {
             fechaAceite.setText(Vehiculo.dateToString(getresult.getOilDate()));
             fechaAceite.setVisibility(View.VISIBLE);
             oilNote.setVisibility(View.VISIBLE);
             oilPH.setVisibility(View.GONE);
+            delOil.setVisibility(View.VISIBLE);
         }else {
             fechaAceite.setText("");
             fechaAceite.setVisibility(View.GONE);
             oilNote.setVisibility(View.GONE);
             oilPH.setVisibility(View.VISIBLE);
+            delOil.setVisibility(View.GONE);
         }
         if (!getresult.getRevisionDate().before(zero)) {
             fechaRevision.setText(Vehiculo.dateToString(getresult.getRevisionDate()));
             fechaRevision.setVisibility(View.VISIBLE);
             reviewNote.setVisibility(View.VISIBLE);
             revisionPH.setVisibility(View.GONE);
+            delReview.setVisibility(View.VISIBLE);
         }else {
             fechaRevision.setText("");
             fechaRevision.setVisibility(View.GONE);
             reviewNote.setVisibility(View.GONE);
             revisionPH.setVisibility(View.VISIBLE);
+            delReview.setVisibility(View.GONE);
         }
         marca.setText(getresult.getBrand());
         modelo.setText(getresult.getModel());

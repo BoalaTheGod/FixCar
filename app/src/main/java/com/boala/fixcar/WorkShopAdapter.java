@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -56,17 +57,20 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
         private TextView tvNombre, tvTipo;
         private CardView shopCard;
         private ImageView imageView;
+        private RatingBar ratingBar;
         public TallerHolder(@NonNull View itemView) {
             super(itemView);
             tvNombre = itemView.findViewById(R.id.nombreTaller);
             tvTipo = itemView.findViewById(R.id.tipoTaller);
             shopCard = itemView.findViewById(R.id.shopCard);
             imageView = itemView.findViewById(R.id.workshopImage);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
         }
 
         public void setData(WorkShop data) {
             tvNombre.setText(data.getName());
-            tvTipo.setText(data.getEmail());
+            tvTipo.setText(data.getDescription());
+            ratingBar.setRating((float) 2.55);
             if (data.getImage()!=null && data.getImage().length()>1) {
                 Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getImage().substring(2)).into(imageView);
             }

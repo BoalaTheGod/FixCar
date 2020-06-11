@@ -84,9 +84,9 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
                 Toast.makeText(context,"Se ha descargado el documento",Toast.LENGTH_SHORT).show();
             }
         });
-        holder.itemView.findViewById(R.id.docCard).setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemView.findViewById(R.id.delDoc).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
                 Vibrator vibrato = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrato.vibrate(50);
                 new AlertDialog.Builder(context)
@@ -101,7 +101,6 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
                         })
                         .setNegativeButton("no eliminar", null)
                         .show();
-                return false;
             }
         });
     }

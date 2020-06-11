@@ -30,7 +30,6 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:fitsSystemWindows="true"
-                android:src="@drawable/fix_car_taller"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
 

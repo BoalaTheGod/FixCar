@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,6 +27,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,7 +50,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.nio.file.Files;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +68,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locationManager;
     private String search;
     private Address addressAux;
+    private LinearLayout bottomSheet;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private RecyclerView rvMaps;
+    private WorkShopAdapter adapter;
+    private ArrayList<WorkShop> workShopList;
+    private ImageView arrow, searchBtMap;
+    private EditText searchMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +84,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         Context context;
-        mapFragment.getMapAsync(this);
+        bottomSheet = findViewById(R.id.BottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        arrow = findViewById(R.id.arrow);
+        searchMap = findViewById(R.id.searchMap);
+        searchBtMap = findViewById(R.id.searchBtMap);
+
+        rvMaps = findViewById(R.id.rvMaps);
+        workShopList = new ArrayList<>();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvMaps.setLayoutManager(linearLayoutManager);
+        adapter = new WorkShopAdapter(this, workShopList);
+        rvMaps.setAdapter(adapter);
+
+        arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleBottomSheet();
+            }
+        });
+
+
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        arrow.setImageResource(R.drawable.chevron_down);
+                        break;
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        arrow.setImageResource(R.drawable.chevron_up);
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        searchMap.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    search = searchMap.getText().toString();
+                    mapFragment.getMapAsync(MapsActivity.this::onMapReady);
+                    return true;
+                }
+                return false;
+            }
+        });
+
         search = getIntent().getStringExtra("search");
+        mapFragment.getMapAsync(this);
+        searchMap.setText(search);
+
+        searchBtMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search = searchMap.getText().toString();
+                mapFragment.getMapAsync(MapsActivity.this::onMapReady);
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -76,8 +155,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        mMap.clear();
         goToLocation();
 
+    }
+
+    private void toggleBottomSheet() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     public void putMarkers(){
@@ -94,6 +182,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
+                        workShopList.clear();
                         for (WorkShop workShop : workShops) {
                             try {
                                 List<Address> list = gc.getFromLocationName(workShop.getLocation() + ", " + workShop.getAdress(), 1);
@@ -105,6 +194,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         addressAux.setLocality(" ");
                                     }
                                     if (addressAux.getLocality().toLowerCase().equals(address.getLocality().toLowerCase()) || search.isEmpty()) {
+                                        workShopList.add(workShop);
 
                                         double lat = address.getLatitude();
                                         double lng = address.getLongitude();
@@ -138,6 +228,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 e.printStackTrace();
                             }
                         }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
                     }
                 });
 
@@ -200,6 +296,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void goToLocation() {
+        MarkerOptions hereMarker;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 if (search.isEmpty()) {
@@ -221,7 +318,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Log.d("coords: ", lat + "," + lng);
 
                             LatLng latLng = new LatLng(lat, lng);
-                            MarkerOptions hereMarker = new MarkerOptions().position(latLng);
+                            hereMarker = new MarkerOptions().position(latLng);
                             Bitmap drawableBitmap = getBitmap(R.drawable.human_handsup);
                             hereMarker.icon(BitmapDescriptorFactory.fromBitmap(drawableBitmap));
                             mMap.addMarker(hereMarker);
@@ -245,7 +342,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Log.d("coords: ", lat + "," + lng);
 
                             LatLng latLng = new LatLng(lat, lng);
-                            MarkerOptions hereMarker = new MarkerOptions().position(latLng);
+                            hereMarker = new MarkerOptions().position(latLng);
                             Bitmap drawableBitmap = getBitmap(R.drawable.human_handsup);
                             hereMarker.icon(BitmapDescriptorFactory.fromBitmap(drawableBitmap));
                             mMap.addMarker(hereMarker);

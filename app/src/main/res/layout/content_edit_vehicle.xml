@@ -154,6 +154,7 @@
                         android:animateLayoutChanges="true"
                         android:longClickable="true"
                         android:id="@+id/ensuranceLayout"
+                        android:orientation="horizontal"
                         >
 
                         <ImageView
@@ -168,6 +169,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:animateLayoutChanges="true"
+                            android:layout_weight="1"
                             >
                         <EditText
                             android:id="@+id/seguro"
@@ -216,6 +218,15 @@
                                 />
 
                         </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/delete_empty"
+                            android:id="@+id/delEnsurance"
+                            android:visibility="gone"
+                            android:background="@drawable/effect_ripple"
+                            android:paddingHorizontal="5dp"
+                            />
                     </LinearLayout>
 
                     <View
@@ -232,7 +243,7 @@
                         android:animateLayoutChanges="true"
                         android:longClickable="true"
                         android:id="@+id/itvLayout"
-                        >
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="25dp"
@@ -245,6 +256,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:animateLayoutChanges="true"
+                            android:layout_weight="1"
                             >
                         <EditText
                             android:id="@+id/fechaItv"
@@ -292,6 +304,15 @@
                                 android:visibility="gone"
                                 />
                         </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/delete_empty"
+                            android:id="@+id/delITV"
+                            android:visibility="gone"
+                            android:background="@drawable/effect_ripple"
+                            android:paddingHorizontal="5dp"
+                            />
                     </LinearLayout>
 
                     <View
@@ -308,7 +329,7 @@
                         android:animateLayoutChanges="true"
                         android:longClickable="true"
                         android:id="@+id/tiresLayout"
-                        >
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="25dp"
@@ -321,6 +342,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:animateLayoutChanges="true"
+                            android:layout_weight="1"
                             >
                         <EditText
                             android:id="@+id/fechaNeumaticos"
@@ -368,6 +390,15 @@
                                 android:visibility="gone"
                                 />
                         </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/delete_empty"
+                            android:id="@+id/delTires"
+                            android:visibility="gone"
+                            android:background="@drawable/effect_ripple"
+                            android:paddingHorizontal="5dp"
+                            />
                     </LinearLayout>
                     <View
                         android:layout_width="match_parent"
@@ -382,6 +413,7 @@
                         android:animateLayoutChanges="true"
                         android:longClickable="true"
                         android:id="@+id/oilLayout"
+                        android:orientation="horizontal"
                         >
 
                         <ImageView
@@ -395,6 +427,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:animateLayoutChanges="true"
+                            android:layout_weight="1"
                             >
                         <EditText
                             android:id="@+id/fechaAceite"
@@ -443,6 +476,15 @@
                                 />
 
                         </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/delete_empty"
+                            android:id="@+id/delOil"
+                            android:visibility="gone"
+                            android:background="@drawable/effect_ripple"
+                            android:paddingHorizontal="5dp"
+                            />
                     </LinearLayout>
                     <View
                         android:layout_width="match_parent"
@@ -457,6 +499,7 @@
                         android:animateLayoutChanges="true"
                         android:longClickable="true"
                         android:id="@+id/revisionLayout"
+                        android:orientation="horizontal"
                         >
 
                         <ImageView
@@ -470,6 +513,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:animateLayoutChanges="true"
+                            android:layout_weight="1"
                             >
                         <EditText
                             android:id="@+id/fechaRevision"
@@ -517,6 +561,15 @@
                                 android:visibility="gone"
                                 />
                         </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/delete_empty"
+                            android:id="@+id/delReview"
+                            android:visibility="gone"
+                            android:background="@drawable/effect_ripple"
+                            android:paddingHorizontal="5dp"
+                            />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -560,6 +613,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Tipo de documento"
+                        android:clickable="true"
+                        android:focusable="false"
                         android:textSize="20sp"
                         android:id="@+id/docTypeET"
                         android:layout_marginTop="10dp"
