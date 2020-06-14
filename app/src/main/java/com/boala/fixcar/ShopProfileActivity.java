@@ -45,6 +45,7 @@ import retrofit2.Response;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -56,16 +57,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class ShopProfileActivity extends AppCompatActivity implements OnMapReadyCallback{
-private int ID;
-private RecyclerView chipRV;
-private ChipAdapter adapter;
-private ArrayList<String> chipList;
-private Toolbar toolbar;
-private TextView addressTextView, numberTextView, descTextView, emailTextView;
-private CollapsingToolbarLayout toolbarLayout;
-private RatingBar ratingBar;
-private ImageView header;
-private CardView vidCard,mapCard;
+    private int ID;
+    private RecyclerView chipRV;
+    private ChipAdapter adapter;
+    private ArrayList<String> chipList;
+    private Toolbar toolbar;
+    private TextView addressTextView, numberTextView, descTextView, emailTextView;
+    private CollapsingToolbarLayout toolbarLayout;
+    private RatingBar ratingBar;
+    private ImageView header;
+    private CardView vidCard,mapCard;
 
     private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 69;
     private static final long MIN_TIME = 400;
@@ -75,6 +76,11 @@ private CardView vidCard,mapCard;
     private WorkShop workShop;
     private MapFragment mapFragment;
     private YouTubePlayerFragment youTubePlayerView;
+    private RecyclerView commentsRV;
+    private ArrayList<Commentary> comments;
+    private CommentAdapter commentAdapter;
+    private EditText commentET;
+    private ImageView commentPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +117,24 @@ private CardView vidCard,mapCard;
         chipRV.setLayoutManager(linearLayoutManager);
         chipRV.setAdapter(adapter);
 
+        commentET = findViewById(R.id.commentET);
+        commentPost = findViewById(R.id.commentPost);
+        commentPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        commentsRV = findViewById(R.id.commentsRV);
+        comments = new ArrayList<>();
+        commentAdapter = new CommentAdapter(this, comments);
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
+        linearLayoutManager1.setReverseLayout(true);
+        commentsRV.setLayoutManager(linearLayoutManager1);
+        commentsRV.setAdapter(commentAdapter);
+        getComments();
+
         if (ID != -1){
             getWorkShop();
         }
@@ -122,6 +146,30 @@ private CardView vidCard,mapCard;
             public void onClick(View view) {
                 Snackbar.make(view, "añadido a favoritos", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void getComments() {
+        Call<List<Commentary>> call = FixCarClient2.getInstance().getApi().getCommentarys(ID);
+        call.enqueue(new Callback<List<Commentary>>() {
+            @Override
+            public void onResponse(Call<List<Commentary>> call, Response<List<Commentary>> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                ArrayList<Commentary> comments2 = (ArrayList<Commentary>) response.body();
+                comments.clear();
+                for (Commentary commentary : comments2){
+                    comments.add(commentary);
+                }
+                commentAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<Commentary>> call, Throwable t) {
+                Log.e("error", t.getMessage());
             }
         });
     }

@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -180,6 +181,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();**/
+            }
+        });
+        ets.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                    intent.putExtra("search",ets.getText().toString());
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
             }
         });
         /**Boton de cerrar sesion**/

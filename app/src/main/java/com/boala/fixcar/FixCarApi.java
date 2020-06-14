@@ -136,5 +136,23 @@ public interface FixCarApi {
     Call<Boolean> delDocument(
             @Path("id") int id
     );
+    @GET("commentidworkshop{idtaller}")
+    Call<List<Commentary>> getCommentarys(@Path("idtaller") int id);
+    @POST("commentpost")
+    Call<Boolean> postCommentary(
+            @Field("commentary") String commentary,
+            @Field("iduser") String iduser,
+            @Field("idworkshops") String idworkshop
+    );
+    @POST("replypost{idCommentary}")
+    Call<Boolean> postReply(@Path("idCommentary") int id,
+            @Field("commentary") String commentary,
+            @Field("iduser") String iduser,
+            @Field("idworkshops") String idworkshop
+    );
+    @PUT("commentput{idCommentary}")
+    Call<Boolean> putCommentary(@Path("idCommentary") int id,
+                            @Field("commentary") String commentary
+    );
 
 }
