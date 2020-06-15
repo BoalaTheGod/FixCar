@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     app:maxHeightDp="500"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="50dp"
+    app:behavior_peekHeight="35dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     android:id="@+id/BottomSheet"
     android:background="@drawable/card_round_top_background"

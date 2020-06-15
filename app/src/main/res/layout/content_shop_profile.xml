@@ -64,6 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:numStars="5"
+                android:stepSize="0.1"
                 android:layout_gravity="center"
                 android:id="@+id/ratingBar"
                 android:isIndicator="true"
@@ -197,18 +198,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="Comentarios"
+                android:text="Reseñas"
                 android:textSize="20dp"
                 android:textColor="?colorAccent"
                 />
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
-                android:elevation="-2dp"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="10dp"
+                app:cardElevation="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="2.5dp"
+                android:id="@+id/userReviewCard"
                 >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -220,7 +225,7 @@
                         android:background="@color/transparent"
                         android:padding="10dp"
                         android:id="@+id/commentET"
-                        android:hint="nuevo comentario"
+                        android:hint="Dejar reseña"
                         />
                     <ImageView
                         android:layout_width="wrap_content"
@@ -231,6 +236,19 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:id="@+id/commentPost"
+                        />
+                </LinearLayout>
+                    <RatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="1"
+                        android:isIndicator="false"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:id="@+id/userRatingBar"
+                        style="?android:attr/ratingBarStyleIndicator"
+                        android:layout_marginBottom="5dp"
                         />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

@@ -90,7 +90,7 @@ public class DocAdapter extends RecyclerView.Adapter<DocAdapter.DocHolder> {
                 Vibrator vibrato = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrato.vibrate(50);
                 new AlertDialog.Builder(context)
-                        .setIcon(R.drawable.delete_empty)
+                        .setIcon(R.drawable.delete)
                         .setTitle("Eliminar documento")
                         .setMessage("¿deseas eliminar este documento?,\nse eliminará de manera permanente.")
                         .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {

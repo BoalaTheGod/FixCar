@@ -2,25 +2,29 @@ package com.boala.fixcar;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Commentary {
     @SerializedName("idcommentary")
-    private String idcomentary;
+    private int idcomentary;
     @SerializedName("commentary")
     private String comentary;
     @SerializedName("idusers")
-    private Integer iduser;
+    private int iduser;
     @SerializedName("idworkshops")
-    private Integer idworkshops;
+    private int idworkshops;
     @SerializedName("response")
-    private Integer response;
+    private int response;
     @SerializedName("create_date")
     private Date create_date;
     @SerializedName("update_date")
     private Date update_date;
+    private ArrayList<Commentary> replyList;
+    private Rank rank;
 
-    public Commentary(String idcomentary, String comentary, Integer iduser, Integer idworkshops, Integer response, Date create_date, Date update_date) {
+
+    public Commentary(int idcomentary, String comentary, int iduser, int idworkshops, int response, Date create_date, Date update_date, ArrayList<Commentary> replyList, Rank rank) {
         this.idcomentary = idcomentary;
         this.comentary = comentary;
         this.iduser = iduser;
@@ -28,13 +32,28 @@ public class Commentary {
         this.response = response;
         this.create_date = create_date;
         this.update_date = update_date;
+        this.replyList = replyList;
+        this.rank = rank;
     }
 
-    public String getIdcomentary() {
+
+    public void addReply(Commentary commentary){
+        replyList.add(commentary);
+    }
+
+    public ArrayList<Commentary> getReplyList() {
+        return replyList;
+    }
+
+    public void setReplyList(ArrayList<Commentary> replyList) {
+        this.replyList = replyList;
+    }
+
+    public int getIdcomentary() {
         return idcomentary;
     }
 
-    public void setIdcomentary(String idcomentary) {
+    public void setIdcomentary(int idcomentary) {
         this.idcomentary = idcomentary;
     }
 
@@ -46,27 +65,27 @@ public class Commentary {
         this.comentary = comentary;
     }
 
-    public Integer getIduser() {
+    public int getIduser() {
         return iduser;
     }
 
-    public void setIduser(Integer iduser) {
+    public void setIduser(int iduser) {
         this.iduser = iduser;
     }
 
-    public Integer getIdworkshops() {
+    public int getIdworkshops() {
         return idworkshops;
     }
 
-    public void setIdworkshops(Integer idworkshops) {
+    public void setIdworkshops(int idworkshops) {
         this.idworkshops = idworkshops;
     }
 
-    public Integer getResponse() {
+    public int getResponse() {
         return response;
     }
 
-    public void setResponse(Integer response) {
+    public void setResponse(int response) {
         this.response = response;
     }
 
@@ -84,5 +103,13 @@ public class Commentary {
 
     public void setUpdate_date(Date update_date) {
         this.update_date = update_date;
+    }
+
+    public Rank getRank() {
+        return rank;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
     }
 }

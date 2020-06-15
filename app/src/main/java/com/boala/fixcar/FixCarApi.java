@@ -138,21 +138,44 @@ public interface FixCarApi {
     );
     @GET("commentidworkshop{idtaller}")
     Call<List<Commentary>> getCommentarys(@Path("idtaller") int id);
+    @FormUrlEncoded
     @POST("commentpost")
     Call<Boolean> postCommentary(
             @Field("commentary") String commentary,
-            @Field("iduser") String iduser,
+            @Field("idusers") String iduser,
             @Field("idworkshops") String idworkshop
     );
+    @FormUrlEncoded
     @POST("replypost{idCommentary}")
     Call<Boolean> postReply(@Path("idCommentary") int id,
             @Field("commentary") String commentary,
-            @Field("iduser") String iduser,
+            @Field("idusers") String iduser,
             @Field("idworkshops") String idworkshop
     );
     @PUT("commentput{idCommentary}")
     Call<Boolean> putCommentary(@Path("idCommentary") int id,
-                            @Field("commentary") String commentary
+                            @Query("commentary") String commentary
     );
-
+    @DELETE("commentdel{id}")
+    Call<Boolean> delComment(
+            @Path("id") int id
+    );
+    @GET("avgranking{id}")
+    Call<Float> getAvgRank(@Path("id") int id);
+    @FormUrlEncoded
+    @POST("rankingpost")
+    Call<Boolean> postRank(@Field("ranking") String ranking,
+                            @Field("id_users") String id_user,
+                            @Field("id_workshops") String id_workshop
+    );
+    @DELETE("rankingdel{id}")
+    Call<Boolean> delRanking(
+            @Path("id") int id
+    );
+    @GET("rankingidworkshop{idtaller}")
+    Call<List<Rank>> getRanks(@Path("idtaller") int id);
+    @PUT("rankingput{id}")
+    Call<Boolean> putRank(@Path("id") int id,
+                                @Query("ranking") String rank
+    );
 }

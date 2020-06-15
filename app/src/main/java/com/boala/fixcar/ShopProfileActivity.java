@@ -2,6 +2,7 @@ package com.boala.fixcar;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -53,20 +54,26 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ShopProfileActivity extends AppCompatActivity implements OnMapReadyCallback{
-    private int ID;
+    public static int ID;
     private RecyclerView chipRV;
     private ChipAdapter adapter;
     private ArrayList<String> chipList;
     private Toolbar toolbar;
     private TextView addressTextView, numberTextView, descTextView, emailTextView;
     private CollapsingToolbarLayout toolbarLayout;
-    private RatingBar ratingBar;
+    private RatingBar ratingBar, userRatingBar;
     private ImageView header;
     private CardView vidCard,mapCard;
+    public static SharedPreferences pref;
+    public static CardView userReviewCard;
 
     private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 69;
     private static final long MIN_TIME = 400;
@@ -77,8 +84,8 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
     private MapFragment mapFragment;
     private YouTubePlayerFragment youTubePlayerView;
     private RecyclerView commentsRV;
-    private ArrayList<Commentary> comments;
-    private CommentAdapter commentAdapter;
+    public static ArrayList<Commentary> comments;
+    public static CommentAdapter commentAdapter;
     private EditText commentET;
     private ImageView commentPost;
 
@@ -88,6 +95,7 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_shop_profile);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
         ID = getIntent().getIntExtra("id",-1);
 
@@ -96,6 +104,8 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         descTextView = findViewById(R.id.descTextView);
         emailTextView = findViewById(R.id.emailTextView);
         ratingBar = findViewById(R.id.ratingBar);
+        userRatingBar = findViewById(R.id.userRatingBar);
+        userReviewCard = findViewById(R.id.userReviewCard);
 
         mapCard = findViewById(R.id.mapCard);
         vidCard = findViewById(R.id.vidCard);
@@ -122,7 +132,38 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         commentPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Call<Boolean> call = FixCarClient.getInstance().getApi().postCommentary(commentET.getText().toString(),String.valueOf(pref.getInt("userId",-1)),String.valueOf(ID));
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("Code: ", String.valueOf(response.code()));
+                            return;
+                        }
+                        Call call1 = FixCarClient.getInstance().getApi().postRank(String.valueOf(userRatingBar.getRating()),String.valueOf(pref.getInt("userId",-1)),String.valueOf(ID));
+                        call1.enqueue(new Callback() {
+                            @Override
+                            public void onResponse(Call call, Response response) {
+                                if (!response.isSuccessful()) {
+                                    Log.e("Code: ", String.valueOf(response.code()));
+                                    return;
+                                }
+                                userRatingBar.setRating(0);
+                                commentET.setText("");
+                                getComments();
+                            }
 
+                            @Override
+                            public void onFailure(Call call, Throwable t) {
+                                Log.e("error", t.getMessage());
+                            }
+                        });
+                    }
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.e("error", t.getMessage());
+                    }
+                });
             }
         });
 
@@ -150,7 +191,8 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    private void getComments() {
+    public static void getComments() {
+        TreeMap<Integer,Rank> ranks = new TreeMap<>();
         Call<List<Commentary>> call = FixCarClient2.getInstance().getApi().getCommentarys(ID);
         call.enqueue(new Callback<List<Commentary>>() {
             @Override
@@ -161,10 +203,61 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                 }
                 ArrayList<Commentary> comments2 = (ArrayList<Commentary>) response.body();
                 comments.clear();
+                TreeMap<Integer,Commentary> auxList = new TreeMap<>();
                 for (Commentary commentary : comments2){
-                    comments.add(commentary);
+                    commentary.setReplyList(new ArrayList<>());
                 }
-                commentAdapter.notifyDataSetChanged();
+
+                Call call1 = FixCarClient.getInstance().getApi().getRanks(ID);
+                call1.enqueue(new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("Code: ", String.valueOf(response.code()));
+                            return;
+                        }
+                        ArrayList<Rank> ranks1 = (ArrayList<Rank>) response.body();
+                        for (Rank rank : ranks1){
+                            ranks.put(rank.getId_users(),rank);
+                        }
+                        for (Commentary commentary : comments2){
+                            if (commentary.getResponse() == 0) {
+                                commentary.setRank(ranks.get(commentary.getIduser()));
+                                auxList.put(commentary.getIdcomentary(),commentary);
+                                if (commentary.getIduser() == pref.getInt("userId",-1)){
+                                    userReviewCard.setVisibility(View.GONE);
+                                }else{
+                                    userReviewCard.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }
+                        for (Commentary commentary : comments2){
+                            if (commentary.getResponse() != 0) {
+                                try {
+                                    auxList.get(commentary.getResponse()).addReply(commentary);
+                                }catch (NullPointerException e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        for (Map.Entry<Integer, Commentary> entry : auxList.entrySet()){
+                            comments.add(entry.getValue());
+                        }
+                        Collections.sort(comments, new Comparator<Commentary>() {
+                            @Override
+                            public int compare(Commentary commentary, Commentary t1) {
+                                return commentary.getCreate_date().compareTo(t1.getCreate_date());
+                            }
+                        });
+                        commentAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+                        Log.e("error", t.getMessage());
+                    }
+                });
+
             }
 
             @Override
@@ -191,7 +284,24 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                 toolbarLayout.setTitle(workShop.getName());
                 toolbar.setTitle(workShop.getName());
                 setChips();
-                ratingBar.setRating(4);
+                Call<Float> call1 = FixCarClient.getInstance().getApi().getAvgRank(ID);
+                call1.enqueue(new Callback<Float>() {
+                    @Override
+                    public void onResponse(Call<Float> call, Response<Float> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("Code: ", String.valueOf(response.code()));
+                            return;
+                        }
+                        ratingBar.setRating(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Float> call, Throwable t) {
+                            Log.e("error", t.getMessage());
+                    }
+                });
+
+
                 if (workShop.getImage()!=null && workShop.getImage().length()>1) {
                     Picasso.get().load("https://fixcarcesur.herokuapp.com/" + workShop.getImage().substring(2)).into(header);
                 }
@@ -285,5 +395,7 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
         }
     }
+
+
 
 }

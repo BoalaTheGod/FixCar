@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginVertical="2.5dp"
     android:layout_marginHorizontal="5dp"
-    app:cardElevation="5dp">
+    app:cardElevation="5dp"
+    android:id="@+id/commentCard"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,27 +31,137 @@
             android:orientation="vertical"
             android:layout_weight="1"
             >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="fecha"
-            android:id="@+id/commentDate"
-            />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
-                android:text="Nombre"
                 android:layout_marginVertical="2.5dp"
                 android:id="@+id/commentName"
                 />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/longString"
                 android:layout_marginVertical="2.5dp"
+                android:textSize="16dp"
                 android:id="@+id/commentText"
                 />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/ratingBar"
+                    android:isIndicator="true"
+                    style="?android:attr/ratingBarStyleSmall"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/commentDate"
+                    android:layout_weight="1"
+                    />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/delete"
+                    android:padding="5dp"
+                    android:background="@drawable/effect_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/deleteComment"
+                    android:visibility="gone"
+                    />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/pencil2"
+                    android:padding="5dp"
+                    android:background="@drawable/effect_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/editComment"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/reply"
+                    android:padding="5dp"
+                    android:background="@drawable/effect_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/replyComment"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/replyWindow"
+                android:visibility="gone"
+                >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/replyET"
+                    android:hint="Respuesta a comentario"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/comment_plus"
+                    android:background="@drawable/effect_ripple"
+                    android:paddingHorizontal="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/replyPost"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/floppy"
+                    android:background="@drawable/effect_ripple"
+                    android:paddingHorizontal="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/saveEdit"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+                <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1"
+                    android:isIndicator="false"
+                    android:clickable="true"
+                    android:layout_gravity="start"
+                    android:id="@+id/userRatingBar"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+<androidx.recyclerview.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/replyRV"
+    />
         </LinearLayout>
     </LinearLayout>
     </LinearLayout>

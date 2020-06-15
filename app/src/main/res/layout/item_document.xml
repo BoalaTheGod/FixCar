@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="10dp"
-                android:src="@drawable/delete_empty"
+                android:src="@drawable/delete"
                 android:background="@drawable/effect_ripple"
                 android:clickable="true"
                 android:id="@+id/delDoc"

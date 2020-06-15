@@ -221,7 +221,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/delete_empty"
+                            android:src="@drawable/delete"
                             android:id="@+id/delEnsurance"
                             android:visibility="gone"
                             android:background="@drawable/effect_ripple"
@@ -307,7 +307,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/delete_empty"
+                            android:src="@drawable/delete"
                             android:id="@+id/delITV"
                             android:visibility="gone"
                             android:background="@drawable/effect_ripple"
@@ -393,7 +393,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/delete_empty"
+                            android:src="@drawable/delete"
                             android:id="@+id/delTires"
                             android:visibility="gone"
                             android:background="@drawable/effect_ripple"
@@ -479,7 +479,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/delete_empty"
+                            android:src="@drawable/delete"
                             android:id="@+id/delOil"
                             android:visibility="gone"
                             android:background="@drawable/effect_ripple"
@@ -564,7 +564,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/delete_empty"
+                            android:src="@drawable/delete"
                             android:id="@+id/delReview"
                             android:visibility="gone"
                             android:background="@drawable/effect_ripple"
@@ -644,7 +644,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/delButtonTint"
             android:id="@+id/delVehicle"
-            android:drawableLeft="@drawable/delete_empty"
+            android:drawableLeft="@drawable/delete"
             android:text="@string/del_vehicle"
             android:textColor="#CA3535" />
     </LinearLayout>

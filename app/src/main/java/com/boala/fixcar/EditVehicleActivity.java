@@ -226,7 +226,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.delVehicle:
                 new AlertDialog.Builder(this)
-                        .setIcon(R.drawable.delete_empty)
+                        .setIcon(R.drawable.delete)
                         .setTitle("Eliminando vehiculo")
                         .setMessage("¿deseas eliminar este vehiculo?,\nse eliminará de manera permanente.")
                         .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
@@ -289,7 +289,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             case R.id.delEnsurance:
                 if (ensurancePH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
-                            .setIcon(R.drawable.delete_empty)
+                            .setIcon(R.drawable.delete)
                             .setTitle("Eliminando Recordatorio")
                             .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
                             .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
@@ -310,7 +310,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             case R.id.delITV:
                 if (itvPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
-                            .setIcon(R.drawable.delete_empty)
+                            .setIcon(R.drawable.delete)
                             .setTitle("Eliminando Recordatorio")
                             .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
                             .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
@@ -331,7 +331,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             case R.id.delTires:
                 if (tiresPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
-                            .setIcon(R.drawable.delete_empty)
+                            .setIcon(R.drawable.delete)
                             .setTitle("Eliminando Recordatorio")
                             .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
                             .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
@@ -352,7 +352,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             case R.id.delOil:
                 if (oilPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
-                            .setIcon(R.drawable.delete_empty)
+                            .setIcon(R.drawable.delete)
                             .setTitle("Eliminando Recordatorio")
                             .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
                             .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {
@@ -373,7 +373,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
             case R.id.delReview:
                 if (revisionPH.getVisibility() == View.GONE) {
                     new AlertDialog.Builder(this)
-                            .setIcon(R.drawable.delete_empty)
+                            .setIcon(R.drawable.delete)
                             .setTitle("Eliminando Recordatorio")
                             .setMessage("¿deseas eliminar este recordatorio?,\nse eliminará de manera permanente.")
                             .setPositiveButton("eliminar", new DialogInterface.OnClickListener() {

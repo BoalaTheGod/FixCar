@@ -2,6 +2,7 @@ package com.boala.fixcar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.TallerHolder> {
 
@@ -68,9 +72,28 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
         }
 
         public void setData(WorkShop data) {
+            Call<Float> call1 = FixCarClient.getInstance().getApi().getAvgRank(data.getIdtaller());
+            call1.enqueue(new Callback<Float>() {
+                @Override
+                public void onResponse(Call<Float> call, Response<Float> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("Code: ", String.valueOf(response.code()));
+                        return;
+                    }
+                    if (response.body() != null) {
+                        ratingBar.setRating(response.body());
+                    }else{
+                        ratingBar.setRating(0);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Float> call, Throwable t) {
+                    Log.e("error", t.getMessage());
+                }
+            });
             tvNombre.setText(data.getName());
             tvTipo.setText(data.getDescription());
-            ratingBar.setRating((float) 2.55);
             if (data.getImage()!=null && data.getImage().length()>1) {
                 Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getImage().substring(2)).into(imageView);
             }
