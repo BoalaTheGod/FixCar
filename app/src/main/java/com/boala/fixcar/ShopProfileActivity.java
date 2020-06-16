@@ -195,61 +195,63 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                     return;
                 }
                 ArrayList<Commentary> comments2 = (ArrayList<Commentary>) response.body();
-                comments.clear();
-                TreeMap<Integer,Commentary> auxList = new TreeMap<>();
-                for (Commentary commentary : comments2){
-                    commentary.setReplyList(new ArrayList<>());
+                if (comments2 != null) {
+                    comments.clear();
+                    TreeMap<Integer, Commentary> auxList = new TreeMap<>();
+                    for (Commentary commentary : comments2) {
+                        commentary.setReplyList(new ArrayList<>());
+                    }
+
+                    Call call1 = FixCarClient.getInstance().getApi().getRanks(ID);
+                    call1.enqueue(new Callback() {
+                        @Override
+                        public void onResponse(Call call, Response response) {
+                            if (!response.isSuccessful()) {
+                                Log.e("Code: ", String.valueOf(response.code()));
+                                return;
+                            }
+                            ArrayList<Rank> ranks1 = (ArrayList<Rank>) response.body();
+                            for (Rank rank : ranks1) {
+                                ranks.put(rank.getId_users(), rank);
+                            }
+                            for (Commentary commentary : comments2) {
+                                if (commentary.getResponse() == 0) {
+                                    commentary.setRank(ranks.get(commentary.getIduser()));
+                                    auxList.put(commentary.getIdcomentary(), commentary);
+                                    if (commentary.getIduser() == pref.getInt("userId", -1)) {
+                                        userReviewCard.setVisibility(View.GONE);
+                                    } else {
+                                        userReviewCard.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                            for (Commentary commentary : comments2) {
+                                if (commentary.getResponse() != 0) {
+                                    try {
+                                        auxList.get(commentary.getResponse()).addReply(commentary);
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            for (Map.Entry<Integer, Commentary> entry : auxList.entrySet()) {
+                                comments.add(entry.getValue());
+                            }
+                            Collections.sort(comments, new Comparator<Commentary>() {
+                                @Override
+                                public int compare(Commentary commentary, Commentary t1) {
+                                    return commentary.getCreate_date().compareTo(t1.getCreate_date());
+                                }
+                            });
+                            commentAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onFailure(Call call, Throwable t) {
+                            Log.e("error", t.getMessage());
+                        }
+                    });
                 }
-
-                Call call1 = FixCarClient.getInstance().getApi().getRanks(ID);
-                call1.enqueue(new Callback() {
-                    @Override
-                    public void onResponse(Call call, Response response) {
-                        if (!response.isSuccessful()) {
-                            Log.e("Code: ", String.valueOf(response.code()));
-                            return;
-                        }
-                        ArrayList<Rank> ranks1 = (ArrayList<Rank>) response.body();
-                        for (Rank rank : ranks1){
-                            ranks.put(rank.getId_users(),rank);
-                        }
-                        for (Commentary commentary : comments2){
-                            if (commentary.getResponse() == 0) {
-                                commentary.setRank(ranks.get(commentary.getIduser()));
-                                auxList.put(commentary.getIdcomentary(),commentary);
-                                if (commentary.getIduser() == pref.getInt("userId",-1)){
-                                    userReviewCard.setVisibility(View.GONE);
-                                }else{
-                                    userReviewCard.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }
-                        for (Commentary commentary : comments2){
-                            if (commentary.getResponse() != 0) {
-                                try {
-                                    auxList.get(commentary.getResponse()).addReply(commentary);
-                                }catch (NullPointerException e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        for (Map.Entry<Integer, Commentary> entry : auxList.entrySet()){
-                            comments.add(entry.getValue());
-                        }
-                        Collections.sort(comments, new Comparator<Commentary>() {
-                            @Override
-                            public int compare(Commentary commentary, Commentary t1) {
-                                return commentary.getCreate_date().compareTo(t1.getCreate_date());
-                            }
-                        });
-                        commentAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFailure(Call call, Throwable t) {
-                        Log.e("error", t.getMessage());
-                    }
-                });
 
             }
 
@@ -285,7 +287,9 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                             Log.e("Code: ", String.valueOf(response.code()));
                             return;
                         }
-                        ratingBar.setRating(response.body());
+                        if (response.body()!=null) {
+                            ratingBar.setRating(response.body());
+                        }
                     }
 
                     @Override
