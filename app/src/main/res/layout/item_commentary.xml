@@ -7,6 +7,7 @@
     android:layout_marginHorizontal="5dp"
     app:cardElevation="5dp"
     android:id="@+id/commentCard"
+    android:theme="@style/AppTheme"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -154,7 +155,6 @@
                     android:id="@+id/userRatingBar"
                     style="?android:attr/ratingBarStyleIndicator"
                     android:layout_marginBottom="5dp"
-                    android:visibility="gone"
                     />
             </LinearLayout>
 <androidx.recyclerview.widget.RecyclerView

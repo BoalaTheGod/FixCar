@@ -166,19 +166,12 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                 });
             }
         });
-
-        commentsRV = findViewById(R.id.commentsRV);
-        comments = new ArrayList<>();
-        commentAdapter = new CommentAdapter(this, comments);
-        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
-        linearLayoutManager1.setReverseLayout(true);
-        commentsRV.setLayoutManager(linearLayoutManager1);
-        commentsRV.setAdapter(commentAdapter);
-        getComments();
-
         if (ID != -1){
             getWorkShop();
         }
+
+
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -300,6 +293,14 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                             Log.e("error", t.getMessage());
                     }
                 });
+                commentsRV = findViewById(R.id.commentsRV);
+                comments = new ArrayList<>();
+                commentAdapter = new CommentAdapter(getApplicationContext(), comments,workShop);
+                LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+                linearLayoutManager1.setReverseLayout(true);
+                commentsRV.setLayoutManager(linearLayoutManager1);
+                commentsRV.setAdapter(commentAdapter);
+                getComments();
 
 
                 if (workShop.getImage()!=null && workShop.getImage().length()>1) {

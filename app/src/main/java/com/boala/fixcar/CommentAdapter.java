@@ -33,15 +33,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder>{
     private Context context;
     private ArrayList<Commentary> content;
     private SharedPreferences pref;
+    WorkShop workShop;
 
-    public CommentAdapter(Context context, ArrayList<Commentary> content) {
+    public CommentAdapter(Context context, ArrayList<Commentary> content,WorkShop workShop) {
         this.context = context;
         this.content = content;
         pref = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        this.workShop = workShop;
     }
 
     @NonNull
@@ -256,88 +258,155 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
 
         public void setData(Commentary data) {
-            adapter = new CommentAdapter(context,data.getReplyList());
+            adapter = new CommentAdapter(context,data.getReplyList(), workShop);
             replyRV.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-            Call<Usuario> call = FixCarClient.getInstance().getApi().getUser(data.getIduser());
-            call.enqueue(new Callback<Usuario>() {
-                @Override
-                public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                    if (!response.isSuccessful()) {
-                        Log.e("Code: ", String.valueOf(response.code()));
-                        return;
-                    }
-                    Usuario user = response.body();
-                    if (user.getImage()!=null) {
-                        Picasso.get().load("https://fixcarcesur.herokuapp.com" + user.getImage().substring(2)).
-                                placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(commentPfp);
-                    }
-                    ReadableInstant start;
-                    ReadableInstant end;
-                    Date displayDate = new Date();
-                    String message = "";
-                    if (data.getUpdate_date().before(data.getCreate_date())){
-                        displayDate = data.getCreate_date();
-                    }else{
-                        displayDate = data.getUpdate_date();
-                        message = "(editado) ";
-                    }
-                    int offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
-                    Interval interval = new Interval( displayDate.getTime()+offset,new Date().getTime());
-                    Log.e("time", (displayDate.getTime()+offset)+", "+new Date().getTime());
-                    Period period = interval.toPeriod();
-                    Log.e("period",""+period.getYears()+", "+period.getMonths()+", "+period.getDays()+", "+period.getHours()+", "+period.getMinutes()+", "+period.getSeconds());
-                    if (period.getYears()>0){
-                        if (period.getYears() == 1){
-                            commentDate.setText(message+"hace "+1+" año");
-                        }else {
-                            commentDate.setText(message+"hace "+period.getYears()+" años");
-                        }
-                    }else if (period.getMonths()>0){
-                        if (period.getMonths() == 1){
-                            commentDate.setText(message+"hace "+1+" mes");
-                        }else {
-                            commentDate.setText(message+"hace "+period.getMonths()+" meses");
-                        }
-                    }else if (period.getDays()>0) {
-                        if (period.getDays() == 1) {
-                            commentDate.setText(message+"hace " + 1 + " dia");
-                        } else {
-                            commentDate.setText(message+"hace " + period.getDays() + " dias");
-                        }
-                    }else if (period.getHours()>0) {
-                        if (period.getHours() == 1) {
-                            commentDate.setText(message+"hace " + 1 + " hora");
-                        } else {
-                            commentDate.setText(message+"hace " + period.getHours() + " horas");
-                        }
-                    }else if (period.getMinutes()>0) {
-                        if (period.getMinutes() == 1) {
-                            commentDate.setText(message+"hace " + 1 + " minuto");
-                        } else {
-                            commentDate.setText(message+"hace " + period.getMinutes() + " minutos");
-                        }
-                    }else if (period.getSeconds()>0) {
-                        if (period.getSeconds() == 1) {
-                            commentDate.setText(message+"hace " + 1 + " segundo");
-                        } else {
-                            commentDate.setText(message+"hace " + period.getSeconds() + " segundos");
-                        }
-                    }
-                    if (data.getRank()!=null){
-                        ratingBar.setRating(data.getRank().getRanking());
-                    }else{
-                        ratingBar.setVisibility(View.GONE);
-                    }
-                    commentName.setText(user.getName());
-                    commentText.setText(data.getComentary());
+            if (data.getIduser() == 0){
+                if (workShop.getImage()!=null) {
+                    Picasso.get().load("https://fixcarcesur.herokuapp.com" + workShop.getImage().substring(2)).
+                            placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(commentPfp);
                 }
+                ReadableInstant start;
+                ReadableInstant end;
+                Date displayDate = new Date();
+                String message = "";
+                if (data.getUpdate_date().before(data.getCreate_date())){
+                    displayDate = data.getCreate_date();
+                }else{
+                    displayDate = data.getUpdate_date();
+                    message = "(editado) ";
+                }
+                int offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
+                Interval interval = new Interval( displayDate.getTime()+offset,new Date().getTime());
+                Log.e("time", (displayDate.getTime()+offset)+", "+new Date().getTime());
+                Period period = interval.toPeriod();
+                Log.e("period",""+period.getYears()+", "+period.getMonths()+", "+period.getDays()+", "+period.getHours()+", "+period.getMinutes()+", "+period.getSeconds());
+                if (period.getYears()>0){
+                    if (period.getYears() == 1){
+                        commentDate.setText(message+"hace "+1+" año");
+                    }else {
+                        commentDate.setText(message+"hace "+period.getYears()+" años");
+                    }
+                }else if (period.getMonths()>0){
+                    if (period.getMonths() == 1){
+                        commentDate.setText(message+"hace "+1+" mes");
+                    }else {
+                        commentDate.setText(message+"hace "+period.getMonths()+" meses");
+                    }
+                }else if (period.getDays()>0) {
+                    if (period.getDays() == 1) {
+                        commentDate.setText(message+"hace " + 1 + " dia");
+                    } else {
+                        commentDate.setText(message+"hace " + period.getDays() + " dias");
+                    }
+                }else if (period.getHours()>0) {
+                    if (period.getHours() == 1) {
+                        commentDate.setText(message+"hace " + 1 + " hora");
+                    } else {
+                        commentDate.setText(message+"hace " + period.getHours() + " horas");
+                    }
+                }else if (period.getMinutes()>0) {
+                    if (period.getMinutes() == 1) {
+                        commentDate.setText(message+"hace " + 1 + " minuto");
+                    } else {
+                        commentDate.setText(message+"hace " + period.getMinutes() + " minutos");
+                    }
+                }else if (period.getSeconds()>0) {
+                    if (period.getSeconds() == 1) {
+                        commentDate.setText(message+"hace " + 1 + " segundo");
+                    } else {
+                        commentDate.setText(message+"hace " + period.getSeconds() + " segundos");
+                    }
+                }
+                if (data.getRank()!=null){
+                    ratingBar.setRating(data.getRank().getRanking());
+                }else{
+                    ratingBar.setVisibility(View.GONE);
+                }
+                commentName.setText(workShop.getName());
+                commentText.setText(data.getComentary());
+            }else {
+                Call<Usuario> call = FixCarClient.getInstance().getApi().getUser(data.getIduser());
+                call.enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("Code: ", String.valueOf(response.code()));
+                            return;
+                        }
+                        Usuario user = response.body();
+                        if (user.getImage() != null) {
+                            Picasso.get().load("https://fixcarcesur.herokuapp.com" + user.getImage().substring(2)).
+                                    placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(commentPfp);
+                        }
+                        ReadableInstant start;
+                        ReadableInstant end;
+                        Date displayDate = new Date();
+                        String message = "";
+                        if (data.getUpdate_date().before(data.getCreate_date())) {
+                            displayDate = data.getCreate_date();
+                        } else {
+                            displayDate = data.getUpdate_date();
+                            message = "(editado) ";
+                        }
+                        int offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
+                        Interval interval = new Interval(displayDate.getTime() + offset, new Date().getTime());
+                        Log.e("time", (displayDate.getTime() + offset) + ", " + new Date().getTime());
+                        Period period = interval.toPeriod();
+                        Log.e("period", "" + period.getYears() + ", " + period.getMonths() + ", " + period.getDays() + ", " + period.getHours() + ", " + period.getMinutes() + ", " + period.getSeconds());
+                        if (period.getYears() > 0) {
+                            if (period.getYears() == 1) {
+                                commentDate.setText(message + "hace " + 1 + " año");
+                            } else {
+                                commentDate.setText(message + "hace " + period.getYears() + " años");
+                            }
+                        } else if (period.getMonths() > 0) {
+                            if (period.getMonths() == 1) {
+                                commentDate.setText(message + "hace " + 1 + " mes");
+                            } else {
+                                commentDate.setText(message + "hace " + period.getMonths() + " meses");
+                            }
+                        } else if (period.getDays() > 0) {
+                            if (period.getDays() == 1) {
+                                commentDate.setText(message + "hace " + 1 + " dia");
+                            } else {
+                                commentDate.setText(message + "hace " + period.getDays() + " dias");
+                            }
+                        } else if (period.getHours() > 0) {
+                            if (period.getHours() == 1) {
+                                commentDate.setText(message + "hace " + 1 + " hora");
+                            } else {
+                                commentDate.setText(message + "hace " + period.getHours() + " horas");
+                            }
+                        } else if (period.getMinutes() > 0) {
+                            if (period.getMinutes() == 1) {
+                                commentDate.setText(message + "hace " + 1 + " minuto");
+                            } else {
+                                commentDate.setText(message + "hace " + period.getMinutes() + " minutos");
+                            }
+                        } else if (period.getSeconds() > 0) {
+                            if (period.getSeconds() == 1) {
+                                commentDate.setText(message + "hace " + 1 + " segundo");
+                            } else {
+                                commentDate.setText(message + "hace " + period.getSeconds() + " segundos");
+                            }
+                        }
+                        if (data.getRank() != null) {
+                            ratingBar.setRating(data.getRank().getRanking());
+                        } else {
+                            ratingBar.setVisibility(View.GONE);
+                        }
+                        commentName.setText(user.getName());
+                        commentText.setText(data.getComentary());
+                    }
 
-                @Override
-                public void onFailure(Call<Usuario> call, Throwable t) {
-                    Log.e("error", t.getMessage());
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+                        Log.e("error", t.getMessage());
+                    }
+                });
+            }
 
         }
     }
