@@ -62,7 +62,7 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
     public class TallerHolder extends RecyclerView.ViewHolder {
         private TextView tvNombre, tvTipo;
         private CardView shopCard;
-        private ImageView imageView,heartIC;
+        private ImageView imageView,heartIC,premiumIC;
         private RatingBar ratingBar;
         public TallerHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +72,7 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
             imageView = itemView.findViewById(R.id.workshopImage);
             ratingBar = itemView.findViewById(R.id.ratingBar);
             heartIC = itemView.findViewById(R.id.heartIC);
+            premiumIC = itemView.findViewById(R.id.premiumIC);
         }
 
         public void setData(WorkShop data) {
@@ -101,6 +102,9 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
                                 heartIC.setImageResource(R.drawable.heart);
                             }else{
                                 heartIC.setImageResource(R.drawable.heart_inactive);
+                            }
+                            if (data.getState().equals("Premium")){
+                                premiumIC.setVisibility(View.VISIBLE);
                             }
                             tvNombre.setText(data.getName());
                             tvTipo.setText(data.getDescription());

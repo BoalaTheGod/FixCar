@@ -16,7 +16,10 @@ import android.util.Log;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class WorkShopListActivity extends AppCompatActivity {
 private RecyclerView rvTalleres;
@@ -44,10 +47,10 @@ private ArrayList<WorkShop> workShopList;
                 getTalleres();
             }
         });
-        getTalleres();
 
     }
     private void getTalleres(){
+        workShopList.clear();
         Call<List<WorkShop>> call = FixCarClient.getInstance().getApi().getTalleres();
         call.enqueue(new Callback<List<WorkShop>>() {
             @Override
@@ -57,33 +60,35 @@ private ArrayList<WorkShop> workShopList;
                     return;
                 }
                 ArrayList<WorkShop> talleres = (ArrayList) response.body();
-                workShopList.clear();
-                adapter.notifyDataSetChanged();
-                for (WorkShop workShop : talleres) {
-                    Call<Boolean> call2 = FixCarClient.getInstance().getApi().isFav(pref.getInt("userId", -1), workShop.getIdtaller());
-                    call2.enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            if (!response.isSuccessful()) {
-                                Log.e("Code: ", String.valueOf(response.code()));
-                                return;
-                            }
-                            if (response.body()) {
+                Call<List<Fav>> call1 = FixCarClient.getInstance().getApi().getUserFav(pref.getInt("userId",-1));
+                call1.enqueue(new Callback<List<Fav>>() {
+                    @Override
+                    public void onResponse(Call<List<Fav>> call, Response<List<Fav>> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("Code: ", String.valueOf(response.code()));
+                            return;
+                        }
+                        TreeMap<Integer,Fav> favs = new TreeMap<>();
+                        for (Fav fav : response.body()){
+                            favs.put(fav.getIdworkshop(),fav);
+                        }
+                        for (WorkShop workShop : talleres) {
+                            if (favs.containsKey(workShop.getIdtaller())) {
                                 workShopList.add(workShop);
-                                adapter.notifyItemInserted(workShopList.size()-1);
                             }
                         }
+                        adapter.notifyDataSetChanged();
+                        refreshLayout.setRefreshing(false);
 
-                        @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) {
-                            Log.e("error", t.getMessage());
-                        }
-                    });
-                }
+                    }
 
-                refreshLayout.setRefreshing(false);
+                    @Override
+                    public void onFailure(Call<List<Fav>> call, Throwable t) {
+                        Log.e("error", t.getMessage());
+                    }
+                });
+
             }
-
             @Override
             public void onFailure(Call<List<WorkShop>> call, Throwable t) {
                 Log.e("error", t.getMessage());

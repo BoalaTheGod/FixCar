@@ -113,7 +113,6 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         sendCall = findViewById(R.id.sendCall);
         sendEmail = findViewById(R.id.sendEmail);
         fab = findViewById(R.id.fab);
-
         mapCard = findViewById(R.id.mapCard);
         vidCard = findViewById(R.id.vidCard);
 
@@ -256,8 +255,6 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                                         auxList.put(commentary.getIdcomentary(), commentary);
                                         if (commentary.getIduser() == pref.getInt("userId", -1)) {
                                             userReviewCard.setVisibility(View.GONE);
-                                        } else {
-                                            userReviewCard.setVisibility(View.VISIBLE);
                                         }
                                     }
                                 }
@@ -269,8 +266,6 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                                         auxList.put(commentary.getIdcomentary(), commentary);
                                         if (commentary.getIduser() == pref.getInt("userId", -1)) {
                                             userReviewCard.setVisibility(View.GONE);
-                                        } else {
-                                            userReviewCard.setVisibility(View.VISIBLE);
                                         }
                                     }
                                 }
