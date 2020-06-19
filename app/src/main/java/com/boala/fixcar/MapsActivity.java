@@ -3,7 +3,6 @@ package com.boala.fixcar;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +18,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,31 +28,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import java.nio.file.Files;
-import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -76,6 +66,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<WorkShop> workShopList;
     private ImageView arrow, searchBtMap;
     private EditText searchMap;
+    private CheckBox mechanicsC,repairsC,bodyworkC,electricityC,reviewC,creditcardC,premiumC;
+    private LinearLayout filters;
+    private LinearLayout btTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +83,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         arrow = findViewById(R.id.arrow);
         searchMap = findViewById(R.id.searchMap);
         searchBtMap = findViewById(R.id.searchBtMap);
+        mechanicsC = findViewById(R.id.mechanicsC);
+        repairsC = findViewById(R.id.repairsC);
+        bodyworkC = findViewById(R.id.bodyworkC);
+        electricityC = findViewById(R.id.electricityC);
+        creditcardC = findViewById(R.id.creditcardC);
+        premiumC = findViewById(R.id.premiumC);
+        reviewC = findViewById(R.id.reviewC);
+        filters = findViewById(R.id.filters);
+        repairsC.setChecked(getIntent().getBooleanExtra("repairs",false));
+        bodyworkC.setChecked(getIntent().getBooleanExtra("bodywork",false));
+        electricityC.setChecked(getIntent().getBooleanExtra("electricity",false));
+        creditcardC.setChecked(getIntent().getBooleanExtra("creditcard",false));
+        premiumC.setChecked(getIntent().getBooleanExtra("premium",false));
+        reviewC.setChecked(getIntent().getBooleanExtra("review",false));
+        mechanicsC.setChecked(getIntent().getBooleanExtra("mechanics",false));
 
 
         rvMaps = findViewById(R.id.rvMaps);
@@ -105,7 +113,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toggleBottomSheet();
             }
         });
-
+        btTest = findViewById(R.id.testBT);
+        btTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    setVisibility(filters, !isVisible(filters));
+            }
+        });
         
 
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -171,9 +185,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void putMarkers(){
+    public void getWorkshops(){
         Geocoder gc = new Geocoder(this);
-        Call<List<WorkShop>> call = FixCarClient.getInstance().getApi().getTalleres();
+        Call<List<WorkShop>> call = FixCarClient.getInstance().getApi().getFitleredShops(boolToInt(mechanicsC),boolToInt(repairsC),boolToInt(electricityC),boolToInt(bodyworkC),boolToInt(reviewC),boolToInt(creditcardC),isPremium(premiumC));
         call.enqueue(new Callback<List<WorkShop>>() {
             @Override
             public void onResponse(Call<List<WorkShop>> call, Response<List<WorkShop>> response) {
@@ -182,61 +196,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return;
                 }
                 ArrayList<WorkShop> workShops = (ArrayList<WorkShop>) response.body();
+                workShopList.clear();
+                adapter.notifyDataSetChanged();
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        workShopList.clear();
-                        for (WorkShop workShop : workShops) {
-                            try {
-                                List<Address> list = gc.getFromLocationName(workShop.getLocation() + ", " + workShop.getAdress(), 1);
-                                if (list.size() > 0) {
-                                    Address address = list.get(0);
-                                    Log.d("location: ", address.toString());
-                                    if (addressAux == null){
-                                        addressAux = new Address(Locale.getDefault());
-                                        addressAux.setLocality(" ");
-                                    }
-                                    if (addressAux.getLocality().toLowerCase().equals(address.getLocality().toLowerCase()) || search.isEmpty()) {
-                                        workShopList.add(workShop);
+                        if (workShops != null) {
+                            for (WorkShop workShop : workShops) {
+                                try {
+                                    List<Address> list = gc.getFromLocationName(workShop.getLocation() + ", " + workShop.getAdress(), 1);
+                                    if (list.size() > 0) {
+                                        Address address = list.get(0);
+                                        Log.d("location: ", address.toString());
+                                        if (addressAux == null) {
+                                            addressAux = new Address(Locale.getDefault());
+                                            addressAux.setLocality(" ");
+                                        }
+                                        if (addressAux.getLocality().toLowerCase().equals(address.getLocality().toLowerCase()) || search.isEmpty()) {
+                                            workShopList.add(workShop);
 
-                                        double lat = address.getLatitude();
-                                        double lng = address.getLongitude();
-                                        Log.d("coords: ", lat + "," + lng);
+                                            double lat = address.getLatitude();
+                                            double lng = address.getLongitude();
+                                            Log.d("coords: ", lat + "," + lng);
 
-                                        LatLng latLng = new LatLng(lat, lng);
-                                        MarkerOptions marker = new MarkerOptions().position(latLng).title(workShop.getName()).snippet(workShop.getDescription() +
-                                                "\n " + workShop.getIdtaller());
+                                            LatLng latLng = new LatLng(lat, lng);
+                                            MarkerOptions marker = new MarkerOptions().position(latLng).title(workShop.getName()).snippet(workShop.getDescription() +
+                                                    "\n " + workShop.getIdtaller());
 
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                                    @Override
-                                                    public void onInfoWindowClick(Marker marker) {
-                                                        String raw = marker.getSnippet();
-                                                        String[] array = raw.split(" ");
-                                                        int id = Integer.valueOf(array[array.length - 1]);
-                                                        Intent intent = new Intent(getApplicationContext(), ShopProfileActivity.class);
-                                                        intent.putExtra("id", id);
-                                                        startActivity(intent);
-                                                        Log.e("tag", "" + id);
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (workShopList.size()>1) {
+                                                        adapter.notifyItemInserted(workShopList.size() - 1);
                                                     }
-                                                });
-                                                mMap.addMarker(marker);
-                                            }
-                                        });
+                                                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                                        @Override
+                                                        public void onInfoWindowClick(Marker marker) {
+                                                            String raw = marker.getSnippet();
+                                                            String[] array = raw.split(" ");
+                                                            int id = Integer.valueOf(array[array.length - 1]);
+                                                            Intent intent = new Intent(getApplicationContext(), ShopProfileActivity.class);
+                                                            intent.putExtra("id", id);
+                                                            startActivity(intent);
+                                                            Log.e("tag", "" + id);
+                                                        }
+                                                    });
+                                                    mMap.addMarker(marker);
+                                                }
+                                            });
+                                        }
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
                         }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
                     }
                 });
 
@@ -303,18 +317,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 if (search.isEmpty()) {
-                    putMarkers();
+                    getWorkshops();
                     mMap.setMyLocationEnabled(true);
                     locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-                } else if (search.split(" ").length > 1) {
+                } else if (search.contains(" ")) {
                     Geocoder gc = new Geocoder(this);
                     try {
                         List<Address> list = gc.getFromLocationName(search, 1);
                         if (list.size() > 0) {
                             addressAux = list.get(0);
                             Log.d("location: ", addressAux.toString());
-                            putMarkers();
+                            getWorkshops();
 
                             double lat = addressAux.getLatitude();
                             double lng = addressAux.getLongitude();
@@ -338,7 +352,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (list.size() > 0) {
                             addressAux = list.get(0);
                             Log.d("location: ", addressAux.toString());
-                            putMarkers();
+                            getWorkshops();
 
                             double lat = addressAux.getLatitude();
                             double lng = addressAux.getLongitude();
@@ -370,5 +384,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawable.draw(canvas);
 
         return bitmap;
+    }
+    private boolean isVisible(View view){
+        if (view.getVisibility() == View.GONE){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    private void setVisibility(View v,boolean visibility){
+        if (visibility){
+            v.setVisibility(View.VISIBLE);
+        }else{
+            v.setVisibility(View.GONE);
+        }
+    }
+    private int boolToInt(CheckBox cb){
+        if (cb.isChecked()){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+    private String isPremium(CheckBox cb){
+        if (cb.isChecked()){
+            return "Premium";
+        }else {
+            return "";
+        }
     }
 }

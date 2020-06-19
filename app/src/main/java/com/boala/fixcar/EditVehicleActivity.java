@@ -683,6 +683,7 @@ public class EditVehicleActivity extends AppCompatActivity implements View.OnCli
                 public void onResponse(Call<Boolean> call, retrofit2.Response<Boolean> response) {
                     if (!response.isSuccessful()) {
                         Log.e("error", String.valueOf(response.code()));
+                        return;
                     }
                     finish();
                 }

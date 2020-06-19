@@ -335,7 +335,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                             return;
                         }
                         Usuario user = response.body();
-                        if (user.getImage() != null) {
+                        if (user.getImage() != null && !user.getImage().equals("")) {
                             Picasso.get().load("https://fixcarcesur.herokuapp.com" + user.getImage().substring(2)).
                                     placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(commentPfp);
                         }

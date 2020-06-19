@@ -178,4 +178,22 @@ public interface FixCarApi {
     Call<Boolean> putRank(@Path("id") int id,
                                 @Query("ranking") String rank
     );
+    @GET("faviduser{id}")
+    Call<List<Fav>> getUserFav(@Path("id") int id);
+    @GET("findfav")
+    Call<Boolean> isFav(@Query("iduser") int iduser, @Query("idworkshop") int idworkshop);
+    @FormUrlEncoded
+    @POST("favpost")
+    Call<Void> postFav(@Field("iduser") String iduser,
+                           @Field("idworkshop") String idworkshop
+    );
+    @DELETE("favdel")
+    Call<Void> delFav(@Query("iduser") String iduser,
+                      @Query("idworkshop") String idworkshop
+    );
+    @GET("workshoptypesearch")
+    Call<List<WorkShop>> getFitleredShops(@Query("mechanics") int mechanics, @Query("repairs") int repairs, @Query("electricity") int electricity, @Query("bodywork") int bodywork, @Query("review") int review, @Query("creditcard") int creditcard, @Query("premium") String premium);
+
+    @GET("idtworkshoptype{id}")
+    Call<WorkshopTypes> getShopTypes(@Path("id") int id);
 }

@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,9 +37,11 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,9 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SwipeRefreshLayout swipeRefreshLayout;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private String[] listItems;//variables para la busqueda por filtros
-    boolean[] checkedItems;
-    private ArrayList<Integer> muserItems = new ArrayList<>();
     boolean dialogShown = false;//variable auxiliar para que solo se muestre el dialogo de vehiculos vacios una vez
     static ArrayList<VehiculoExpandable> vehData;//arrayList de vehiculos auxiliar
     private EditText ets;//edittext para la busqueda por calle
@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     private ImageButton searchBT;
     private TextView name,email;
+    private LinearLayout filters;
+    private CheckBox mechanicsC,repairsC,bodyworkC,electricityC,reviewC,creditcardC,premiumC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +82,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
-
-
+        mechanicsC = findViewById(R.id.mechanicsC);
+        repairsC = findViewById(R.id.repairsC);
+        bodyworkC = findViewById(R.id.bodyworkC);
+        electricityC = findViewById(R.id.electricityC);
+        creditcardC = findViewById(R.id.creditcardC);
+        premiumC = findViewById(R.id.premiumC);
+        reviewC = findViewById(R.id.reviewC);
+        filters = findViewById(R.id.filters);
         searchBT = findViewById(R.id.searchBT);
         drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -108,6 +116,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 intent.putExtra("search",ets.getText().toString());
+                intent.putExtra("repairs",repairsC.isChecked());
+                intent.putExtra("electricity",electricityC.isChecked());
+                intent.putExtra("bodywork",bodyworkC.isChecked());
+                intent.putExtra("review",reviewC.isChecked());
+                intent.putExtra("creditcard",creditcardC.isChecked());
+                intent.putExtra("mechanics",mechanicsC.isChecked());
+                intent.putExtra("premium",premiumC.isChecked());
                 startActivity(intent);
             }
         });
@@ -137,50 +152,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(getApplicationContext(), EditVehicleActivity.class));
             }
         });
-
-        /**Dialog de seleccion de filtros**/
-
-        listItems = getResources().getStringArray(R.array.filtros);
-        checkedItems = new boolean[listItems.length];
-        Button btTest = findViewById(R.id.testBT);
+        /**seleccion de filtros**/
+        LinearLayout btTest = findViewById(R.id.testBT);
         btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /**AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
-                mBuilder.setTitle("Filtro");
-                mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
-                        if (isChecked) {
-                            muserItems.add(position);
-                        } else {
-                            muserItems.remove(Integer.valueOf(position));
-                        }
-                    }
-                });
-                mBuilder.setCancelable(false);
-                mBuilder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        String item = "";
-                        for (int i = 0; i < muserItems.size(); i++) {
-                            item = item + listItems[muserItems.get(i)];
-                        }
-                        ets.setText(item);
-                    }
-                });
-                mBuilder.setNeutralButton("clear", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        for (int i = 0; i < checkedItems.length; i++) {
-                            checkedItems[i] = false;
-                            muserItems.clear();
-                            ets.setText("");
-                        }
-                    }
-                });
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();**/
+                setVisibility(filters,!isVisible(filters));
             }
         });
         ets.setOnKeyListener(new View.OnKeyListener() {
@@ -293,6 +270,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private boolean isVisible(View view){
+        if (view.getVisibility() == View.GONE){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    private void setVisibility(View v,boolean visibility){
+        if (visibility){
+            v.setVisibility(View.VISIBLE);
+        }else{
+            v.setVisibility(View.GONE);
+        }
+    }
+    private int boolToInt(CheckBox cb){
+        if (cb.isChecked()){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+    private String isPremium(CheckBox cb){
+        if (cb.isChecked()){
+            return "Premium";
+        }else {
+            return "";
+        }
     }
 
     @Override

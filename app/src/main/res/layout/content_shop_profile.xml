@@ -128,20 +128,52 @@
                 android:id="@+id/addressTextView"
                 android:layout_margin="5dp"
                 />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:id="@+id/numberTextView"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 />
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/phone"
+                android:background="@drawable/effect_ripple"
+                android:paddingHorizontal="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:id="@+id/sendCall"
+                />
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:id="@+id/emailTextView"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/email_send"
+                    android:background="@drawable/effect_ripple"
+                    android:paddingHorizontal="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/sendEmail"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView

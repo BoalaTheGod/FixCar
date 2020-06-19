@@ -2,6 +2,7 @@ package com.boala.fixcar;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -9,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -70,7 +72,7 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
     private TextView addressTextView, numberTextView, descTextView, emailTextView;
     private CollapsingToolbarLayout toolbarLayout;
     private RatingBar ratingBar, userRatingBar;
-    private ImageView header;
+    private ImageView header, sendEmail, sendCall;
     private CardView vidCard,mapCard;
     public static SharedPreferences pref;
     public static CardView userReviewCard;
@@ -88,6 +90,8 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
     public static CommentAdapter commentAdapter;
     private EditText commentET;
     private ImageView commentPost;
+    private FloatingActionButton fab;
+    private boolean isFav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,9 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         ratingBar = findViewById(R.id.ratingBar);
         userRatingBar = findViewById(R.id.userRatingBar);
         userReviewCard = findViewById(R.id.userReviewCard);
+        sendCall = findViewById(R.id.sendCall);
+        sendEmail = findViewById(R.id.sendEmail);
+        fab = findViewById(R.id.fab);
 
         mapCard = findViewById(R.id.mapCard);
         vidCard = findViewById(R.id.vidCard);
@@ -168,18 +175,46 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         });
         if (ID != -1){
             getWorkShop();
+            getFav();
         }
 
-
-
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        sendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:"));
+                String[] email = {workShop.getEmail()};
+                intent.putExtra(Intent.EXTRA_EMAIL,email);
+                intent.putExtra(Intent.EXTRA_SUBJECT,"FixCar");
+                if (intent.resolveActivity(getPackageManager())!=null){
+                    startActivity(intent);
+                }
+            }
+        });
+        sendCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:"+workShop.getPhone()));
+                if (intent.resolveActivity(getPackageManager())!=null){
+                    startActivity(intent);
+                }
+            }
+        });
+        getFav();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "añadido a favoritos", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (isFav){
+                    delFav();
+                    Snackbar.make(view, "eliminado de favoritos", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }else{
+                    setFav();
+                    Snackbar.make(view, "añadido a favoritos", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
             }
         });
     }
@@ -211,17 +246,32 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
                                 return;
                             }
                             ArrayList<Rank> ranks1 = (ArrayList<Rank>) response.body();
-                            for (Rank rank : ranks1) {
-                                ranks.put(rank.getId_users(), rank);
-                            }
-                            for (Commentary commentary : comments2) {
-                                if (commentary.getResponse() == 0) {
-                                    commentary.setRank(ranks.get(commentary.getIduser()));
-                                    auxList.put(commentary.getIdcomentary(), commentary);
-                                    if (commentary.getIduser() == pref.getInt("userId", -1)) {
-                                        userReviewCard.setVisibility(View.GONE);
-                                    } else {
-                                        userReviewCard.setVisibility(View.VISIBLE);
+                            try {
+                                for (Rank rank : ranks1) {
+                                    ranks.put(rank.getId_users(), rank);
+                                }
+                                for (Commentary commentary : comments2) {
+                                    if (commentary.getResponse() == 0) {
+                                        commentary.setRank(ranks.get(commentary.getIduser()));
+                                        auxList.put(commentary.getIdcomentary(), commentary);
+                                        if (commentary.getIduser() == pref.getInt("userId", -1)) {
+                                            userReviewCard.setVisibility(View.GONE);
+                                        } else {
+                                            userReviewCard.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                                for (Commentary commentary : comments2) {
+                                    if (commentary.getResponse() == 0) {
+                                        commentary.setRank(ranks.get(commentary.getIduser()));
+                                        auxList.put(commentary.getIdcomentary(), commentary);
+                                        if (commentary.getIduser() == pref.getInt("userId", -1)) {
+                                            userReviewCard.setVisibility(View.GONE);
+                                        } else {
+                                            userReviewCard.setVisibility(View.VISIBLE);
+                                        }
                                     }
                                 }
                             }
@@ -341,12 +391,32 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void setChips(){
-       String raw = workShop.getType();
-       String[] array = raw.split(",");
-       for (String string : array){
-           chipList.add(string);
-       }
-       adapter.notifyDataSetChanged();
+        Call<WorkshopTypes> call = FixCarClient.getInstance().getApi().getShopTypes(ID);
+        call.enqueue(new Callback<WorkshopTypes>() {
+            @Override
+            public void onResponse(Call<WorkshopTypes> call, Response<WorkshopTypes> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                WorkshopTypes types = response.body();
+                if (types != null) {
+                    String raw = types.toString();
+                    if (raw != null) {
+                        String[] array = raw.split(",");
+                        for (String string : array) {
+                            chipList.add(string);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WorkshopTypes> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -399,6 +469,69 @@ public class ShopProfileActivity extends AppCompatActivity implements OnMapReady
         }else {
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
         }
+    }
+    private void getFav(){
+        Call<Boolean> call = FixCarClient.getInstance().getApi().isFav(pref.getInt("userId",-1),ID);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                Log.e("fav",response.body().toString());
+                if (response.body()){
+                    fab.setImageResource(R.drawable.heart);
+                    isFav = true;
+                }else{
+                    fab.setImageResource(R.drawable.heart_inactive);
+                    isFav = false;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
+    }
+    private void setFav(){
+        Call call = FixCarClient.getInstance().getApi().postFav(String.valueOf(pref.getInt("userId",-1)),String.valueOf(ID));
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                fab.setImageResource(R.drawable.heart);
+                isFav = true;
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
+    }
+    private void delFav(){
+        Call call = FixCarClient.getInstance().getApi().delFav(String.valueOf(pref.getInt("userId",-1)),String.valueOf(ID));
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Code: ", String.valueOf(response.code()));
+                    return;
+                }
+                fab.setImageResource(R.drawable.heart_inactive);
+                isFav = false;
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
     }
 
 

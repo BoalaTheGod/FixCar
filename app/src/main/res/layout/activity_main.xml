@@ -59,12 +59,96 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-        <Button
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Busqueda por filtro (provisional)"
-            android:id="@+id/testBT"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="2.5dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:animateLayoutChanges="true"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:id="@+id/testBT"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/effect_ripple"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Añadir filtros"
+                        android:textSize="15sp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/filter_variant_plus"
+            android:layout_margin="5dp"
             />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/filters"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    >
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mecánica"
+                    android:id="@+id/mechanicsC"
+                    />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reparaciones"
+                    android:id="@+id/repairsC"
+                    />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Electricidad"
+                    android:id="@+id/electricityC"
+                    />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chapa y pintura"
+                    android:id="@+id/bodyworkC"
+                    />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Revision"
+                    android:id="@+id/reviewC"
+                    />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pago con tarjeta"
+                    android:id="@+id/creditcardC"
+                    />
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Premium"
+                    android:id="@+id/premiumC"
+                    />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -122,7 +206,7 @@
         android:layout_gravity="start"
         app:menu="@menu/drawer"
         app:headerLayout="@layout/header"
-        tools:visibility="visible"
+        tools:visibility="gone"
         >
         <Button
             android:layout_width="match_parent"

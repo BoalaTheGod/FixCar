@@ -2,6 +2,7 @@ package com.boala.fixcar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.TallerHolder> {
+    public static SharedPreferences pref;
 
     private Context context;
     private ArrayList<WorkShop> content;
@@ -60,7 +62,7 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
     public class TallerHolder extends RecyclerView.ViewHolder {
         private TextView tvNombre, tvTipo;
         private CardView shopCard;
-        private ImageView imageView;
+        private ImageView imageView,heartIC;
         private RatingBar ratingBar;
         public TallerHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,9 +71,11 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
             shopCard = itemView.findViewById(R.id.shopCard);
             imageView = itemView.findViewById(R.id.workshopImage);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            heartIC = itemView.findViewById(R.id.heartIC);
         }
 
         public void setData(WorkShop data) {
+            pref = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
             Call<Float> call1 = FixCarClient.getInstance().getApi().getAvgRank(data.getIdtaller());
             call1.enqueue(new Callback<Float>() {
                 @Override
@@ -85,6 +89,31 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
                     }else{
                         ratingBar.setRating(0);
                     }
+                    Call<Boolean> call2 = FixCarClient.getInstance().getApi().isFav(pref.getInt("userId",-1),data.getIdtaller());
+                    call2.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            if (!response.isSuccessful()) {
+                                Log.e("Code: ", String.valueOf(response.code()));
+                                return;
+                            }
+                            if (response.body()){
+                                heartIC.setImageResource(R.drawable.heart);
+                            }else{
+                                heartIC.setImageResource(R.drawable.heart_inactive);
+                            }
+                            tvNombre.setText(data.getName());
+                            tvTipo.setText(data.getDescription());
+                            if (data.getImage()!=null && data.getImage().length()>1) {
+                                Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getImage().substring(2)).into(imageView);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Log.e("error", t.getMessage());
+                        }
+                    });
                 }
 
                 @Override
@@ -92,11 +121,7 @@ public class WorkShopAdapter extends RecyclerView.Adapter<WorkShopAdapter.Taller
                     Log.e("error", t.getMessage());
                 }
             });
-            tvNombre.setText(data.getName());
-            tvTipo.setText(data.getDescription());
-            if (data.getImage()!=null && data.getImage().length()>1) {
-                Picasso.get().load("https://fixcarcesur.herokuapp.com" + data.getImage().substring(2)).into(imageView);
-            }
+
         }
     }
 }

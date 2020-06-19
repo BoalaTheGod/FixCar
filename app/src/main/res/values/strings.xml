@@ -2,7 +2,7 @@
     <string name="app_name">FixCar</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
-    <string name="busqueda_talleres">Busqueda de talleres por calle</string>
+    <string name="busqueda_talleres">Busqueda de talleres</string>
     <string-array name="filtros">
         <item>1</item>
         <item>2</item>

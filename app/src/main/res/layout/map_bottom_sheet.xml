@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.boala.fixcar.MaxHeightLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
-    app:maxHeightDp="500"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="35dp"
+    app:behavior_peekHeight="85dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     android:id="@+id/BottomSheet"
     android:background="@drawable/card_round_top_background"
@@ -31,8 +30,12 @@
             app:cardCornerRadius="10dp"
             android:elevation="-2dp"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="20dp"
             >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,14 +61,98 @@
                     android:id="@+id/searchBtMap"
                     />
             </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:animateLayoutChanges="true"
+                        >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:id="@+id/testBT"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="@drawable/effect_ripple"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Añadir filtros"
+                                android:textSize="15sp"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1"
+                                />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/filter_variant_plus"
+                                android:padding="10dp"
+                                />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/filters"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            >
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Mecánica"
+                                android:id="@+id/mechanicsC"
+                                />
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Reparaciones"
+                                android:id="@+id/repairsC"
+                                />
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Electricidad"
+                                android:id="@+id/electricityC"
+                                />
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Chapa y pintura"
+                                android:id="@+id/bodyworkC"
+                                />
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Revision"
+                                android:id="@+id/reviewC"
+                                />
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Pago con tarjeta"
+                                android:id="@+id/creditcardC"
+                                />
+                            <CheckBox
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Premium"
+                                android:id="@+id/premiumC"
+                                />
+                        </LinearLayout>
+                    </LinearLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
             </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="100dp"
         android:id="@+id/rvMaps"
         android:layoutAnimation="@anim/layout_animation"
         />
 
-</com.boala.fixcar.MaxHeightLinearLayout>
+</LinearLayout>

@@ -10,8 +10,6 @@ public class WorkShop {
     private String cif;
     @SerializedName("adress")
     private String adress;
-    @SerializedName("workshop_type")
-    private String type;
     @SerializedName("state")
     private String state;
     private String email;
@@ -31,7 +29,6 @@ public class WorkShop {
         this.name = name;
         this.cif = cif;
         this.adress = adress;
-        this.type = type;
         this.state = state;
         this.email = email;
         this.phone = phone;
@@ -79,14 +76,6 @@ public class WorkShop {
 
     public void setAdress(String adress) {
         this.adress = adress;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getState() {

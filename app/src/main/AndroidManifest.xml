@@ -43,7 +43,9 @@
         <activity
             android:name=".ShopProfileActivity"
             android:label="@string/title_activity_shop_profile"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

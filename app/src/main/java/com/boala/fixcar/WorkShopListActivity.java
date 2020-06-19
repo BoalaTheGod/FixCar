@@ -9,8 +9,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ private RecyclerView rvTalleres;
 private SwipeRefreshLayout refreshLayout;
 private WorkShopAdapter adapter;
 private ArrayList<WorkShop> workShopList;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ private ArrayList<WorkShop> workShopList;
         refreshLayout = findViewById(R.id.refreshTalleres);
         workShopList = new ArrayList<>();
         Context context;
+        pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTalleres.setLayoutManager(linearLayoutManager);
         adapter = new WorkShopAdapter(this, workShopList);
@@ -53,10 +58,29 @@ private ArrayList<WorkShop> workShopList;
                 }
                 ArrayList<WorkShop> talleres = (ArrayList) response.body();
                 workShopList.clear();
-                for (WorkShop workShop : talleres){
-                    workShopList.add(workShop);
-                }
                 adapter.notifyDataSetChanged();
+                for (WorkShop workShop : talleres) {
+                    Call<Boolean> call2 = FixCarClient.getInstance().getApi().isFav(pref.getInt("userId", -1), workShop.getIdtaller());
+                    call2.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            if (!response.isSuccessful()) {
+                                Log.e("Code: ", String.valueOf(response.code()));
+                                return;
+                            }
+                            if (response.body()) {
+                                workShopList.add(workShop);
+                                adapter.notifyItemInserted(workShopList.size()-1);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Log.e("error", t.getMessage());
+                        }
+                    });
+                }
+
                 refreshLayout.setRefreshing(false);
             }
 
@@ -67,4 +91,10 @@ private ArrayList<WorkShop> workShopList;
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshLayout.setRefreshing(true);
+        getTalleres();
+    }
 }
