@@ -226,9 +226,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    if (workShopList.size()>1) {
-                                                        adapter.notifyItemInserted(workShopList.size() - 1);
-                                                    }
                                                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                                                         @Override
                                                         public void onInfoWindowClick(Marker marker) {
@@ -250,6 +247,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     e.printStackTrace();
                                 }
                             }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
                         }
                     }
                 });

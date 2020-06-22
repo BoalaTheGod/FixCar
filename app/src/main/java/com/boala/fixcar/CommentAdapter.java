@@ -201,6 +201,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             public void onClick(View view) {
                 replyWindow.setVisibility(View.VISIBLE);
                 replyPost.setVisibility(View.VISIBLE);
+                userRatingBar.setVisibility(View.GONE);
             }
         });
         replyPost.setOnClickListener(new View.OnClickListener() {
@@ -350,47 +351,52 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                             message = "(editado) ";
                         }
                         int offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
-                        Interval interval = new Interval(displayDate.getTime() + offset, new Date().getTime());
-                        Log.e("time", (displayDate.getTime() + offset) + ", " + new Date().getTime());
-                        Period period = interval.toPeriod();
-                        Log.e("period", "" + period.getYears() + ", " + period.getMonths() + ", " + period.getDays() + ", " + period.getHours() + ", " + period.getMinutes() + ", " + period.getSeconds());
-                        if (period.getYears() > 0) {
-                            if (period.getYears() == 1) {
-                                commentDate.setText(message + "hace " + 1 + " año");
-                            } else {
-                                commentDate.setText(message + "hace " + period.getYears() + " años");
+                        try {
+                            Interval interval = new Interval(displayDate.getTime() + offset, new Date().getTime());
+                            Log.e("time", (displayDate.getTime() + offset) + ", " + new Date().getTime());
+                            Period period = interval.toPeriod();
+                            Log.e("period", "" + period.getYears() + ", " + period.getMonths() + ", " + period.getDays() + ", " + period.getHours() + ", " + period.getMinutes() + ", " + period.getSeconds());
+                            if (period.getYears() > 0) {
+                                if (period.getYears() == 1) {
+                                    commentDate.setText(message + "hace " + 1 + " año");
+                                } else {
+                                    commentDate.setText(message + "hace " + period.getYears() + " años");
+                                }
+                            } else if (period.getMonths() > 0) {
+                                if (period.getMonths() == 1) {
+                                    commentDate.setText(message + "hace " + 1 + " mes");
+                                } else {
+                                    commentDate.setText(message + "hace " + period.getMonths() + " meses");
+                                }
+                            } else if (period.getDays() > 0) {
+                                if (period.getDays() == 1) {
+                                    commentDate.setText(message + "hace " + 1 + " dia");
+                                } else {
+                                    commentDate.setText(message + "hace " + period.getDays() + " dias");
+                                }
+                            } else if (period.getHours() > 0) {
+                                if (period.getHours() == 1) {
+                                    commentDate.setText(message + "hace " + 1 + " hora");
+                                } else {
+                                    commentDate.setText(message + "hace " + period.getHours() + " horas");
+                                }
+                            } else if (period.getMinutes() > 0) {
+                                if (period.getMinutes() == 1) {
+                                    commentDate.setText(message + "hace " + 1 + " minuto");
+                                } else {
+                                    commentDate.setText(message + "hace " + period.getMinutes() + " minutos");
+                                }
+                            } else if (period.getSeconds() > 0) {
+                                if (period.getSeconds() == 1) {
+                                    commentDate.setText(message + "hace " + 1 + " segundo");
+                                } else {
+                                    commentDate.setText(message + "hace " + period.getSeconds() + " segundos");
+                                }
                             }
-                        } else if (period.getMonths() > 0) {
-                            if (period.getMonths() == 1) {
-                                commentDate.setText(message + "hace " + 1 + " mes");
-                            } else {
-                                commentDate.setText(message + "hace " + period.getMonths() + " meses");
-                            }
-                        } else if (period.getDays() > 0) {
-                            if (period.getDays() == 1) {
-                                commentDate.setText(message + "hace " + 1 + " dia");
-                            } else {
-                                commentDate.setText(message + "hace " + period.getDays() + " dias");
-                            }
-                        } else if (period.getHours() > 0) {
-                            if (period.getHours() == 1) {
-                                commentDate.setText(message + "hace " + 1 + " hora");
-                            } else {
-                                commentDate.setText(message + "hace " + period.getHours() + " horas");
-                            }
-                        } else if (period.getMinutes() > 0) {
-                            if (period.getMinutes() == 1) {
-                                commentDate.setText(message + "hace " + 1 + " minuto");
-                            } else {
-                                commentDate.setText(message + "hace " + period.getMinutes() + " minutos");
-                            }
-                        } else if (period.getSeconds() > 0) {
-                            if (period.getSeconds() == 1) {
-                                commentDate.setText(message + "hace " + 1 + " segundo");
-                            } else {
-                                commentDate.setText(message + "hace " + period.getSeconds() + " segundos");
-                            }
+                        }catch (IllegalArgumentException e){
+                            e.printStackTrace();
                         }
+
                         if (data.getRank() != null) {
                             ratingBar.setRating(data.getRank().getRanking());
                         } else {
